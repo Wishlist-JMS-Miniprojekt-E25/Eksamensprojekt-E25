@@ -4,14 +4,14 @@ public class Employee {
 
     private String employeeName;
     private String userName;
-    private String password;
+    private String userPassword;
     private Integer employeeID;
     private boolean isManager;
 
-    public Employee(String employeeName, String userName, String password, Integer employeeID, boolean isManager) {
+    public Employee(String employeeName, String userName, String userPassword, Integer employeeID, boolean isManager) {
         this.employeeName = employeeName;
         this.userName = userName;
-        this.password = password;
+        this.userPassword = userPassword;
         this.employeeID = employeeID;
         this.isManager = isManager;
     }
@@ -36,12 +36,12 @@ public class Employee {
         this.userName = userName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
     public Integer getEmployeeID() {
