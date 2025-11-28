@@ -18,6 +18,7 @@ public class EmployeeRepository {
         employee.setUserPassword(rs.getString("userPassword"));
         employee.setManager(rs.getBoolean("isManager"));
         return employee;
+
     };
 
     public EmployeeRepository(JdbcTemplate jdbcTemplate) {
