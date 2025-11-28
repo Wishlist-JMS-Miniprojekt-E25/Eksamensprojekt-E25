@@ -6,17 +6,15 @@ public class Task {
     private String taskName;
     private Integer taskID;
     private String taskDescription;
-    private Timeslot timeslot;
+    private Integer timeslotID;
     private Integer projectID;
-    private List<Subtask> subtasks;
     private List<Employee> employees;
 
-    public Task(String taskName, List<Subtask> subtasks, List<Employee> employees, Integer projectID, Timeslot timeslot, String taskDescription, Integer taskID) {
+    public Task(String taskName, List<Employee> employees, Integer projectID, Integer timeslotID, String taskDescription, Integer taskID) {
         this.taskName = taskName;
-        this.subtasks = subtasks;
         this.employees = employees;
         this.projectID = projectID;
-        this.timeslot = timeslot;
+        this.timeslotID = timeslotID;
         this.taskDescription = taskDescription;
         this.taskID = taskID;
     }
@@ -32,14 +30,6 @@ public class Task {
         this.employees = employees;
     }
 
-    public List<Subtask> getSubtasks() {
-        return subtasks;
-    }
-
-    public void setSubtasks(List<Subtask> subtasks) {
-        this.subtasks = subtasks;
-    }
-
     public Integer getProjectID() {
         return projectID;
     }
@@ -48,12 +38,12 @@ public class Task {
         this.projectID = projectID;
     }
 
-    public Timeslot getTimeslot() {
-        return timeslot;
+    public Integer getTimeslotID() {
+        return timeslotID;
     }
 
-    public void setTimeslot(Timeslot timeslot) {
-        this.timeslot = timeslot;
+    public void setTimeslotID(Integer timeslotID) {
+        this.timeslotID = timeslotID;
     }
 
     public String getTaskDescription() {
