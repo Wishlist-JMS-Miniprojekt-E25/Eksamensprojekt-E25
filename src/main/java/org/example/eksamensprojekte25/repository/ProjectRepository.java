@@ -10,12 +10,6 @@ import java.util.List;
 
 @Repository
 public class ProjectRepository {
-
-
-    public ProjectRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private JdbcTemplate jdbcTemplate;
     private final RowMapper<Project> projectRowMapper = (rs, rowNum) -> {
         Project project = new Project();
@@ -27,7 +21,6 @@ public class ProjectRepository {
 
         return project;
     };
-
     private final RowMapper<Task> taskRowMapper = (rs, rowNum) -> {
         Task task = new Task();
         task.setTaskID(rs.getInt("taskID"));
@@ -38,7 +31,6 @@ public class ProjectRepository {
 
         return task;
     };
-
     private final RowMapper<Subtask> subtaskRowMapper = (rs, rowNum) -> {
         Subtask subtask = new Subtask();
         subtask.setSubtaskID(rs.getInt("subtaskID"));
@@ -50,6 +42,10 @@ public class ProjectRepository {
 
         return subtask;
     };
+
+    public ProjectRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     //Henter alle projekter og deres timeslots
     public List<Project> getProjects(Integer employeeID) {
