@@ -1,6 +1,7 @@
 package org.example.eksamensprojekte25.service;
 
 
+import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,15 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
-    public List<Project> getProjects(Integer employeeID) {
-        return projectRepository.getProjects(employeeID);
+    public List<Project> getProjectsByEmployeeID(Integer employeeID) {
+        List<Project> projects = projectRepository.getProjectsByEmployeeID(employeeID);
+        for (Project project : projects) {
+            project.setAssignedEmployees(projectRepository.getEmployeesByProjectID(project.getProjectID()));
+        }
+        return projects;
+    }
+
+    public List<Employee> getEmployeesByProjectID(Integer projectID) {
+        return projectRepository.getEmployeesByProjectID(projectID);
     }
 }

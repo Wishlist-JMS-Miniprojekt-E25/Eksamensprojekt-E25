@@ -42,27 +42,52 @@ public class ProjectRepository {
 
         return subtask;
     };
+    private final RowMapper<Employee> employeeRowMapper = (rs, rowNum) -> {
+        Employee employee = new Employee();
+        employee.setEmployeeID(rs.getInt("employeeID"));
+        employee.setEmployeeName(rs.getString("employeeName"));
+        employee.setUserName(rs.getString("userName"));
+        employee.setUserPassword(rs.getString("userPassword"));
+        employee.setManager(rs.getBoolean("isManager"));
+        return employee;
+    };
 
     public ProjectRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    //Henter alle projekter og deres timeslots
-    public List<Project> getProjects(Integer employeeID) {
+    public List<Employee> getEmployeesByProjectID(Integer projectID) {
         String sql = """
                     SELECT
-                        p.projectID,
-                        p.projectName,
-                        p.projectDescription,
-                        p.projectManagerID,
-                        t.timeSlotID,
-                        t.plannedDays,
-                        t.plannedStartDate,
-                        t.plannedFinishDate,
-                        t.actualFinishDate,
-                        t.differenceInDays,
-                        t.totalWorkhours,
-                        t.isDone
+                    e.employeeID,
+                    e.employeeName,
+                    e.userName,
+                    e.userPassword,
+                    e.isManager
+                    FROM employee e
+                    JOIN projectEmployee pe ON e.employeeID = pe.employeeID
+                    WHERE pe.projectID = ?
+                """;
+
+        return jdbcTemplate.query(sql, employeeRowMapper, projectID);
+    }
+
+    //Henter alle projekter og deres timeslots
+    public List<Project> getProjectsByEmployeeID(Integer employeeID) {
+        String sql = """
+                    SELECT
+                    p.projectID,
+                    p.projectName,
+                    p.projectDescription,
+                    p.projectManagerID,
+                    t.timeSlotID,
+                    t.plannedDays,
+                    t.plannedStartDate,
+                    t.plannedFinishDate,
+                    t.actualFinishDate,
+                    t.differenceInDays,
+                    t.totalWorkhours,
+                    t.isDone
                     FROM project p
                     JOIN timeSlot t ON p.timeSlotID = t.timeSlotID
                     WHERE p.projectManagerID = ?

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Projects</title>
+</head>
+<body>
+<h1>Your projects</h1>
+<table>
+    <tr th:if="${projects.isEmpty()}">You have no projects</tr>
+    <tr th:if="${!projects.isEmpty()}">
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>assignees</th>
+    </tr>
+
+    <tr th:each="project: ${projects}">
+        <td th:text="${project.projectID}"></td>
+        <td th:text="${project.projectName}"></td>
+        <td th:text="${project.projectDescription}"></td>
+        <td>
+            <div th:each="assignedEmployees: ${project.assignedEmployees}"
+                 th:text="${assignedEmployees.employeeName}"></div>
+            <br> <br>
+        </td>
+
+        <!--
+        <td th:each="timeAttributes: ${project.timeslot}">
+            th:text="${timeAttributes}"
+        </td>
+        -->
+    </tr>
+</table>
+</body>
+</html>
