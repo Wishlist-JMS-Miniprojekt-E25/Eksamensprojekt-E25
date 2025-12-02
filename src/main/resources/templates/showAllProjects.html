@@ -13,6 +13,11 @@
         <th>Name</th>
         <th>Description</th>
         <th>assignees</th>
+        <th>planneddays</th>'
+        <!--
+        <th>start</th>
+        <th>finish</th>
+        -->
     </tr>
 
     <tr th:each="project: ${projects}">
@@ -24,12 +29,27 @@
                  th:text="${assignedEmployees.employeeName}"></div>
             <br> <br>
         </td>
-
-
-
+        <td th:each="timeslot: ${timeslots}">
+            <div th:if="${timeslot.timeslotID == project.timeslotID}"
+                 th:text="${timeslot.plannedDays}">
+                 <!--
+                 th:text="${timeslot.differenceInDays}"
+                 th:text="${timeslot.totalWorkhours}"
+                 th:text="${timeslot.plannedStartDate}"
+                 th:text="${timeslot.plannedFinishDate}"
+                 th:text="${timeslot.actualFinishDate}" -->
+            </div>
+        </td>
         <!--
-        <td th:each="timeAttributes: ${project.timeslot}">
-            th:text="${timeAttributes}"
+        <td th:each="timeslot: ${timeslots}">
+            <div th:if="${timeslot.timeslotID == project.timeslotID}"
+                 th:text="${timeslot.differenceInDays}">
+            </div>
+        </td>
+        <td th:each="timeslot: ${timeslots}">
+            <div th:if="${timeslot.timeslotID == project.timeslotID}"
+                 th:text="${timeslot.totalWorkhours}">
+            </div>
         </td>
         -->
     </tr>

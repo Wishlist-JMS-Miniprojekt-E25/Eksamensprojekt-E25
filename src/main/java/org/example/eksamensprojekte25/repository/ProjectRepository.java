@@ -51,9 +51,28 @@ public class ProjectRepository {
         employee.setManager(rs.getBoolean("isManager"));
         return employee;
     };
+    private final RowMapper<Timeslot> timeslotRowMapper = (rs, rowNum) -> {
+        Timeslot timeslot = new Timeslot();
+        timeslot.setTimeslotID(rs.getInt("timeslotID"));
+        timeslot.setPlannedDays(rs.getInt("plannedDays"));
+        timeslot.setPlannedStartDate(rs.getDate("plannedStartDate"));
+        timeslot.setPlannedFinishDate(rs.getDate("plannedFinishDate"));
+        timeslot.setActualFinishDate(rs.getDate("actualFinishDate"));
+        timeslot.setDifferenceInDays(rs.getInt("differenceInDays"));
+        timeslot.setTotalWorkhours(rs.getInt("totalWorkhours"));
+        timeslot.setDone(rs.getBoolean("isDone"));
+        return timeslot;
+    };
 
     public ProjectRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public List<Timeslot> getAllTimeslots() {
+        String sql = """
+                SELECT * FROM timeslot
+                """;
+        return jdbcTemplate.query(sql, timeslotRowMapper);
     }
 
     public List<Employee> getEmployeesByProjectID(Integer projectID) {
