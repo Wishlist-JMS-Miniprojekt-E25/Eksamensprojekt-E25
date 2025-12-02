@@ -22,6 +22,7 @@ public class ProjectService {
     }
 
     public List<Project> getProjectsByEmployeeID(Integer employeeID) {
+
         List<Project> projects = projectRepository.getProjectsByEmployeeID(employeeID);
         for (Project project : projects) {
             project.setAssignedEmployees(projectRepository.getEmployeesByProjectID(project.getProjectID()));

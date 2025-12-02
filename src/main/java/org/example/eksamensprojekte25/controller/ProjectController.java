@@ -30,6 +30,7 @@ public class ProjectController {
 
         List<Project> projects = projectService.getProjectsByEmployeeID(employeeID);
         model.addAttribute("projects", projects);
+
         List<Timeslot> timeslots = projectService.getAllTimeslots();
         model.addAttribute("timeslots",timeslots);
         return "showAllProjects";

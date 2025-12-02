@@ -93,23 +93,9 @@ public class ProjectRepository {
 
     //Henter alle projekter og deres timeslots
     public List<Project> getProjectsByEmployeeID(Integer employeeID) {
-        String sql = """
-                    SELECT
-                    p.projectID,
-                    p.projectName,
-                    p.projectDescription,
-                    p.projectManagerID,
-                    t.timeSlotID,
-                    t.plannedDays,
-                    t.plannedStartDate,
-                    t.plannedFinishDate,
-                    t.actualFinishDate,
-                    t.differenceInDays,
-                    t.totalWorkhours,
-                    t.isDone
-                    FROM project p
-                    JOIN timeSlot t ON p.timeSlotID = t.timeSlotID
-                    WHERE p.projectManagerID = ?
+        String sql = """ 
+                     SELECT * FROM project 
+                     WHERE projectManagerID = ?
                 """;
 
         return jdbcTemplate.query(sql, projectRowMapper, employeeID);
@@ -118,22 +104,8 @@ public class ProjectRepository {
     //Henter alle tasks og deres timeslots
     public List<Task> getTasks(Integer projectID) {
         String sql = """
-                    SELECT
-                        t.taskID,
-                        t.taskName,
-                        t.taskDescription,
-                        t.projectID,
-                        ts.timeSlotID,
-                        ts.plannedDays,
-                        ts.plannedStartDate,
-                        ts.plannedFinishDate,
-                        ts.actualFinishDate,
-                        ts.differenceInDays,
-                        ts.totalWorkhours,
-                        ts.isDone
-                    FROM task t
-                    JOIN timeSlot ts ON t.timeSlotID = ts.timeSlotID
-                    WHERE t.projectID = ?
+                    SELECT * FROM task 
+                    WHERE projectID = ?
                 """;
 
         return jdbcTemplate.query(sql, taskRowMapper, projectID);
@@ -142,23 +114,8 @@ public class ProjectRepository {
     //Henter alle subtasks og deres timeslots
     public List<Subtask> getSubtasks(Integer taskID) {
         String sql = """
-                    SELECT
-                        st.subtaskID,
-                        st.subtaskName,
-                        st.subtaskDescription,
-                        st.taskID,
-                        st.employeeID,
-                        ts.timeSlotID,
-                        ts.plannedDays,
-                        ts.plannedStartDate,
-                        ts.plannedFinishDate,
-                        ts.actualFinishDate,
-                        ts.differenceInDays,
-                        ts.totalWorkhours,
-                        ts.isDone
-                    FROM subtask st
-                    JOIN timeSlot ts ON st.timeSlotID = ts.timeSlotID
-                    WHERE st.taskID = ?
+                    SELECT * FROM subtask
+                    WHERE taskID = ?
                 """;
 
         return jdbcTemplate.query(sql, subtaskRowMapper, taskID);

@@ -4,15 +4,17 @@ import java.util.List;
 
 public class Project {
 
-    private String projectName;
     private Integer projectID;
+    private Integer projectManagerID;
+    private String projectName;
     private String projectDescription;
     private Integer timeslotID;
+
     private List<Employee> assignedEmployees;
-    private Integer projectManagerID;
 
 
-    public Project(String projectName, Integer projectID, String projectDescription, Integer timeslotID, List<Employee> assignedEmployees, Integer projectManagerID) {
+
+    public Project(Integer projectID, Integer projectManagerID, String projectName,  String projectDescription, Integer timeslotID, List<Employee> assignedEmployees) {
         this.projectName = projectName;
         this.projectID = projectID;
         this.projectDescription = projectDescription;

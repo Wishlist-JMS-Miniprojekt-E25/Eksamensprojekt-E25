@@ -1,6 +1,6 @@
 package org.example.eksamensprojekte25.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Timeslot {
     private Integer timeslotID;
@@ -13,11 +13,11 @@ public class Timeslot {
     private boolean isDone;
 
 
-    public Timeslot(int plannedDays, Date plannedStartDate, Date plannedFinishDate, Integer timeslotID, Date actualFinishDate, int differenceInDays, int totalWorkhours, boolean isDone) {
+    public Timeslot(Integer timeslotID, Integer plannedDays, Date plannedStartDate, Date plannedFinishDate,  Date actualFinishDate, int differenceInDays, int totalWorkhours, boolean isDone) {
+        this.timeslotID = timeslotID;
         this.plannedDays = plannedDays;
         this.plannedStartDate = plannedStartDate;
         this.plannedFinishDate = plannedFinishDate;
-        this.timeslotID = timeslotID;
         this.actualFinishDate = actualFinishDate;
         this.differenceInDays = differenceInDays;
         this.totalWorkhours = totalWorkhours;
