@@ -12,12 +12,15 @@
         <th>ID</th>
         <th>Name</th>
         <th>Description</th>
-        <th>assignees</th>
-        <th>planneddays</th>'
-        <!--
-        <th>start</th>
-        <th>finish</th>
-        -->
+        <th>Assignees</th>
+        <th>Planned Days</th>
+        <th>Planned Start Date</th>
+        <th>Planned Finish Date</th>
+        <th>Actual Finish Date</th>
+        <th>Difference in days</th>
+        <th>Total workhours</th>
+        <th>Edit</th>
+        <th>Delete</th>
     </tr>
 
     <tr th:each="project: ${projects}">
@@ -29,30 +32,56 @@
                  th:text="${assignedEmployees.employeeName}"></div>
             <br> <br>
         </td>
-        <td th:each="timeslot: ${timeslots}">
-            <div th:if="${timeslot.timeslotID == project.timeslotID}"
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == project.timeslotID}"
                  th:text="${timeslot.plannedDays}">
-                 <!--
-                 th:text="${timeslot.differenceInDays}"
-                 th:text="${timeslot.totalWorkhours}"
-                 th:text="${timeslot.plannedStartDate}"
-                 th:text="${timeslot.plannedFinishDate}"
-                 th:text="${timeslot.actualFinishDate}" -->
             </div>
         </td>
-        <!--
-        <td th:each="timeslot: ${timeslots}">
-            <div th:if="${timeslot.timeslotID == project.timeslotID}"
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == project.timeslotID}"
+                 th:text="${timeslot.plannedStartDate}">
+            </div>
+        </td>
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == project.timeslotID}"
+                 th:text="${timeslot.plannedFinishDate}">
+            </div>
+        </td>
+
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == project.timeslotID}">
+
+                <div
+                        th:if="${timeslot.actualFinishDate==null}"> Will be calculated later
+                </div>
+
+                <div th:unless="${timeslot.actualFinishDate==null}">
+                    <div
+                            th:text="${timeslot.actualFinishDate}">
+                    </div>
+                </div>
+            </div>
+        </td>
+
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == project.timeslotID}"
                  th:text="${timeslot.differenceInDays}">
             </div>
         </td>
-        <td th:each="timeslot: ${timeslots}">
-            <div th:if="${timeslot.timeslotID == project.timeslotID}"
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == project.timeslotID}"
                  th:text="${timeslot.totalWorkhours}">
             </div>
         </td>
-        -->
+
     </tr>
+
 </table>
 </body>
 </html>
