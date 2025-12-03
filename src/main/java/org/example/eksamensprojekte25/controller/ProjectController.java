@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 
 @Controller
@@ -64,6 +65,8 @@ public class ProjectController {
     @PostMapping("/saveProject")
     public String saveProject (@ModelAttribute Project project,
                                @RequestParam(value = "assignedEmployeeIDs", required = false) List<Integer> assignedEmployeeIDs,
+                               @RequestParam("plannedStartDate") String plannedStartDate,
+                               @RequestParam("plannedFinishDate") String plannedFinishDate,
                                HttpSession session){
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
@@ -71,7 +74,10 @@ public class ProjectController {
             return "redirect:/";
         }
 
-        projectService.addProject(currentEmployeeID, project.getProjectName(), project.getProjectDescription(), project.getTimeslotID());
-        return "redirect:/showAllProjectsByEmployeeID";
+        Date plannedStartDateForProject = Date.valueOf(plannedStartDate);
+        Date plannedFinishDateForProject = Date.valueOf(plannedFinishDate);
+
+        projectService.addProject(currentEmployeeID, project.getProjectName(), project.getProjectDescription(), plannedStartDateForProject, plannedFinishDateForProject, assignedEmployeeIDs);
+        return "redirect:/projects/" + currentEmployeeID;
     }
 }

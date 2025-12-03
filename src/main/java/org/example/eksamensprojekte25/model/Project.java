@@ -23,6 +23,14 @@ public class Project {
         this.projectManagerID = projectManagerID;
     }
 
+    public Project(Integer projectID, Integer projectManagerID, String projectName, String projectDescription, Integer timeslotID) {
+        this.projectID = projectID;
+        this.projectManagerID = projectManagerID;
+        this.projectName = projectName;
+        this.projectDescription = projectDescription;
+        this.timeslotID = timeslotID;
+    }
+
     public Project() {
 
     }

@@ -6,7 +6,10 @@ import org.example.eksamensprojekte25.model.Project;
 import org.example.eksamensprojekte25.model.Timeslot;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.engine.ElementModelStructureHandler;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 @Service
@@ -34,7 +37,28 @@ public class ProjectService {
         return projectRepository.getEmployeesByProjectID(projectID);
     }
 
-    public Project addProject (Integer projectManagerID, String projectName, String projectDescription, Integer timeslotID){
-        return projectRepository.addProject(projectManagerID, projectName, projectDescription, timeslotID);
+    public int calculatePlannedDays(Date plannedStartDate, Date plannedFinishDate){
+        long differenceInMilliseconds = plannedFinishDate.getTime() - plannedStartDate.getTime();
+        return (int) (differenceInMilliseconds / (1000 * 60 * 60 * 24));
+        // *Skal* være 1000 milisekunder = 1 sekund
+        // 60 sekunder = 1 minut
+        // 60 minutter = 1 time
+        // 24 timer = 1 dag
+        // Det er sådan Date fungerer
+    }
+
+    public Project addProject (Integer projectManagerID, String projectName, String projectDescription, Date plannedStartDate, Date plannedFinishDate, List<Integer> employeeIDs){
+
+        int plannedDays = calculatePlannedDays(plannedStartDate, plannedFinishDate);
+
+        Timeslot timeslot = projectRepository.createTimeslot(plannedDays, plannedStartDate, plannedFinishDate);
+
+        Project project = projectRepository.addProject(projectManagerID, projectName, projectDescription, timeslot.getTimeslotID());
+
+        projectRepository.assignEmployeesToProject(project.getProjectID(), employeeIDs);
+
+        List<Employee> employees = projectRepository.getEmployeesByProjectID(project.getProjectID());
+
+        return project;
     }
 }

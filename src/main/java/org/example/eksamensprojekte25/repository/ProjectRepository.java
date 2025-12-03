@@ -121,14 +121,23 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, subtaskRowMapper, taskID);
     }
 
-    public Timeslot createTimeslot(Date plannedStartDate, Date plannedFinishDate){
-        String sql = "INSERT INTO timeslot (plannedStartDate, plannedFinishDate) VALUES (?, ?)";
+    public void assignEmployeesToProject(Integer projectID, List<Integer> employeeIDs){
+        String sql = "INSERT INTO projectEmployee (employeeID, projectID) VALUES (?, ?)";
+
+        for(Integer employeeID : employeeIDs){
+            jdbcTemplate.update(sql, employeeID, projectID);
+        }
+    }
+
+    public Timeslot createTimeslot(int plannedDays, Date plannedStartDate, Date plannedFinishDate){
+        String sql = "INSERT INTO timeslot (plannedDays, plannedStartDate, plannedFinishDate) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setDate(1, plannedStartDate);
-            ps.setDate(2, plannedFinishDate);
+            ps.setInt(1, plannedDays);
+            ps.setDate(2, plannedStartDate);
+            ps.setDate(3, plannedFinishDate);
             return ps;
         }, keyHolder);
 
@@ -156,7 +165,6 @@ public class ProjectRepository {
 
         int projectID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
 
-        List<Employee> employees = getEmployeesByProjectID(projectID);
-        return new Project(projectID, projectManagerID, projectName, projectDescription, timeslotID, employees);
+        return new Project(projectID, projectManagerID, projectName, projectDescription, timeslotID);
     }
 }

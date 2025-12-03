@@ -19,6 +19,12 @@
            <label>Description</label>
            <input type="text" th:field="*{projectDescription}">
 
+           <label>Planned Start Date</label>
+           <input type="date" name="plannedStartDate" required>
+
+           <label>Planned Finish Date</label>
+           <input type="date" name="plannedFinishDate" required>
+
            <p>Assing employees</p>
            <div th:each="employee : ${allEmployees}">
                <label>
