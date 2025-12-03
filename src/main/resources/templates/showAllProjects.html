@@ -69,8 +69,17 @@
 
         <td>
             <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}"
-                 th:text="${timeslot.differenceInDays}">
+                 th:if="${timeslot.timeslotID == project.timeslotID}">
+            <div
+                    th:if="${timeslot.differenceInDays == 0}"> Will be calculated later
+            </div>
+
+            <div th:unless="${timeslot.differenceInDays == 0}">
+                <div
+                        th:text="${timeslot.differenceInDays}">
+                </div>
+            </div>
+
             </div>
         </td>
         <td>
