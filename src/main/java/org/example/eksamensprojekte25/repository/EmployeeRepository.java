@@ -27,6 +27,14 @@ public class EmployeeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public Employee getEmployeeByID(Integer employeeID) {
+        String sql = """
+                SELECT * FROM employee
+                WHERE employeeID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, employeeRowMapper, employeeID);
+    }
+
     public Employee findEmployeeByCredentials(String userName, String userPassword){
         String sql = """
                 SELECT *

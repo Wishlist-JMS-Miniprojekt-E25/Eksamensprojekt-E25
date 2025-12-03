@@ -44,7 +44,6 @@ public class EmployeeController {
         if (loggedInEmployee != null) {
             // Gem login-info i session
             session.setAttribute("employeeID", loggedInEmployee.getEmployeeID());
-            session.setAttribute("username", loggedInEmployee.getUserName());
 
             // Viser showAllProjectsByEmployeeID efter login
             redirectAttributes.addAttribute("employeeID", loggedInEmployee.getEmployeeID());

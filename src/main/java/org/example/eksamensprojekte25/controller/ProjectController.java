@@ -2,8 +2,10 @@ package org.example.eksamensprojekte25.controller;
 
 
 import jakarta.servlet.http.HttpSession;
+import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
 import org.example.eksamensprojekte25.model.Timeslot;
+import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,26 +20,32 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final EmployeeService employeeService;
 
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, EmployeeService employeeService) {
         this.projectService = projectService;
+        this.employeeService = employeeService;
     }
 
     @GetMapping("/projects/{employeeID}")
     public String showAllProjectsByEmployeeID(@PathVariable Integer employeeID, HttpSession session, Model model) {
-        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
+        Employee employee = employeeService.getEmployeeByID(loggedInEmployeeID);
 
-        if (currentEmployeeID == null) {
+        if (loggedInEmployeeID == null) {
             return "redirect:/";
         }
 
-        List<Project> projects = projectService.getProjectsByEmployeeID(currentEmployeeID);
-        model.addAttribute("projects", projects);
+        List<Project> projectsYouManage = projectService.getProjectsByManagerID(loggedInEmployeeID);
+        model.addAttribute("projectsYouManage", projectsYouManage );
+
+        List<Project> projectsAssignedTo = projectService.getProjectsByEmployeeID(loggedInEmployeeID);
+        model.addAttribute("projectsAssignedTo", projectsAssignedTo);
 
         List<Timeslot> timeslots = projectService.getAllTimeslots();
         model.addAttribute("timeslots",timeslots);
 
-        model.addAttribute("loggedInEmployee", currentEmployeeID);
+        model.addAttribute("employee", employee);
         return "showAllProjectsByEmployeeID";
     }
 }

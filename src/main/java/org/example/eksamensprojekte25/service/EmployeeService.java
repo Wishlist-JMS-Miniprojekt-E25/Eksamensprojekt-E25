@@ -17,5 +17,8 @@ public class EmployeeService {
         return employeeRepository.findEmployeeByCredentials(userName, userPassword);
     }
 
+    public Employee getEmployeeByID(Integer employeeID) {
+        return employeeRepository.getEmployeeByID(employeeID);
+    }
 
 }

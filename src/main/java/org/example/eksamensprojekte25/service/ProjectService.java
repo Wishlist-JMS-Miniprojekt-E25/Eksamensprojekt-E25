@@ -30,6 +30,15 @@ public class ProjectService {
         return projects;
     }
 
+    public List<Project> getProjectsByManagerID(Integer managerID) {
+
+        List<Project> projects = projectRepository.getProjectsByManagerID(managerID);
+        for (Project project : projects) {
+            project.setAssignedEmployees(projectRepository.getEmployeesByProjectID(project.getProjectID()));
+        }
+        return projects;
+    }
+
     public List<Employee> getEmployeesByProjectID(Integer projectID) {
         return projectRepository.getEmployeesByProjectID(projectID);
     }

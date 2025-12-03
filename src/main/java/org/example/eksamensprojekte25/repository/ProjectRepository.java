@@ -94,11 +94,21 @@ public class ProjectRepository {
     //Henter alle projekter og deres timeslots
     public List<Project> getProjectsByEmployeeID(Integer employeeID) {
         String sql = """ 
-                     SELECT * FROM project 
-                     WHERE projectManagerID = ?
+                     SELECT * FROM project p
+                     JOIN projectEmployee pe ON p.projectID = pe.projectID 
+                     WHERE pe.employeeID = ?
                 """;
 
         return jdbcTemplate.query(sql, projectRowMapper, employeeID);
+    }
+
+    public List<Project> getProjectsByManagerID(Integer managerID) {
+        String sql = """ 
+                     SELECT * FROM project p
+                     WHERE p.projectManagerID = ?
+                """;
+
+        return jdbcTemplate.query(sql, projectRowMapper, managerID);
     }
 
     //Henter alle tasks og deres timeslots
