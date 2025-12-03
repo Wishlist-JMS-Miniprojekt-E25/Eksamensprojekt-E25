@@ -79,13 +79,7 @@ public class ProjectRepository {
     //henter de employees, som er på samme projekt
     public List<Employee> getEmployeesByProjectID(Integer projectID) {
         String sql = """
-                    SELECT
-                    e.employeeID,
-                    e.employeeName,
-                    e.userName,
-                    e.userPassword,
-                    e.isManager
-                    FROM employee e
+                    SELECT * FROM employee e
                     JOIN projectEmployee pe ON e.employeeID = pe.employeeID
                     WHERE pe.projectID = ?
                 """;

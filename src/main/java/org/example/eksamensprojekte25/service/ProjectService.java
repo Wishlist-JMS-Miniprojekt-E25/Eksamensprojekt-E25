@@ -17,6 +17,7 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
+    //henter alle timeslots
     public List<Timeslot> getAllTimeslots() {
         return projectRepository.getAllTimeslots();
     }
