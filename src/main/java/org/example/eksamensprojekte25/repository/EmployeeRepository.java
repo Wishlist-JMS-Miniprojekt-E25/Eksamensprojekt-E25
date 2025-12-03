@@ -27,6 +27,11 @@ public class EmployeeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public List<Employee> getAllEmployees(){
+        String sql = "SELECT * FROM employee";
+        return jdbcTemplate.query(sql, employeeRowMapper);
+    }
+
     public Employee findEmployeeByCredentials(String userName, String userPassword){
         String sql = """
                 SELECT *

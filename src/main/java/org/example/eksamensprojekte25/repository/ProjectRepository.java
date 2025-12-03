@@ -4,8 +4,14 @@ package org.example.eksamensprojekte25.repository;
 import org.example.eksamensprojekte25.model.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Time;
 import java.util.List;
 
 @Repository
@@ -77,13 +83,7 @@ public class ProjectRepository {
 
     public List<Employee> getEmployeesByProjectID(Integer projectID) {
         String sql = """
-                    SELECT
-                    e.employeeID,
-                    e.employeeName,
-                    e.userName,
-                    e.userPassword,
-                    e.isManager
-                    FROM employee e
+                    SELECT * FROM employee e
                     JOIN projectEmployee pe ON e.employeeID = pe.employeeID
                     WHERE pe.projectID = ?
                 """;
@@ -119,5 +119,44 @@ public class ProjectRepository {
                 """;
 
         return jdbcTemplate.query(sql, subtaskRowMapper, taskID);
+    }
+
+    public Timeslot createTimeslot(Date plannedStartDate, Date plannedFinishDate){
+        String sql = "INSERT INTO timeslot (plannedStartDate, plannedFinishDate) VALUES (?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setDate(1, plannedStartDate);
+            ps.setDate(2, plannedFinishDate);
+            return ps;
+        }, keyHolder);
+
+        int timeslotID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
+        String timeslotSql = """
+                SELECT * FROM timeslot
+                WHERE timeslotID = ?
+                """;
+        return jdbcTemplate.queryForObject(timeslotSql, timeslotRowMapper, timeslotID);
+    }
+
+    public Project addProject (Integer projectManagerID, String projectName, String projectDescription, Integer timeslotID){
+        String sql = "INSERT INTO project (projectManagerID, projectName, projectDescription, timeslotID) VALUES (?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, projectManagerID);
+            ps.setString(2, projectName);
+            ps.setString(3, projectDescription);
+            ps.setInt(4, timeslotID);
+            return ps;
+        }, keyHolder);
+
+
+        int projectID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
+
+        List<Employee> employees = getEmployeesByProjectID(projectID);
+        return new Project(projectID, projectManagerID, projectName, projectDescription, timeslotID, employees);
     }
 }

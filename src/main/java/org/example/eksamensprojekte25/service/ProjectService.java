@@ -33,4 +33,8 @@ public class ProjectService {
     public List<Employee> getEmployeesByProjectID(Integer projectID) {
         return projectRepository.getEmployeesByProjectID(projectID);
     }
+
+    public Project addProject (Integer projectManagerID, String projectName, String projectDescription, Integer timeslotID){
+        return projectRepository.addProject(projectManagerID, projectName, projectDescription, timeslotID);
+    }
 }

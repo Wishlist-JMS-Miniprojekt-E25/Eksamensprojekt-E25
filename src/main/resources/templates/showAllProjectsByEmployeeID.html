@@ -6,6 +6,11 @@
 </head>
 <body>
 <h1>Your projects</h1>
+
+<div>
+    <a href="/addProject">+ Add project</a>
+</div>
+
 <table>
     <tr th:if="${projects.isEmpty()}">You have no projects</tr>
     <tr th:if="${!projects.isEmpty()}">
