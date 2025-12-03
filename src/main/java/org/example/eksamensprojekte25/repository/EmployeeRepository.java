@@ -7,6 +7,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class EmployeeRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -25,5 +27,14 @@ public class EmployeeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public Employee findEmployeeByCredentials(String userName, String userPassword){
+        String sql = """
+                SELECT *
+                FROM employee
+                WHERE userName = ? AND userPassword = ?
+                """;
+        List<Employee> employees = jdbcTemplate.query(sql, employeeRowMapper, userName, userPassword);
+        return employees.isEmpty() ? null : employees.get(0);
+    }
 }
 

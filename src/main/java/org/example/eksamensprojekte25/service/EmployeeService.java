@@ -1,6 +1,7 @@
 package org.example.eksamensprojekte25.service;
 
 
+import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,4 +12,10 @@ public class EmployeeService {
     public EmployeeService(EmployeeRepository employeeRepository){
         this.employeeRepository = employeeRepository;
     }
+
+    public Employee findEmployeeByCredentials(String userName, String userPassword){
+        return employeeRepository.findEmployeeByCredentials(userName, userPassword);
+    }
+
+
 }
