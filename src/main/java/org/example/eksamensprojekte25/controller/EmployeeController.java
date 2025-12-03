@@ -37,10 +37,9 @@ public class EmployeeController {
     public String login(@RequestParam String userName,
                         @RequestParam String userPassword,
                         HttpSession session,
-                        Model model, RedirectAttributes redirectAttributes) {
+                        Model model) {
 
         Employee loggedInEmployee = employeeService.findEmployeeByCredentials(userName, userPassword);
-
         if (loggedInEmployee != null) {
             // Gem login-info i session
             session.setAttribute("employeeID", loggedInEmployee.getEmployeeID());

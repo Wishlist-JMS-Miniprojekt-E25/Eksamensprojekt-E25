@@ -31,13 +31,12 @@ public class ProjectController {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
 
         Employee employee = employeeService.getEmployeeByID(loggedInEmployeeID);
-        model.addAttribute("employee", employee);
-
         List<Project> projectsYouManage = projectService.getProjectsByManagerID(loggedInEmployeeID);
-        model.addAttribute("projectsYouManage", projectsYouManage );
         List<Project> assignedToProjects = projectService.getProjectsByEmployeeID(loggedInEmployeeID);
-        model.addAttribute("assignedToProjects", assignedToProjects);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
+        model.addAttribute("employee", employee);
+        model.addAttribute("projectsYouManage", projectsYouManage );
+        model.addAttribute("assignedToProjects", assignedToProjects);
         model.addAttribute("timeslots",timeslots);
         return "showsAllProjects";
     }
