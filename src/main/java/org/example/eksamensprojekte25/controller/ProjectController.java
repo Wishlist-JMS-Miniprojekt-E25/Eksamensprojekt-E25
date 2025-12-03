@@ -26,6 +26,7 @@ public class ProjectController {
         this.employeeService = employeeService;
     }
 
+    //viser bruger forsiden
     @GetMapping("/userProjects")
     public String showsAllProjects(HttpSession session, Model model) {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");

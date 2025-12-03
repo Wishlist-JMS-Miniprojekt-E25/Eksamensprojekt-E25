@@ -27,6 +27,7 @@ public class EmployeeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    //henter en employee baseret på employee id
     public Employee getEmployeeByID(Integer employeeID) {
         String sql = """
                 SELECT * FROM employee
@@ -35,6 +36,7 @@ public class EmployeeRepository {
         return jdbcTemplate.queryForObject(sql, employeeRowMapper, employeeID);
     }
 
+    //henter en employee baseret på employee userName og userPassword
     public Employee findEmployeeByCredentials(String userName, String userPassword){
         String sql = """
                 SELECT *

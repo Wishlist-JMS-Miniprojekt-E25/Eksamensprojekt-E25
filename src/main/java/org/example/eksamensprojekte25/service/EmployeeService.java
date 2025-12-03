@@ -13,10 +13,12 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    //henter en employee baseret på employee userName og userPassword
     public Employee findEmployeeByCredentials(String userName, String userPassword){
         return employeeRepository.findEmployeeByCredentials(userName, userPassword);
     }
 
+    //henter en employee baseret på employee id
     public Employee getEmployeeByID(Integer employeeID) {
         return employeeRepository.getEmployeeByID(employeeID);
     }

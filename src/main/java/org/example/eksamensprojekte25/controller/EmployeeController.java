@@ -27,12 +27,13 @@ public class EmployeeController {
         this.projectService = projectService;
     }
 
+    //viser login siden
     @GetMapping("/login")
     public String getLogin() {
         return "Login";
     }
 
-    //går til brugerforsiden fra forsiden efter succefuldt login
+    //går til bruger forsiden fra login siden hvis succefuldt login, ellers bliver du på login siden og må prøve igen
     @PostMapping("/postLogin")
     public String login(@RequestParam String userName,
                         @RequestParam String userPassword,
