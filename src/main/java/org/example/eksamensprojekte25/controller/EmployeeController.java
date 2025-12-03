@@ -44,10 +44,7 @@ public class EmployeeController {
         if (loggedInEmployee != null) {
             // Gem login-info i session
             session.setAttribute("employeeID", loggedInEmployee.getEmployeeID());
-
-            // Viser showAllProjectsByEmployeeID efter login
-            redirectAttributes.addAttribute("employeeID", loggedInEmployee.getEmployeeID());
-            return "redirect:/projects/{employeeID}";
+            return "redirect:/userProjects";
         } else {
             model.addAttribute("error", true);
             return "Login"; // viser login igen med fejl

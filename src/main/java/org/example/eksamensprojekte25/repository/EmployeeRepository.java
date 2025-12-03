@@ -41,8 +41,7 @@ public class EmployeeRepository {
                 FROM employee
                 WHERE userName = ? AND userPassword = ?
                 """;
-        List<Employee> employees = jdbcTemplate.query(sql, employeeRowMapper, userName, userPassword);
-        return employees.isEmpty() ? null : employees.get(0);
+        return jdbcTemplate.queryForObject(sql, employeeRowMapper, userName, userPassword);
     }
 }
 

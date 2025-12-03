@@ -95,8 +95,8 @@
 </table>
 <h3>Projects you are assigned to</h3>
 <table>
-    <tr th:if="${projectsAssignedTo == null and projectsAssignedTo.isEmpty()}">You are not assigned to any projects</tr>
-    <tr th:if="${projectsAssignedTo != null and !projectsAssignedTo.isEmpty()}">
+    <tr th:if="${assignedToProjects == null and assignedToProjects.isEmpty()}">You are not assigned to any projects</tr>
+    <tr th:if="${assignedToProjects != null and !assignedToProjects.isEmpty()}">
         <th>ID</th>
         <th>Name</th>
         <th>Description</th>
@@ -109,7 +109,7 @@
         <th>Total workhours</th>
     </tr>
 
-    <tr th:each="project: ${projectsAssignedTo}">
+    <tr th:each="project: ${assignedToProjects}">
         <td th:text="${project.projectID}"></td>
         <td th:text="${project.projectName}"></td>
         <td th:text="${project.projectDescription}"></td>

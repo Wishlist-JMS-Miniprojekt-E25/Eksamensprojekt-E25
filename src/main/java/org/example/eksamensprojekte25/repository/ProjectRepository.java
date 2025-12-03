@@ -68,6 +68,7 @@ public class ProjectRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    //henter alle timeslots
     public List<Timeslot> getAllTimeslots() {
         String sql = """
                 SELECT * FROM timeslot
@@ -75,6 +76,7 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, timeslotRowMapper);
     }
 
+    //henter de employees, som er på samme projekt
     public List<Employee> getEmployeesByProjectID(Integer projectID) {
         String sql = """
                     SELECT
@@ -91,7 +93,7 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, employeeRowMapper, projectID);
     }
 
-    //Henter alle projekter og deres timeslots
+    //Henter alle projekter baseret op employee id
     public List<Project> getProjectsByEmployeeID(Integer employeeID) {
         String sql = """ 
                      SELECT * FROM project p
@@ -102,6 +104,7 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, projectRowMapper, employeeID);
     }
 
+    //henter alle projekter baseret på manager id
     public List<Project> getProjectsByManagerID(Integer managerID) {
         String sql = """ 
                      SELECT * FROM project p
@@ -111,8 +114,17 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, projectRowMapper, managerID);
     }
 
-    //Henter alle tasks og deres timeslots
-    public List<Task> getTasks(Integer projectID) {
+    //henter et projekt baseret på projekt id
+    public Project getProjectByID(Integer projectID) {
+        String sql = """
+                SELECT * FROM project
+                WHERE projectID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, projectRowMapper,projectID);
+    }
+
+    //Henter alle tasks for et bestemt projekt
+    public List<Task> getTasksByProjectID(Integer projectID) {
         String sql = """
                     SELECT * FROM task 
                     WHERE projectID = ?
@@ -121,8 +133,8 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, taskRowMapper, projectID);
     }
 
-    //Henter alle subtasks og deres timeslots
-    public List<Subtask> getSubtasks(Integer taskID) {
+    //Henter alle subtasks for en bestemt task
+    public List<Subtask> getSubtasksByTaskID(Integer taskID) {
         String sql = """
                     SELECT * FROM subtask
                     WHERE taskID = ?
