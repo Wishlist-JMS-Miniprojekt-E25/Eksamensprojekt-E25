@@ -121,6 +121,7 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, subtaskRowMapper, taskID);
     }
 
+    //Inserter employees til junction table, når man vælger dem under oprettelse af porjekt
     public void assignEmployeesToProject(Integer projectID, List<Integer> employeeIDs){
         String sql = "INSERT INTO projectEmployee (employeeID, projectID) VALUES (?, ?)";
 

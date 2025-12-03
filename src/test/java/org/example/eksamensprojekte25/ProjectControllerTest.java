@@ -4,10 +4,12 @@ import org.example.eksamensprojekte25.controller.ProjectController;
 import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
 import org.example.eksamensprojekte25.model.Timeslot;
+import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 
 import org.junit.jupiter.api.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -22,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProjectController.class)
@@ -33,13 +36,17 @@ public class ProjectControllerTest {
     @MockitoBean
     private ProjectService service;
 
+    @MockitoBean
+    private EmployeeService employeeService;
+
     @Test
     void showExpectedProjects() throws Exception {
 
         //Tester om forsiden virker
-        mockMvc.perform(get("/projects/{employeeID}", 1))
+        mockMvc.perform(get("/projects/{employeeID}", 1)
+                .sessionAttr("employeeID", 1))
                 .andExpect(status().isOk())
-                .andExpect(view().name("showAllProjects"));
+                .andExpect(view().name("showAllProjectsByEmployeeID"));
     }
 
     @Test
@@ -71,10 +78,65 @@ public class ProjectControllerTest {
         when(service.getProjectsByEmployeeID(1)).thenReturn(projects);
         when(service.getAllTimeslots()).thenReturn(timeslots);
 
-        mockMvc.perform(get("/projects/{employeeID}", 1))
+        mockMvc.perform(get("/projects/{employeeID}", 1)
+                        .sessionAttr("employeeID", 1))
                 .andExpect(status().isOk())
-                .andExpect(view().name("showAllProjects"))
+                .andExpect(view().name("showAllProjectsByEmployeeID"))
                 .andExpect(model().attribute("projects", projects))
                 .andExpect(model().attribute("timeslots", timeslots));
+    }
+
+    @Test
+    void shouldAddProject() throws Exception{
+
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee(1, "Simon", "Sim", "123", true));
+        employees.add(new Employee(2, "Martin", "Mar", "abc", false));
+
+        when(employeeService.getAllEmployees()).thenReturn(employees);
+
+        mockMvc.perform(get("/addProject")
+                        .sessionAttr("employeeID", 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("addProject"))
+                .andExpect(model().attribute("projectManager", 1))
+                .andExpect(model().attribute("allEmployees", employees));
+    }
+
+    @Test
+    void shouldSaveProject() throws Exception{
+
+        mockMvc.perform(post("/saveProject")
+                .sessionAttr("employeeID", 1)
+                .param("projectName", "Test Projekt")
+                .param("ProjectDescription", "Beskrivelse")
+                .param("plannedStartDate", "2025-11-01")
+                .param("plannedFinishDate", "2025-12-01")
+                .param("assignedEmployeeIDs", "2", "3"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/projects/1"));
+
+        ArgumentCaptor<Integer> managerCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> descriptionCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Date> startDateCaptor = ArgumentCaptor.forClass(Date.class);
+        ArgumentCaptor<Date> finishDateCaptor = ArgumentCaptor.forClass(Date.class);
+        ArgumentCaptor<List> assignedEmployeesCaptor = ArgumentCaptor.forClass(List.class);
+
+        verify(service).addProject(
+                managerCaptor.capture(),
+                nameCaptor.capture(),
+                descriptionCaptor.capture(),
+                startDateCaptor.capture(),
+                finishDateCaptor.capture(),
+                assignedEmployeesCaptor.capture()
+        );
+
+        assertEquals(1, managerCaptor.getValue());
+        assertEquals("Test Projekt", nameCaptor.getValue());
+        assertEquals("Beskrivelse", descriptionCaptor.getValue());
+        assertEquals(Date.valueOf("2025-11-01"), startDateCaptor.getValue());
+        assertEquals(Date.valueOf("2025-12-01"), finishDateCaptor.getValue());
+        assertEquals(List.of(2, 3), assignedEmployeesCaptor.getValue());
     }
 }
