@@ -27,6 +27,11 @@ public class EmployeeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public List<Employee> getAllEmployees(){
+        String sql = "SELECT * FROM employee";
+        return jdbcTemplate.query(sql, employeeRowMapper);
+    }
+
     //henter en employee baseret på employee id
     public Employee getEmployeeByID(Integer employeeID) {
         String sql = """

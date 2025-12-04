@@ -11,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 
 @Controller
@@ -40,5 +42,42 @@ public class ProjectController {
         model.addAttribute("assignedToProjects", assignedToProjects);
         model.addAttribute("timeslots",timeslots);
         return "showsAllProjects";
+    }
+
+    @GetMapping("/addProject")
+    public String addProject (HttpSession session, Model model){
+        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+
+        if (currentEmployeeID == null) {
+            return "redirect:/";
+        }
+        Project project = new Project();
+        project.setProjectManagerID(currentEmployeeID);
+        model.addAttribute("project", project);
+        model.addAttribute("projectManager", currentEmployeeID);
+
+        List<Employee> allEmployees = employeeService.getAllEmployees();
+        model.addAttribute("allEmployees", allEmployees);
+
+        return "addProject";
+    }
+
+    @PostMapping("/saveProject")
+    public String saveProject (@ModelAttribute Project project,
+                               @RequestParam(value = "assignedEmployeeIDs", required = false) List<Integer> assignedEmployeeIDs,
+                               @RequestParam("plannedStartDate") String plannedStartDate,
+                               @RequestParam("plannedFinishDate") String plannedFinishDate,
+                               HttpSession session){
+        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+
+        if (currentEmployeeID == null) {
+            return "redirect:/";
+        }
+
+        Date plannedStartDateForProject = Date.valueOf(plannedStartDate);
+        Date plannedFinishDateForProject = Date.valueOf(plannedFinishDate);
+
+        projectService.addProject(currentEmployeeID, project.getProjectName(), project.getProjectDescription(), plannedStartDateForProject, plannedFinishDateForProject, assignedEmployeeIDs);
+        return "redirect:/projects/" + currentEmployeeID;
     }
 }

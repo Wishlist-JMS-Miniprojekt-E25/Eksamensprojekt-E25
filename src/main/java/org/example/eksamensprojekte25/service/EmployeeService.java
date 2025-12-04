@@ -5,6 +5,8 @@ import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
@@ -14,6 +16,10 @@ public class EmployeeService {
     }
 
     //henter en employee baseret på employee userName og userPassword
+    public List<Employee> getAllEmployees(){
+        return employeeRepository.getAllEmployees();
+    }
+
     public Employee findEmployeeByCredentials(String userName, String userPassword){
         return employeeRepository.findEmployeeByCredentials(userName, userPassword);
     }
