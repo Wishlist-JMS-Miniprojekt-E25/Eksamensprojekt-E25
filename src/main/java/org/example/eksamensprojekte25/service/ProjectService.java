@@ -68,8 +68,6 @@ public class ProjectService {
 
         projectRepository.assignEmployeesToProject(project.getProjectID(), employeeIDs);
 
-        List<Employee> employees = projectRepository.getEmployeesByProjectID(project.getProjectID());
-
         return project;
     }
 
