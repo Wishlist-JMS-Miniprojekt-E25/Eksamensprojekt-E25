@@ -21,12 +21,10 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final EmployeeService employeeService;
-    private final ProjectRepository projectRepository;
 
-    public ProjectController(ProjectService projectService, EmployeeService employeeService, ProjectRepository projectRepository) {
+    public ProjectController(ProjectService projectService, EmployeeService employeeService) {
         this.projectService = projectService;
         this.employeeService = employeeService;
-        this.projectRepository = projectRepository;
     }
 
     @GetMapping("/projects")
