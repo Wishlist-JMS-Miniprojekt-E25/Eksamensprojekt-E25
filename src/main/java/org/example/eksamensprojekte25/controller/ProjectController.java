@@ -4,6 +4,7 @@ package org.example.eksamensprojekte25.controller;
 import jakarta.servlet.http.HttpSession;
 import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
+import org.example.eksamensprojekte25.model.Task;
 import org.example.eksamensprojekte25.model.Timeslot;
 import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
@@ -42,6 +43,20 @@ public class ProjectController {
         model.addAttribute("assignedToProjects", assignedToProjects);
         model.addAttribute("timeslots",timeslots);
         return "showsAllProjects";
+    }
+
+    //view for ét enkelt projekt
+    @GetMapping("/project/{projectID}")
+    public String showsProject(@PathVariable int projectID, HttpSession session, Model model) {
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
+
+        Project project = projectService.getProjectByID(projectID);
+        List<Task> tasks = projectService.getTasksByProjectID(projectID);
+        List<Timeslot> timeslots = projectService.getAllTimeslots();
+        model.addAttribute("project",project);
+        model.addAttribute("tasks", tasks);
+        model.addAttribute("timeslots", timeslots);
+        return "showsProject";
     }
 
     @GetMapping("/addProject")

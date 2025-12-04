@@ -8,11 +8,11 @@ public class Task {
     private String taskDescription;
     private Integer timeslotID;
     private Integer projectID;
-    private List<Employee> employees;
+    private List<Employee> assignedEmployees;
 
-    public Task(String taskName, List<Employee> employees, Integer projectID, Integer timeslotID, String taskDescription, Integer taskID) {
+    public Task(String taskName, List<Employee> assignedEmployees, Integer projectID, Integer timeslotID, String taskDescription, Integer taskID) {
         this.taskName = taskName;
-        this.employees = employees;
+        this.assignedEmployees = assignedEmployees;
         this.projectID = projectID;
         this.timeslotID = timeslotID;
         this.taskDescription = taskDescription;
@@ -22,12 +22,12 @@ public class Task {
     public Task() {
     }
 
-    public List<Employee> getEmployees() {
-        return employees;
+    public List<Employee> getAssignedEmployees() {
+        return assignedEmployees;
     }
 
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
+    public void setAssignedEmployees(List<Employee> assignedEmployees) {
+        this.assignedEmployees = assignedEmployees;
     }
 
     public Integer getProjectID() {

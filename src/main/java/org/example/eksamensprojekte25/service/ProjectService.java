@@ -3,6 +3,7 @@ package org.example.eksamensprojekte25.service;
 
 import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
+import org.example.eksamensprojekte25.model.Task;
 import org.example.eksamensprojekte25.model.Timeslot;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,12 @@ public class ProjectService {
         return projectRepository.getEmployeesByProjectID(projectID);
     }
 
-    public int calculatePlannedDays(Date plannedStartDate, Date plannedFinishDate){
+    //henter de employees, som er på samme task
+    public List<Employee> getEmployeesByTaskID(Integer taskID) {
+        return projectRepository.getEmployeesByTaskID(taskID);
+    }
+
+    public int calculatePlannedDays(Date plannedStartDate, Date plannedFinishDate) {
         long differenceInMilliseconds = plannedFinishDate.getTime() - plannedStartDate.getTime();
         return (int) (differenceInMilliseconds / (1000 * 60 * 60 * 24));
         // *Skal* være 1000 milisekunder = 1 sekund
@@ -59,7 +65,7 @@ public class ProjectService {
         //metoden returnerer forskellen i dage
     }
 
-    public Project addProject (Integer projectManagerID, String projectName, String projectDescription, Date plannedStartDate, Date plannedFinishDate, List<Integer> employeeIDs){
+    public Project addProject(Integer projectManagerID, String projectName, String projectDescription, Date plannedStartDate, Date plannedFinishDate, List<Integer> employeeIDs) {
 
         int plannedDays = calculatePlannedDays(plannedStartDate, plannedFinishDate);
 
@@ -72,12 +78,24 @@ public class ProjectService {
         return project;
     }
 
-    public void deleteProjectByID (Integer projectID){
+    public void deleteProjectByID(Integer projectID) {
         projectRepository.deleteProjectByID(projectID);
     }
 
     //henter et projekt baseret på projekt id
     public Project getProjectByID(Integer projectID) {
         return projectRepository.getProjectByID(projectID);
+    }
+
+    public Task getTaskByID(Integer taskID) {
+        return projectRepository.getTaskByID(taskID);
+    }
+
+    public List<Task> getTasksByProjectID(Integer projectID) {
+        List<Task> tasks = projectRepository.getTasksByProjectID(projectID);
+        for (Task task : tasks) {
+            task.setAssignedEmployees(projectRepository.getEmployeesByTaskID(task.getTaskID()));
+        }
+        return tasks;
     }
 }
