@@ -52,14 +52,14 @@ public class ProjectControllerTest {
         Timeslot timeslot = new Timeslot();
         timeslot.setTimeslotID(4);
 
-        //simulerer service metode kaldende fra controlleren
+        //simulerer service metode kaldende med vores fake data
         when(employeeService.getEmployeeByID(employeeID)).thenReturn(employee);
         when(projectService.getProjectsByManagerID(employeeID)).thenReturn(List.of(managedProject));
         when(projectService.getProjectsByEmployeeID(employeeID)).thenReturn(List.of(assignedToProject));
         when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
-        //hvilke model-atributter der eksisterer og at den sende de rigtige værdier over
+        //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
         mockMvc.perform(get("/userProjects").sessionAttr("employeeID", employeeID))
                 .andExpect(status().isOk())
                 .andExpect(view().name("showsAllProjects"))
