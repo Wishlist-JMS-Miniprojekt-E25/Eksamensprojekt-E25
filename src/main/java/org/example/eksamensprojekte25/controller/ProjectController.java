@@ -29,7 +29,7 @@ public class ProjectController {
         this.employeeService = employeeService;
     }
 
-    //viser bruger forsiden
+    //view for bruger forsiden
     @GetMapping("/userProjects")
     public String showsAllProjects(HttpSession session, Model model) {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
@@ -59,6 +59,7 @@ public class ProjectController {
         return "showsProject";
     }
 
+    //view for formen for projekt-oprettelse
     @GetMapping("/addProject")
     public String addProject (HttpSession session, Model model){
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
@@ -74,6 +75,7 @@ public class ProjectController {
         return "addProject";
     }
 
+    //får sendt et udfyldt projekt ned til repo'et, der inserter det i databasen
     @PostMapping("/saveProject")
     public String saveProject (@ModelAttribute Project project,
                                @RequestParam(value = "assignedEmployeeIDs", required = false) List<Integer> assignedEmployeeIDs,
@@ -89,6 +91,7 @@ public class ProjectController {
         return "redirect:/userProjects";
     }
 
+    //giver et projekt id videre til repo'et, der fjerner selve projektet i databasen
     @PostMapping("/deleteProject/{projectID}")
     public String deleteProject (@PathVariable Integer projectID, HttpSession session){
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
