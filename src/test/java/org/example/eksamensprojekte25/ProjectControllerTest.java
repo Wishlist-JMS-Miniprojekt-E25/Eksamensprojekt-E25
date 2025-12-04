@@ -146,7 +146,7 @@ public class ProjectControllerTest {
         mockMvc.perform(post("/deleteProject/{projectID}", 3)
                 .sessionAttr("employeeID", 1))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/projects/" + 1));
+                .andExpect(view().name("redirect:/userProjects"));
 
         verify(projectService, times(1)).deleteProjectByID(3);
     }
