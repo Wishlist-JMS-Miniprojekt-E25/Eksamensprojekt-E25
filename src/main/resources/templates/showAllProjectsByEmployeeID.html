@@ -95,7 +95,9 @@
         </td>
 
         <td>
-            <form th:action="@{/deleteProject/{projectID}(projectID=${project.projectID})}" method="post">
+            <div th:if="${project.projectManagerID == loggedInEmployee}">
+            <form th:action="@{/deleteProject/{projectID}(projectID=${project.projectID})}" method="post"
+            onsubmit="return confirm('Are you sure you want to delete? This action can not be undone')">
                 <button type="submit">Delete</button>
             </form>
         </td>
