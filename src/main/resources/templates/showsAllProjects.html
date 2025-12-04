@@ -10,6 +10,9 @@
     <button type="submit">Log out</button>
 </form>
 <h3>Projects you manage</h3>
+<div>
+    <a href="/addProject">+ Add project</a>
+</div>
 <table>
     <tr th:if="${projectsYouManage == null and projectsYouManage.isEmpty()}">You are not managing any projects</tr>
     <tr th:if="${projectsYouManage != null and !projectsYouManage.isEmpty()}">
