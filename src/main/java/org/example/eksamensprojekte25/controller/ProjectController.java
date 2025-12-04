@@ -4,6 +4,7 @@ package org.example.eksamensprojekte25.controller;
 import jakarta.servlet.http.HttpSession;
 import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
+import org.example.eksamensprojekte25.model.Task;
 import org.example.eksamensprojekte25.model.Timeslot;
 import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
@@ -71,6 +72,44 @@ public class ProjectController {
         Date plannedFinishDateForProject = Date.valueOf(plannedFinishDate);
 
         projectService.addProject(currentEmployeeID, project.getProjectName(), project.getProjectDescription(), plannedStartDateForProject, plannedFinishDateForProject, assignedEmployeeIDs);
+        return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
+    }
+
+    @GetMapping("/addTask/{projectID}")
+    public String showAddTaskForm(@PathVariable Integer projectID, Model model) {
+
+        Task task = new Task();
+        task.setProjectID(projectID);
+
+        model.addAttribute("task", task);
+
+
+        List<Employee> projectEmployees = projectService.getEmployeesByProjectID(projectID);
+        model.addAttribute("projectEmployees", projectEmployees);
+
+
+        model.addAttribute("timeslots", projectService.getAllTimeslots());
+
+        return "addTask";
+    }
+
+    @PostMapping("/saveTask")
+    public String saveTask(@ModelAttribute Task task,
+                           @RequestParam String taskName,
+                           @RequestParam String taskDescription,
+                           @RequestParam Date plannedStartDate,
+                           @RequestParam Date plannedFinishDate,
+                           @RequestParam(required = false) List<Integer> assignedEmployeeIDs,
+                           HttpSession session,
+                           Model model) {
+
+        projectService.addTask(taskName, taskDescription,
+                plannedStartDate, plannedFinishDate,
+                task.getProjectID(),
+                assignedEmployeeIDs);
+
+        Integer employeeID = (Integer) session.getAttribute("employeeID");
         return "redirect:/userProjects";
     }
+
 }

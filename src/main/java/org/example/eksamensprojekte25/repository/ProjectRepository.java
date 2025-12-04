@@ -190,4 +190,47 @@ public class ProjectRepository {
 
         return new Project(projectID, projectManagerID, projectName, projectDescription, timeslotID);
     }
+
+    public Task addTask(String taskName, String taskDescription, Integer timeslotID, Integer projectID) {
+
+        String sql = """
+                INSERT INTO task (taskName, taskDescription, timeSlotID, projectID)
+                VALUES (?, ?, ?, ?)
+                """;
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, taskName);
+            ps.setString(2, taskDescription);
+            ps.setInt(3, timeslotID);
+            ps.setInt(4, projectID);
+            return ps;
+        }, keyHolder);
+
+        int taskID = keyHolder.getKey().intValue();
+
+        return new Task(taskID, taskName, taskDescription, timeslotID, null, projectID);
+    }
+
+    public void assignEmployeesToTask(Integer taskID, List<Integer> employeeIDs) {
+        String sql = "INSERT INTO taskEmployee (employeeID, taskID) VALUES (?, ?)";
+
+        for (Integer empID : employeeIDs) {
+            jdbcTemplate.update(sql, empID, taskID);
+        }
+    }
+
+    //henter de employees, som er på samme projekt
+    public List<Employee> getEmployeesByTaskID(Integer taskID) {
+        String sql = """
+                    SELECT * FROM employee e
+                    JOIN taskEmployee te ON e.employeeID = te.employeeID
+                    WHERE te.taskID = ?
+                """;
+
+        return jdbcTemplate.query(sql, employeeRowMapper, taskID);
+    }
+
 }

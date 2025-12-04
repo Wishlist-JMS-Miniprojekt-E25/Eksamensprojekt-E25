@@ -3,6 +3,7 @@ package org.example.eksamensprojekte25.service;
 
 import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
+import org.example.eksamensprojekte25.model.Task;
 import org.example.eksamensprojekte25.model.Timeslot;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
@@ -70,7 +71,7 @@ public class ProjectService {
 
         projectRepository.assignEmployeesToProject(project.getProjectID(), employeeIDs);
 
-        List<Employee> employees = projectRepository.getEmployeesByProjectID(project.getProjectID());
+
 
         return project;
     }
@@ -79,4 +80,29 @@ public class ProjectService {
     public Project getProjectByID(Integer projectID) {
         return projectRepository.getProjectByID(projectID);
     }
+
+    public Task addTask(String taskName,
+                        String taskDescription,
+                        Date plannedStartDate,
+                        Date plannedFinishDate,
+                        Integer projectID,
+                        List<Integer> employeeIDs) {
+
+        int plannedDays = calculatePlannedDays(plannedStartDate, plannedFinishDate);
+
+        Timeslot timeslot = projectRepository.createTimeslot(
+                plannedDays, plannedStartDate, plannedFinishDate);
+
+        Task task = projectRepository.addTask(
+                taskName, taskDescription, timeslot.getTimeslotID(), projectID);
+
+        if (employeeIDs != null && !employeeIDs.isEmpty()) {
+            projectRepository.assignEmployeesToTask(task.getTaskID(), employeeIDs);
+        }
+
+        List<Employee> employees = projectRepository.getEmployeesByTaskID(task.getProjectID());
+
+        return task;
+    }
+
 }

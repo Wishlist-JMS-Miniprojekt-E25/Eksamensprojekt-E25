@@ -3,20 +3,21 @@ package org.example.eksamensprojekte25.model;
 import java.util.List;
 
 public class Task {
-    private String taskName;
     private Integer taskID;
+    private String taskName;
     private String taskDescription;
     private Integer timeslotID;
-    private Integer projectID;
     private List<Employee> employees;
+    private Integer projectID;
 
-    public Task(String taskName, List<Employee> employees, Integer projectID, Integer timeslotID, String taskDescription, Integer taskID) {
+    public Task(Integer taskID, String taskName, String taskDescription,  Integer timeslotID,List<Employee> employees,Integer projectID) {
+        this.taskID = taskID;
         this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.timeslotID = timeslotID;
         this.employees = employees;
         this.projectID = projectID;
-        this.timeslotID = timeslotID;
-        this.taskDescription = taskDescription;
-        this.taskID = taskID;
+
     }
 
     public Task() {
