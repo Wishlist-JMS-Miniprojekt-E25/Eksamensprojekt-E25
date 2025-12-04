@@ -78,7 +78,6 @@ public class ProjectController {
     public String deleteProject (@PathVariable Integer projectID, HttpSession session){
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
-        Project project = projectService.getProjectByID(projectID);
         projectService.deleteProjectByID(projectID);
 
         return "redirect:/userProjects";
