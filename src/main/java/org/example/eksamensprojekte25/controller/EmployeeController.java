@@ -2,7 +2,6 @@ package org.example.eksamensprojekte25.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.eksamensprojekte25.model.Employee;
-import org.example.eksamensprojekte25.model.Project;
 import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 import org.springframework.stereotype.Controller;
@@ -11,9 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
 
 
 @Controller
@@ -27,10 +23,16 @@ public class EmployeeController {
         this.projectService = projectService;
     }
 
+    //viser forside
+    @GetMapping()
+    public String Frontpage() {
+        return "Frontpage";
+    }
+
     //viser login siden
     @GetMapping("/login")
     public String getLogin() {
-        return "Login";
+        return "login";
     }
 
     //går til bruger forsiden fra login siden hvis succefuldt login, ellers bliver du på login siden og må prøve igen
@@ -47,7 +49,7 @@ public class EmployeeController {
             return "redirect:/userProjects";
         } else {
             model.addAttribute("error", true);
-            return "Login"; // viser login igen med fejl
+            return "login"; // viser login igen med fejl
         }
     }
 
