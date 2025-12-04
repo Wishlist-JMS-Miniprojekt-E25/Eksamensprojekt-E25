@@ -6,10 +6,8 @@ import org.example.eksamensprojekte25.model.Project;
 import org.example.eksamensprojekte25.model.Timeslot;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.engine.ElementModelStructureHandler;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.util.List;
 
 @Service
@@ -60,5 +58,13 @@ public class ProjectService {
         List<Employee> employees = projectRepository.getEmployeesByProjectID(project.getProjectID());
 
         return project;
+    }
+
+    public Project getProjectByID(Integer projectID){
+        return projectRepository.getProjectByID(projectID);
+    }
+
+    public void deleteProject(Integer projectID){
+        projectRepository.deleteProject(projectID);
     }
 }

@@ -168,4 +168,18 @@ public class ProjectRepository {
 
         return new Project(projectID, projectManagerID, projectName, projectDescription, timeslotID);
     }
+
+    public Project getProjectByID(Integer projectID){
+        String sql = """
+                    SELECT * 
+                    FROM project
+                    WHERE projectID = ?
+                    """;
+        return jdbcTemplate.queryForObject(sql, projectRowMapper, projectID);
+    }
+
+    public void deleteProject(Integer projectID){
+        String sql = "DELETE FROM project WHERE projectID = ?";
+        jdbcTemplate.update(sql, projectID);
+    }
 }

@@ -94,6 +94,12 @@
             </div>
         </td>
 
+        <td>
+            <form th:action="@{/deleteProject/{projectID}(projectID=${project.projectID})}" method="post">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+
     </tr>
 
 </table>

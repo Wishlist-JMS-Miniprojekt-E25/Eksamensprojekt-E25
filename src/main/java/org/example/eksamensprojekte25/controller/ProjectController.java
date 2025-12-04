@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
 import org.example.eksamensprojekte25.model.Timeslot;
+import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 import org.springframework.stereotype.Controller;
@@ -20,10 +21,12 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final EmployeeService employeeService;
+    private final ProjectRepository projectRepository;
 
-    public ProjectController(ProjectService projectService, EmployeeService employeeService) {
+    public ProjectController(ProjectService projectService, EmployeeService employeeService, ProjectRepository projectRepository) {
         this.projectService = projectService;
         this.employeeService = employeeService;
+        this.projectRepository = projectRepository;
     }
 
     @GetMapping("/projects/{employeeID}")
@@ -78,6 +81,20 @@ public class ProjectController {
         Date plannedFinishDateForProject = Date.valueOf(plannedFinishDate);
 
         projectService.addProject(currentEmployeeID, project.getProjectName(), project.getProjectDescription(), plannedStartDateForProject, plannedFinishDateForProject, assignedEmployeeIDs);
+        return "redirect:/projects/" + currentEmployeeID;
+    }
+
+    @PostMapping("/deleteProject/{projectID}")
+    public String deleteProject (@PathVariable Integer projectID, HttpSession session){
+        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+
+        if (currentEmployeeID == null) {
+            return "redirect:/";
+        }
+
+        Project project = projectService.getProjectByID(projectID);
+        projectService.deleteProject(projectID);
+
         return "redirect:/projects/" + currentEmployeeID;
     }
 }
