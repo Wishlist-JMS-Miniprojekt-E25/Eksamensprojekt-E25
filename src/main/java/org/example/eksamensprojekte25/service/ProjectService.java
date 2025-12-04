@@ -73,10 +73,6 @@ public class ProjectService {
         return project;
     }
 
-    public Project getProjectByID(Integer projectID){
-        return projectRepository.getProjectByID(projectID);
-    }
-
     public void deleteProjectByID (Integer projectID){
         projectRepository.deleteProjectByID(projectID);
     }

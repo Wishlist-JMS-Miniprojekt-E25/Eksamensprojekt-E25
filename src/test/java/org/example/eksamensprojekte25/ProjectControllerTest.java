@@ -40,8 +40,7 @@ public class ProjectControllerTest {
     private ProjectService projectService;
     @MockitoBean
     private EmployeeService employeeService;
-    @Autowired
-    private ProjectService projectService;
+
 
     //tester showsAllProjects metoden
     @Test

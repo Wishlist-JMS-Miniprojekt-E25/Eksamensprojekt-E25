@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpSession;
 import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
 import org.example.eksamensprojekte25.model.Timeslot;
-import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 import org.springframework.stereotype.Controller;
@@ -86,6 +85,6 @@ public class ProjectController {
         Project project = projectService.getProjectByID(projectID);
         projectService.deleteProjectByID(projectID);
 
-        return "redirect:/projects/" + currentEmployeeID;
+        return "redirect:/userProjects";
     }
 }
