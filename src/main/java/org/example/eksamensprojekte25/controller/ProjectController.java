@@ -97,14 +97,17 @@ public class ProjectController {
     public String saveTask(@ModelAttribute Task task,
                            @RequestParam String taskName,
                            @RequestParam String taskDescription,
-                           @RequestParam Date plannedStartDate,
-                           @RequestParam Date plannedFinishDate,
+                           @RequestParam("plannedStartDate") String plannedStartDate,
+                           @RequestParam("plannedFinishDate") String plannedFinishDate,
                            @RequestParam(required = false) List<Integer> assignedEmployeeIDs,
                            HttpSession session,
                            Model model) {
 
+        Date plannedStartDateForTask = Date.valueOf(plannedStartDate);
+        Date plannedFinishDateForTask = Date.valueOf(plannedFinishDate);
+
         projectService.addTask(taskName, taskDescription,
-                plannedStartDate, plannedFinishDate,
+                plannedStartDateForTask, plannedFinishDateForTask,
                 task.getProjectID(),
                 assignedEmployeeIDs);
 

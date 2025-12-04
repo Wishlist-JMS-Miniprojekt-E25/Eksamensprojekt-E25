@@ -51,7 +51,7 @@ public class ProjectService {
         return projectRepository.getEmployeesByProjectID(projectID);
     }
 
-    public int calculatePlannedDays(Date plannedStartDate, Date plannedFinishDate){
+    public int calculatePlannedDays(Date plannedStartDate, Date plannedFinishDate) {
         long differenceInMilliseconds = plannedFinishDate.getTime() - plannedStartDate.getTime();
         return (int) (differenceInMilliseconds / (1000 * 60 * 60 * 24));
         // *Skal* være 1000 milisekunder = 1 sekund
@@ -61,7 +61,7 @@ public class ProjectService {
         // Det er sådan Date fungerer
     }
 
-    public Project addProject (Integer projectManagerID, String projectName, String projectDescription, Date plannedStartDate, Date plannedFinishDate, List<Integer> employeeIDs){
+    public Project addProject(Integer projectManagerID, String projectName, String projectDescription, Date plannedStartDate, Date plannedFinishDate, List<Integer> employeeIDs) {
 
         int plannedDays = calculatePlannedDays(plannedStartDate, plannedFinishDate);
 
@@ -70,7 +70,6 @@ public class ProjectService {
         Project project = projectRepository.addProject(projectManagerID, projectName, projectDescription, timeslot.getTimeslotID());
 
         projectRepository.assignEmployeesToProject(project.getProjectID(), employeeIDs);
-
 
 
         return project;
@@ -96,11 +95,8 @@ public class ProjectService {
         Task task = projectRepository.addTask(
                 taskName, taskDescription, timeslot.getTimeslotID(), projectID);
 
-        if (employeeIDs != null && !employeeIDs.isEmpty()) {
-            projectRepository.assignEmployeesToTask(task.getTaskID(), employeeIDs);
-        }
+        projectRepository.assignEmployeesToTask(task.getTaskID(), employeeIDs);
 
-        List<Employee> employees = projectRepository.getEmployeesByTaskID(task.getProjectID());
 
         return task;
     }
