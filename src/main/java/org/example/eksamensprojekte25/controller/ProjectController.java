@@ -48,9 +48,6 @@ public class ProjectController {
     public String addProject (HttpSession session, Model model){
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
-        if (currentEmployeeID == null) {
-            return "redirect:/";
-        }
         Project project = new Project();
         project.setProjectManagerID(currentEmployeeID);
         model.addAttribute("project", project);
@@ -70,14 +67,10 @@ public class ProjectController {
                                HttpSession session){
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
-        if (currentEmployeeID == null) {
-            return "redirect:/";
-        }
-
         Date plannedStartDateForProject = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForProject = Date.valueOf(plannedFinishDate);
 
         projectService.addProject(currentEmployeeID, project.getProjectName(), project.getProjectDescription(), plannedStartDateForProject, plannedFinishDateForProject, assignedEmployeeIDs);
-        return "redirect:/projects/" + currentEmployeeID;
+        return "redirect:/userProjects";
     }
 }

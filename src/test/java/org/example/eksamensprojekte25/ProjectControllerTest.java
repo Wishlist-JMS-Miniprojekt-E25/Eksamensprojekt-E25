@@ -16,12 +16,18 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @WebMvcTest(ProjectController.class)
 public class ProjectControllerTest {
@@ -107,7 +113,7 @@ public class ProjectControllerTest {
                 .param("plannedFinishDate", "2025-12-01")
                 .param("assignedEmployeeIDs", "2", "3"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/projects/1"));
+                .andExpect(view().name("redirect:/userProjects"));
 
         ArgumentCaptor<Integer> managerCaptor = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
@@ -116,7 +122,7 @@ public class ProjectControllerTest {
         ArgumentCaptor<Date> finishDateCaptor = ArgumentCaptor.forClass(Date.class);
         ArgumentCaptor<List> assignedEmployeesCaptor = ArgumentCaptor.forClass(List.class);
 
-        verify(service).addProject(
+        verify(projectService).addProject(
                 managerCaptor.capture(),
                 nameCaptor.capture(),
                 descriptionCaptor.capture(),
