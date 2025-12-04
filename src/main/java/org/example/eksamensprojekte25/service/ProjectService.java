@@ -64,7 +64,7 @@ public class ProjectService {
         return projectRepository.getProjectByID(projectID);
     }
 
-    public void deleteProject(Integer projectID){
-        projectRepository.deleteProject(projectID);
+    public void deleteProjectByID (Integer projectID){
+        projectRepository.deleteProjectByID(projectID);
     }
 }

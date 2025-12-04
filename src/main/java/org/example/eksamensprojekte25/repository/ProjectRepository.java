@@ -178,7 +178,7 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(sql, projectRowMapper, projectID);
     }
 
-    public void deleteProject(Integer projectID){
+    public void deleteProjectByID (Integer projectID){
         String sql = "DELETE FROM project WHERE projectID = ?";
         jdbcTemplate.update(sql, projectID);
     }

@@ -29,8 +29,8 @@ public class ProjectController {
         this.projectRepository = projectRepository;
     }
 
-    @GetMapping("/projects/{employeeID}")
-    public String showAllProjectsByEmployeeID(@PathVariable Integer employeeID, HttpSession session, Model model) {
+    @GetMapping("/projects")
+    public String showAllProjectsByEmployeeID(HttpSession session, Model model) {
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
         if (currentEmployeeID == null) {
@@ -93,8 +93,8 @@ public class ProjectController {
         }
 
         Project project = projectService.getProjectByID(projectID);
-        projectService.deleteProject(projectID);
+        projectService.deleteProjectByID(projectID);
 
-        return "redirect:/projects/" + currentEmployeeID;
+        return "redirect:/projects";
     }
 }

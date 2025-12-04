@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -38,6 +37,8 @@ public class ProjectControllerTest {
 
     @MockitoBean
     private EmployeeService employeeService;
+    @Autowired
+    private ProjectService projectService;
 
     @Test
     void showExpectedProjects() throws Exception {
@@ -138,5 +139,15 @@ public class ProjectControllerTest {
         assertEquals(Date.valueOf("2025-11-01"), startDateCaptor.getValue());
         assertEquals(Date.valueOf("2025-12-01"), finishDateCaptor.getValue());
         assertEquals(List.of(2, 3), assignedEmployeesCaptor.getValue());
+    }
+
+    @Test
+    void shouldDeleteProject() throws Exception{
+        mockMvc.perform(post("/deleteProject/{projectID}", 3)
+                .sessionAttr("employeeID", 1))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/projects"));
+
+        verify(projectService, times(1)).deleteProjectByID(3);
     }
 }
