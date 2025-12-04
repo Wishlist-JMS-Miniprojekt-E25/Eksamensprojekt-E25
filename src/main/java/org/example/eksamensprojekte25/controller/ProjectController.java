@@ -10,6 +10,8 @@ import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -27,31 +29,26 @@ public class ProjectController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("/projects/{employeeID}")
-    public String showAllProjectsByEmployeeID(@PathVariable Integer employeeID, HttpSession session, Model model) {
-        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+    //viser bruger forsiden
+    @GetMapping("/userProjects")
+    public String showsAllProjects(HttpSession session, Model model) {
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
 
-        if (currentEmployeeID == null) {
-            return "redirect:/";
-        }
-
-        List<Project> projects = projectService.getProjectsByEmployeeID(currentEmployeeID);
-        model.addAttribute("projects", projects);
-
+        Employee employee = employeeService.getEmployeeByID(loggedInEmployeeID);
+        List<Project> projectsYouManage = projectService.getProjectsByManagerID(loggedInEmployeeID);
+        List<Project> assignedToProjects = projectService.getProjectsByEmployeeID(loggedInEmployeeID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
+        model.addAttribute("employee", employee);
+        model.addAttribute("projectsYouManage", projectsYouManage );
+        model.addAttribute("assignedToProjects", assignedToProjects);
         model.addAttribute("timeslots",timeslots);
-
-        model.addAttribute("loggedInEmployee", currentEmployeeID);
-        return "showAllProjectsByEmployeeID";
+        return "showsAllProjects";
     }
 
     @GetMapping("/addProject")
     public String addProject (HttpSession session, Model model){
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
-        if (currentEmployeeID == null) {
-            return "redirect:/";
-        }
         Project project = new Project();
         project.setProjectManagerID(currentEmployeeID);
         model.addAttribute("project", project);
@@ -71,15 +68,11 @@ public class ProjectController {
                                HttpSession session){
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
-        if (currentEmployeeID == null) {
-            return "redirect:/";
-        }
-
         Date plannedStartDateForProject = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForProject = Date.valueOf(plannedFinishDate);
 
         projectService.addProject(currentEmployeeID, project.getProjectName(), project.getProjectDescription(), plannedStartDateForProject, plannedFinishDateForProject, assignedEmployeeIDs);
-        return "redirect:/projects/" + currentEmployeeID;
+        return "redirect:/userProjects";
     }
 
     @PostMapping("/deleteProject/{projectID}")

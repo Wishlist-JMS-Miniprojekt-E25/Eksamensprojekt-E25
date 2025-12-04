@@ -15,6 +15,7 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    //henter en employee baseret på employee userName og userPassword
     public List<Employee> getAllEmployees(){
         return employeeRepository.getAllEmployees();
     }
@@ -23,5 +24,9 @@ public class EmployeeService {
         return employeeRepository.findEmployeeByCredentials(userName, userPassword);
     }
 
+    //henter en employee baseret på employee id
+    public Employee getEmployeeByID(Integer employeeID) {
+        return employeeRepository.getEmployeeByID(employeeID);
+    }
 
 }

@@ -32,13 +32,23 @@ public class EmployeeRepository {
         return jdbcTemplate.query(sql, employeeRowMapper);
     }
 
+    //henter en employee baseret på employee id
+    public Employee getEmployeeByID(Integer employeeID) {
+        String sql = """
+                SELECT * FROM employee
+                WHERE employeeID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, employeeRowMapper, employeeID);
+    }
+
+    //henter en employee baseret på employee userName og userPassword
     public Employee findEmployeeByCredentials(String userName, String userPassword){
         String sql = """
                 SELECT *
                 FROM employee
                 WHERE userName = ? AND userPassword = ?
                 """;
-        List<Employee> employees = jdbcTemplate.query(sql, employeeRowMapper, userName, userPassword);
+        List<Employee> employees = jdbcTemplate.query(sql, employeeRowMapper,userName, userPassword);
         return employees.isEmpty() ? null : employees.get(0);
     }
 }

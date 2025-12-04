@@ -19,12 +19,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @WebMvcTest(ProjectController.class)
 public class ProjectControllerTest {
@@ -33,58 +37,55 @@ public class ProjectControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private ProjectService service;
-
+    private ProjectService projectService;
     @MockitoBean
     private EmployeeService employeeService;
     @Autowired
     private ProjectService projectService;
 
+    //tester showsAllProjects metoden
     @Test
-    void showExpectedProjects() throws Exception {
+    void shouldShowAllProjects() throws Exception {
+        //fake session ID
+        int employeeID = 1;
 
-        //Tester om forsiden virker
-        mockMvc.perform(get("/projects/{employeeID}", 1)
-                .sessionAttr("employeeID", 1))
+        //fake employee
+        Employee employee = new Employee();
+        employee.setEmployeeID(employeeID);
+
+        //fake projekter
+        Project managedProject = new Project();
+        managedProject.setProjectID(2);
+        Project assignedToProject = new Project();
+        assignedToProject.setProjectID(3);
+
+        //fake timeslot
+        Timeslot timeslot = new Timeslot();
+        timeslot.setTimeslotID(4);
+
+        //simulerer service metode kaldende med vores fake data
+        when(employeeService.getEmployeeByID(employeeID)).thenReturn(employee);
+        when(projectService.getProjectsByManagerID(employeeID)).thenReturn(List.of(managedProject));
+        when(projectService.getProjectsByEmployeeID(employeeID)).thenReturn(List.of(assignedToProject));
+        when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
+
+        //Tester at controller metoden gør hvad den skal, at den returnere html siden,
+        //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
+        mockMvc.perform(get("/userProjects").sessionAttr("employeeID", employeeID))
                 .andExpect(status().isOk())
-                .andExpect(view().name("showAllProjectsByEmployeeID"));
-    }
-
-    @Test
-    void showAllProjectsByEmployeeID() throws Exception {
-
-        // Tester om forsiden virker for det specifikke employeeID og employees projekter
-        List<Employee> employees = new ArrayList<>();
-        employees.add(new Employee(1, "Hans", "hans", "123", false));
-        employees.add(new Employee(2, "Frede", "frede", "123", true));
-
-        List<Project> projects = new ArrayList<>();
-        projects.add(new Project(1, 1, "Byg hus", "Bygge et stort hus", 1, employees));
-        projects.add(new Project(2, 2, "Lav ønskeliste", "Lav et dejligt stort ønskeliste", 2, employees));
-
-        List<Timeslot> timeslots = new ArrayList<>();
-        timeslots.add(new Timeslot(1, 30,
-                Date.valueOf("2025-11-25"),
-                Date.valueOf("2025-12-25"),
-                Date.valueOf("2026-01-01"),
-                30, 30, false));
-
-        timeslots.add(new Timeslot(2, 30,
-                Date.valueOf("2025-01-25"),
-                Date.valueOf("2025-03-25"),
-                Date.valueOf("2026-01-02"),
-                300, 1600, true));
-
-        // Mock service-kaldene så controlleren får data
-        when(service.getProjectsByEmployeeID(1)).thenReturn(projects);
-        when(service.getAllTimeslots()).thenReturn(timeslots);
-
-        mockMvc.perform(get("/projects/{employeeID}", 1)
-                        .sessionAttr("employeeID", 1))
-                .andExpect(status().isOk())
-                .andExpect(view().name("showAllProjectsByEmployeeID"))
-                .andExpect(model().attribute("projects", projects))
-                .andExpect(model().attribute("timeslots", timeslots));
+                .andExpect(view().name("showsAllProjects"))
+                //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
+                .andExpect(model().attributeExists(
+                        "employee",
+                        "projectsYouManage",
+                        "assignedToProjects",
+                        "timeslots"
+                ))
+                //vi giver attributterne vores fake værdier
+                .andExpect(model().attribute("employee", employee))
+                .andExpect(model().attribute("projectsYouManage", List.of(managedProject)))
+                .andExpect(model().attribute("assignedToProjects", List.of(assignedToProject)))
+                .andExpect(model().attribute("timeslots", List.of(timeslot)));
     }
 
     @Test
@@ -115,7 +116,7 @@ public class ProjectControllerTest {
                 .param("plannedFinishDate", "2025-12-01")
                 .param("assignedEmployeeIDs", "2", "3"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/projects/1"));
+                .andExpect(view().name("redirect:/userProjects"));
 
         ArgumentCaptor<Integer> managerCaptor = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
@@ -124,7 +125,7 @@ public class ProjectControllerTest {
         ArgumentCaptor<Date> finishDateCaptor = ArgumentCaptor.forClass(Date.class);
         ArgumentCaptor<List> assignedEmployeesCaptor = ArgumentCaptor.forClass(List.class);
 
-        verify(service).addProject(
+        verify(projectService).addProject(
                 managerCaptor.capture(),
                 nameCaptor.capture(),
                 descriptionCaptor.capture(),

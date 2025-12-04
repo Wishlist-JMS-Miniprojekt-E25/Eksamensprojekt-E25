@@ -18,10 +18,12 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
+    //henter alle timeslots
     public List<Timeslot> getAllTimeslots() {
         return projectRepository.getAllTimeslots();
     }
 
+    //Henter alle projekter baseret op employee id, og tildeler hvert projekt assignees
     public List<Project> getProjectsByEmployeeID(Integer employeeID) {
 
         List<Project> projects = projectRepository.getProjectsByEmployeeID(employeeID);
@@ -31,6 +33,17 @@ public class ProjectService {
         return projects;
     }
 
+    //henter alle projekter baseret på manager id, og tildeler hvert projekt assignees
+    public List<Project> getProjectsByManagerID(Integer managerID) {
+
+        List<Project> projects = projectRepository.getProjectsByManagerID(managerID);
+        for (Project project : projects) {
+            project.setAssignedEmployees(projectRepository.getEmployeesByProjectID(project.getProjectID()));
+        }
+        return projects;
+    }
+
+    //henter de employees, som er på samme projekt
     public List<Employee> getEmployeesByProjectID(Integer projectID) {
         return projectRepository.getEmployeesByProjectID(projectID);
     }
@@ -66,5 +79,10 @@ public class ProjectService {
 
     public void deleteProjectByID (Integer projectID){
         projectRepository.deleteProjectByID(projectID);
+    }
+
+    //henter et projekt baseret på projekt id
+    public Project getProjectByID(Integer projectID) {
+        return projectRepository.getProjectByID(projectID);
     }
 }
