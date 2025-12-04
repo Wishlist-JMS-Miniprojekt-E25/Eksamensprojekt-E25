@@ -6,7 +6,6 @@
 </head>
 <body>
 <a th:href="@{/userProjects}">← Go back</a>
-<a th:href="@{/addTask}">+ Add task</a>
 <br> <br>
 <table>
     <tr>
@@ -48,15 +47,12 @@
                  th:text="${timeslot.plannedFinishDate}">
             </div>
         </td>
-
         <td>
             <div th:each="timeslot: ${timeslots}"
                  th:if="${timeslot.timeslotID == project.timeslotID}">
-
                 <div
                         th:if="${timeslot.actualFinishDate==null}"> Will be calculated later
                 </div>
-
                 <div th:unless="${timeslot.actualFinishDate==null}">
                     <div
                             th:text="${timeslot.actualFinishDate}">
@@ -64,7 +60,6 @@
                 </div>
             </div>
         </td>
-
         <td>
             <div th:each="timeslot: ${timeslots}"
                  th:if="${timeslot.timeslotID == project.timeslotID}">
@@ -77,7 +72,6 @@
                             th:text="${timeslot.differenceInDays}">
                     </div>
                 </div>
-
             </div>
         </td>
         <td>
@@ -89,8 +83,10 @@
     </tr>
 </table>
 <br> <br> <br> <br> <br> <br>
+<a th:href="@{/addTask}">+ Add task</a>
 <table>
     <tr>
+        <th></th>
         <th>ID</th>
         <th>Name</th>
         <th>Description</th>
@@ -103,6 +99,9 @@
         <th>Total workhours</th>
     </tr>
     <tr th:each="task: ${tasks}">
+        <td>
+            <a th:href="@{/project/{projectID}(projectID=${project.projectID})}">View task →</a>
+        </td>
         <td th:text="${task.taskID}"></td>
         <td th:text="${task.taskName}"></td>
         <td th:text="${task.taskDescription}"></td>

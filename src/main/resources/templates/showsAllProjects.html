@@ -16,6 +16,7 @@
 <table>
     <tr th:if="${projectsYouManage == null and projectsYouManage.isEmpty()}">You are not managing any projects</tr>
     <tr th:if="${projectsYouManage != null and !projectsYouManage.isEmpty()}">
+        <th></th>
         <th>ID</th>
         <th>Name</th>
         <th>Description</th>
@@ -27,10 +28,12 @@
         <th>Difference in days</th>
         <th>Total workhours</th>
         <th></th>
-        <th></th>
     </tr>
 
     <tr th:each="project: ${projectsYouManage}">
+        <td>
+            <a th:href="@{/project/{projectID}(projectID=${project.projectID})}">View project →</a>
+        </td>
         <td th:text="${project.projectID}"></td>
         <td th:text="${project.projectName}"></td>
         <td th:text="${project.projectDescription}"></td>
@@ -57,7 +60,6 @@
                  th:text="${timeslot.plannedFinishDate}">
             </div>
         </td>
-
         <td>
             <div th:each="timeslot: ${timeslots}"
                  th:if="${timeslot.timeslotID == project.timeslotID}">
@@ -73,7 +75,6 @@
                 </div>
             </div>
         </td>
-
         <td>
             <div th:each="timeslot: ${timeslots}"
                  th:if="${timeslot.timeslotID == project.timeslotID}">
@@ -95,11 +96,6 @@
                  th:text="${timeslot.totalWorkhours}">
             </div>
         </td>
-
-        <td>
-            <a th:href="@{/project/{projectID}(projectID=${project.projectID})}">← View project</a>
-        </td>
-
         <td>
             <form th:action="@{/deleteProject/{projectID}(projectID=${project.projectID})}" method="post"
                   onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
@@ -108,12 +104,12 @@
             </form>
         </td>
     </tr>
-
 </table>
 <h3>Projects you are assigned to</h3>
 <table>
     <tr th:if="${assignedToProjects == null and assignedToProjects.isEmpty()}">You are not assigned to any projects</tr>
     <tr th:if="${assignedToProjects != null and !assignedToProjects.isEmpty()}">
+        <th></th>
         <th>ID</th>
         <th>Name</th>
         <th>Description</th>
@@ -125,10 +121,12 @@
         <th>Actual Finish Date</th>
         <th>Difference in days</th>
         <th>Total workhours</th>
-        <th></th>
     </tr>
 
     <tr th:each="project: ${assignedToProjects}">
+        <td>
+            <a th:href="@{/project/{projectID}(projectID=${project.projectID})}">View project →</a>
+        </td>
         <td th:text="${project.projectID}"></td>
         <td th:text="${project.projectName}"></td>
         <td th:text="${project.projectDescription}"></td>
@@ -198,11 +196,7 @@
                  th:text="${timeslot.totalWorkhours}">
             </div>
         </td>
-        <td>
-            <a th:href="@{/project/{projectID}(projectID=${project.projectID})}">← View project</a>
-        </td>
     </tr>
-
 </table>
 </body>
 </html>
