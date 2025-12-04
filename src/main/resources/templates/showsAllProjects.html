@@ -102,6 +102,7 @@
         <th>Name</th>
         <th>Description</th>
         <th>Assignees</th>
+        <th>Project Manager</th>
         <th>Planned Days</th>
         <th>Planned Start Date</th>
         <th>Planned Finish Date</th>
@@ -118,6 +119,11 @@
             <div th:each="assignedEmployees: ${project.assignedEmployees}"
                  th:text="${assignedEmployees.employeeName}"></div>
             <br> <br>
+        </td>
+        <td>
+            <div th:each="assignedEmployees: ${project.assignedEmployees}"
+                th:if="${assignedEmployees.getEmployeeID == project.getProjectManagerID}"
+                th:text="${assignedEmployees.getEmployeeName}"></div>
         </td>
         <td>
             <div th:each="timeslot: ${timeslots}"
