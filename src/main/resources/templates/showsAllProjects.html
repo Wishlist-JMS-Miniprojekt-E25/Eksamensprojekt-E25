@@ -6,6 +6,9 @@
 </head>
 <body>
 <h1 th:text="${employee.employeeName} + 's projects'"></h1>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Log out</button>
+</form>
 <h3>Projects you manage</h3>
 <table>
     <tr th:if="${projectsYouManage == null and projectsYouManage.isEmpty()}">You are not managing any projects</tr>
@@ -20,8 +23,6 @@
         <th>Actual Finish Date</th>
         <th>Difference in days</th>
         <th>Total workhours</th>
-        <th>Edit</th>
-        <th>Delete</th>
     </tr>
 
     <tr th:each="project: ${projectsYouManage}">

@@ -51,4 +51,11 @@ public class EmployeeController {
         }
     }
 
+    //slutter session og går tilbage til login siden
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
+
 }
