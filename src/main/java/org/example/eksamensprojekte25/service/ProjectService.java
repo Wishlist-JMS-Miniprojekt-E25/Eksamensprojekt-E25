@@ -56,6 +56,7 @@ public class ProjectService {
         // 60 minutter = 1 time
         // 24 timer = 1 dag
         // Det er sådan Date fungerer
+        //metoden returnerer forskellen i dage
     }
 
     public Project addProject (Integer projectManagerID, String projectName, String projectDescription, Date plannedStartDate, Date plannedFinishDate, List<Integer> employeeIDs){
