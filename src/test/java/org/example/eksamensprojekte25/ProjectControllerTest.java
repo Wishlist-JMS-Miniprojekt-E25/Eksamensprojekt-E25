@@ -266,6 +266,7 @@ public class ProjectControllerTest {
     void shouldDeleteSubtask() throws Exception {
 
         mockMvc.perform(post("/task/{taskID}/deleteSubtask/{subtaskID}", 1, 3))
+
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/task/" + 1));
 
