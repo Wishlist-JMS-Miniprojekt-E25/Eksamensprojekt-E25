@@ -13,6 +13,7 @@
         <th>Name</th>
         <th>Description</th>
         <th>Assignees</th>
+        <th>Project Manager</th>
         <th>Planned Days</th>
         <th>Planned Start Date</th>
         <th>Planned Finish Date</th>
@@ -28,6 +29,9 @@
             <div th:each="assignedEmployees: ${project.assignedEmployees}"
                  th:text="${assignedEmployees.employeeName}"></div>
             <br> <br>
+        </td>
+        <td
+                th:text="${manager.employeeName}">
         </td>
         <td>
             <div th:each="timeslot: ${timeslots}"
@@ -85,7 +89,8 @@
 <br> <br> <br> <br> <br> <br>
 <a th:href="@{/addTask}">+ Add task</a>
 <table>
-    <tr>
+    <tr th:if="${tasks == null and tasks.isEmpty()}">There are no tasks for this project</tr>
+    <tr th:if="${tasks != null and !tasks.isEmpty()}">
         <th></th>
         <th>ID</th>
         <th>Name</th>

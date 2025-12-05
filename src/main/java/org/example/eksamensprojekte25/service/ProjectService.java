@@ -82,9 +82,12 @@ public class ProjectService {
         projectRepository.deleteProjectByID(projectID);
     }
 
-    //henter et projekt baseret på projekt id
+    //henter et projekt baseret på projekt id, fylder også assignedemployees liste op
     public Project getProjectByID(Integer projectID) {
-        return projectRepository.getProjectByID(projectID);
+        Project project = projectRepository.getProjectByID(projectID);
+        List<Employee> employees = projectRepository.getEmployeesByProjectID(projectID);
+        project.setAssignedEmployees(employees);
+        return project;
     }
 
     public Task getTaskByID(Integer taskID) {

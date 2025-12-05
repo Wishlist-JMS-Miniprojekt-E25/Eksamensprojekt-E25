@@ -61,6 +61,7 @@ public class ProjectControllerTest {
 
         //simulerer service metode kaldende med vores fake data
         when(employeeService.getEmployeeByID(employeeID)).thenReturn(employee);
+        when(employeeService.getAllEmployees()).thenReturn(List.of(employee));
         when(projectService.getProjectsByManagerID(employeeID)).thenReturn(List.of(managedProject));
         when(projectService.getProjectsByEmployeeID(employeeID)).thenReturn(List.of(assignedToProject));
         when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
@@ -73,12 +74,14 @@ public class ProjectControllerTest {
                 //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
                 .andExpect(model().attributeExists(
                         "employee",
+                        "allEmployees",
                         "projectsYouManage",
                         "assignedToProjects",
                         "timeslots"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("employee", employee))
+                .andExpect(model().attribute("allEmployees",List.of(employee)))
                 .andExpect(model().attribute("projectsYouManage", List.of(managedProject)))
                 .andExpect(model().attribute("assignedToProjects", List.of(assignedToProject)))
                 .andExpect(model().attribute("timeslots", List.of(timeslot)));
@@ -92,15 +95,20 @@ public class ProjectControllerTest {
 
         //fake projekt
         Project project = new Project();
+        project.setProjectManagerID(3);
 
         //fake task
         Task task = new Task();
+
+        //fake employee
+        Employee employee = new Employee();
 
         //fake timeslot
         Timeslot timeslot = new Timeslot();
 
         //simulerer service metode kaldende med vores fake data
         when(projectService.getProjectByID(projectID)).thenReturn(project);
+        when(employeeService.getEmployeeByID(3)).thenReturn(employee);
         when(projectService.getTasksByProjectID(projectID)).thenReturn(List.of(task));
         when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
 
@@ -113,12 +121,14 @@ public class ProjectControllerTest {
                 .andExpect(model().attributeExists(
                         "project",
                         "tasks",
-                        "timeslots"
+                        "timeslots",
+                        "manager"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("project", project))
                 .andExpect(model().attribute("tasks", List.of(task)))
-                .andExpect(model().attribute("timeslots", List.of(timeslot)));
+                .andExpect(model().attribute("timeslots", List.of(timeslot)))
+                .andExpect(model().attribute("manager",employee));
     }
 
     @Test

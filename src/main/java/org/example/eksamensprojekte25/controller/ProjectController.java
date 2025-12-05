@@ -34,11 +34,13 @@ public class ProjectController {
     public String showsAllProjects(HttpSession session, Model model) {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
 
-        Employee employee = employeeService.getEmployeeByID(loggedInEmployeeID);
+        Employee loggedInEmployee = employeeService.getEmployeeByID(loggedInEmployeeID);
+        List<Employee> allEmployees = employeeService.getAllEmployees();
         List<Project> projectsYouManage = projectService.getProjectsByManagerID(loggedInEmployeeID);
         List<Project> assignedToProjects = projectService.getProjectsByEmployeeID(loggedInEmployeeID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
-        model.addAttribute("employee", employee);
+        model.addAttribute("employee", loggedInEmployee);
+        model.addAttribute("allEmployees",allEmployees);
         model.addAttribute("projectsYouManage", projectsYouManage );
         model.addAttribute("assignedToProjects", assignedToProjects);
         model.addAttribute("timeslots",timeslots);
@@ -50,12 +52,15 @@ public class ProjectController {
     public String showsProject(@PathVariable int projectID, HttpSession session, Model model) {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
 
+        //Employee manager =
         Project project = projectService.getProjectByID(projectID);
+        Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
         List<Task> tasks = projectService.getTasksByProjectID(projectID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
         model.addAttribute("project",project);
         model.addAttribute("tasks", tasks);
         model.addAttribute("timeslots", timeslots);
+        model.addAttribute("manager",manager);
         return "showsProject";
     }
 

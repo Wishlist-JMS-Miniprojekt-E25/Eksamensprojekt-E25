@@ -136,9 +136,10 @@
             <br> <br>
         </td>
         <td>
-            <div th:each="assignedEmployee: ${project.assignedEmployees}"
-                 th:if="${assignedEmployee.getEmployeeID == project.getProjectManagerID}"
-                 th:text="${assignedEmployee.getEmployeeName}"></div>
+            <div th:each="foundManager: ${allEmployees}"
+                 th:if="${project.projectManagerID == foundManager.employeeID}"
+                 th:text="${foundManager.employeeName}">
+            </div>
         </td>
         <td>
             <div th:each="timeslot: ${timeslots}"
