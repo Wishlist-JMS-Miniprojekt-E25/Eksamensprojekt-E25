@@ -103,7 +103,7 @@ public class ProjectController {
     }
 
     @GetMapping("/task/{taskID}/addSubtask")
-    public String addSubtask(@RequestParam("taskID") Integer taskID, Model model){
+    public String addSubtask(@PathVariable Integer taskID, Model model){
 
         Subtask subtask = new Subtask();
         subtask.setSubtaskID(taskID);
@@ -129,6 +129,6 @@ public class ProjectController {
                 subtask.getEmployeeID(), plannedStartDateForSubtask,
                 plannedFinishDateForSubtask);
 
-        return "redirect:/userProjects";
+        return "redirect:/task/" + subtask.getTaskID();
     }
 }
