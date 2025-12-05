@@ -10,7 +10,7 @@
     <div>
         <h2>Add Subtask</h2>
 
-        <form th:action="@{/saveSubtask}" th:object="${subtask}" method="post">
+        <form th:action="@{/task/{taskID}/saveSubtask(taskID=${taskID})}" th:object="${subtask}" method="post">
             <input type="hidden" th:field="*{taskID}">
 
             <label>Name</label>
@@ -29,7 +29,7 @@
             <div th:each="employee : ${allEmployees}">
                 <label>
                     <input type="radio"
-                           th:name="assignedEmployeeIDs"
+                           th:field="*{employeeID}"
                            th:value="${employee.employeeID}">
                     <span th:text="${employee.employeeName}">
                    </span>
@@ -38,7 +38,7 @@
 
             <div>
                 <button type="submit">Save</button>
-                <a th:href="@{/userProjects}">Cancel</a>
+                <a th:href="@{/task/{taskID}(taskID=${taskID})}">Cancel</a>
             </div>
         </form>
     </div>

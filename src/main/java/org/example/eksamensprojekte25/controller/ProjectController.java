@@ -122,7 +122,7 @@ public class ProjectController {
     public String addSubtask(@PathVariable Integer taskID, Model model){
 
         Subtask subtask = new Subtask();
-        subtask.setSubtaskID(taskID);
+        subtask.setTaskID(taskID);
 
         model.addAttribute("subtask", subtask);
         model.addAttribute("taskID", taskID);
