@@ -242,17 +242,6 @@ public class ProjectRepository {
         }
     }
 
-    //henter de employees, som er på samme projekt
-    public List<Employee> getEmployeesByTaskID(Integer taskID) {
-        String sql = """
-                    SELECT * FROM employee e
-                    JOIN taskEmployee te ON e.employeeID = te.employeeID
-                    WHERE te.taskID = ?
-                """;
-
-        return jdbcTemplate.query(sql, employeeRowMapper, taskID);
-    }
-
 
     public void deleteProjectByID(Integer projectID) {
         String sql = "DELETE FROM project WHERE projectID = ?";

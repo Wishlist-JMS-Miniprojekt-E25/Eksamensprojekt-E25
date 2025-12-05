@@ -3,6 +3,7 @@ package org.example.eksamensprojekte25;
 import org.example.eksamensprojekte25.controller.ProjectController;
 import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
+import org.example.eksamensprojekte25.model.Task;
 import org.example.eksamensprojekte25.model.Timeslot;
 import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;

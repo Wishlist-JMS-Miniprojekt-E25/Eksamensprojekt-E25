@@ -114,10 +114,8 @@ public class ProjectController {
 
         model.addAttribute("task", task);
 
-
         List<Employee> projectEmployees = projectService.getEmployeesByProjectID(projectID);
         model.addAttribute("projectEmployees", projectEmployees);
-
 
         model.addAttribute("timeslots", projectService.getAllTimeslots());
 
@@ -143,7 +141,7 @@ public class ProjectController {
                 assignedEmployeeIDs);
 
         Integer employeeID = (Integer) session.getAttribute("employeeID");
-        return "redirect:/userProjects";
+        return "redirect:/project/" + task.getProjectID();
     }
 
 }
