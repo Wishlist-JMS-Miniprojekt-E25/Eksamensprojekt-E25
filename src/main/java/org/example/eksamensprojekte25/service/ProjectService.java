@@ -46,11 +46,6 @@ public class ProjectService {
         return projectRepository.getEmployeesByProjectID(projectID);
     }
 
-    //henter de employees, som er på samme task
-    public List<Employee> getEmployeesByTaskID(Integer taskID) {
-        return projectRepository.getEmployeesByTaskID(taskID);
-    }
-
     public int calculatePlannedDays(Date plannedStartDate, Date plannedFinishDate) {
         long differenceInMilliseconds = plannedFinishDate.getTime() - plannedStartDate.getTime();
         return (int) (differenceInMilliseconds / (1000 * 60 * 60 * 24));
@@ -71,6 +66,7 @@ public class ProjectService {
         Project project = projectRepository.addProject(projectManagerID, projectName, projectDescription, timeslot.getTimeslotID());
 
         projectRepository.assignEmployeesToProject(project.getProjectID(), employeeIDs);
+
 
         return project;
     }
@@ -108,4 +104,26 @@ public class ProjectService {
 
         return subtask;
     }
+
+    public Task addTask(String taskName,
+                        String taskDescription,
+                        Date plannedStartDate,
+                        Date plannedFinishDate,
+                        Integer projectID,
+                        List<Integer> employeeIDs) {
+
+        int plannedDays = calculatePlannedDays(plannedStartDate, plannedFinishDate);
+
+        Timeslot timeslot = projectRepository.createTimeslot(
+                plannedDays, plannedStartDate, plannedFinishDate);
+
+        Task task = projectRepository.addTask(
+                taskName, taskDescription, timeslot.getTimeslotID(), projectID);
+
+        projectRepository.assignEmployeesToTask(task.getTaskID(), employeeIDs);
+
+
+        return task;
+    }
+
 }

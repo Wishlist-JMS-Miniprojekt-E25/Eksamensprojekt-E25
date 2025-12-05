@@ -99,7 +99,23 @@ public class ProjectController {
 
         projectService.deleteProjectByID(projectID);
 
-        return "redirect:/userProjects";
+        return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
+    }
+
+    @GetMapping("/addTask/{projectID}")
+    public String showAddTaskForm(@PathVariable Integer projectID, Model model) {
+
+        Task task = new Task();
+        task.setProjectID(projectID);
+
+        model.addAttribute("task", task);
+
+        List<Employee> projectEmployees = projectService.getEmployeesByProjectID(projectID);
+        model.addAttribute("projectEmployees", projectEmployees);
+
+        model.addAttribute("timeslots", projectService.getAllTimeslots());
+
+        return "addTask";
     }
 
     @GetMapping("/task/{taskID}/addSubtask")
@@ -131,4 +147,27 @@ public class ProjectController {
 
         return "redirect:/task/" + subtask.getTaskID();
     }
+
+    @PostMapping("/saveTask")
+    public String saveTask(@ModelAttribute Task task,
+                           @RequestParam String taskName,
+                           @RequestParam String taskDescription,
+                           @RequestParam("plannedStartDate") String plannedStartDate,
+                           @RequestParam("plannedFinishDate") String plannedFinishDate,
+                           @RequestParam(required = false) List<Integer> assignedEmployeeIDs,
+                           HttpSession session,
+                           Model model) {
+
+        Date plannedStartDateForTask = Date.valueOf(plannedStartDate);
+        Date plannedFinishDateForTask = Date.valueOf(plannedFinishDate);
+
+        projectService.addTask(taskName, taskDescription,
+                plannedStartDateForTask, plannedFinishDateForTask,
+                task.getProjectID(),
+                assignedEmployeeIDs);
+
+        Integer employeeID = (Integer) session.getAttribute("employeeID");
+        return "redirect:/project/" + task.getProjectID();
+    }
+
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Task</title>
+</head>
+<body>
+
+<main>
+    <div>
+        <h2>Add Task</h2>
+
+        <form th:action="@{/saveTask}" th:object="${task}" method="post">
+
+            <input type="hidden" th:field="*{projectID}">
+
+            <label>Task Name</label>
+            <input type="text" th:field="*{taskName}" required>
+
+            <label>Description</label>
+            <input type="text" th:field="*{taskDescription}" required>
+
+            <label>Planned Start Date</label>
+            <input type="date" name="plannedStartDate" required>
+
+            <label>Planned Finish Date</label>
+            <input type="date" name="plannedFinishDate" required>
+
+            <p>Assign employees</p>
+            <div th:each="emp : ${projectEmployees}">
+                <label>
+                    <input type="checkbox"
+                           name="assignedEmployeeIDs"
+                           th:value="${emp.employeeID}">
+                    <span th:text="${emp.employeeName}"></span>
+                </label>
+            </div>
+
+            <div>
+                <button type="submit">Save</button>
+                <a th:href="@{/userProjects}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>
