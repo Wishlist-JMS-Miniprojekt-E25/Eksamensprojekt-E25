@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Date;
 import java.util.HashMap;
@@ -167,5 +168,15 @@ public class ProjectController {
         Integer employeeID = (Integer) session.getAttribute("employeeID");
         return "redirect:/project/" + task.getProjectID();
     }
+
+    @PostMapping("/deleteTask/{taskID}")
+    public String deleteTask(@PathVariable Integer taskID, RedirectAttributes redirectAttributes) {
+        Task task = projectService.getTaskByID(taskID);
+        projectService.deleteTaskByID(taskID);
+
+        redirectAttributes.addAttribute("projectID", task.getProjectID());
+        return "redirect:/project/{projectID}";
+    }
+
 
 }

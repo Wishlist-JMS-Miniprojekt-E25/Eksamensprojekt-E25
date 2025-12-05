@@ -132,4 +132,8 @@ public class ProjectService {
         return task;
     }
 
+    public void deleteTaskByID(Integer taskID){
+        projectRepository.deleteTaskByID(taskID);
+    }
+
 }

@@ -322,5 +322,21 @@ public class ProjectControllerTest {
         assertEquals(List.of(3, 4), employeesCaptor.getValue());
     }
 
+    @Test
+    void shouldDeleteTask() throws Exception {
+
+        Task task = new Task();
+        task.setTaskID(1);
+        task.setProjectID(10);
+
+        when(projectService.getTaskByID(1)).thenReturn(task);
+
+        mockMvc.perform(post("/deleteTask/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/10"));
+
+        verify(projectService, times(1)).deleteTaskByID(1);
+    }
+
 
 }

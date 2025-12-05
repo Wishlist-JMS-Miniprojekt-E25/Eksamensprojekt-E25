@@ -265,4 +265,9 @@ public class ProjectRepository {
                 """;
         return jdbcTemplate.queryForObject(sql, Integer.class,taskID);
     }
+
+    public void deleteTaskByID(Integer taskID) {
+        String sql = "DELETE FROM task WHERE taskID = ?";
+        jdbcTemplate.update(sql, taskID);
+    }
 }
