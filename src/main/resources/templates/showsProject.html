@@ -118,6 +118,7 @@
                  th:text="${assignedEmployee.employeeName}"></div>
             <br> <br>
         </td>
+        <!-- giver hash mappet et bestemt task id som nøgle -->
         <td th:text="${subtaskCount[task.taskID]}"></td>
         <td>
             <div th:each="timeslot: ${timeslots}"

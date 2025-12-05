@@ -55,9 +55,11 @@ public class ProjectController {
         Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
         List<Task> tasks = projectService.getTasksByProjectID(projectID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
+        //Map med task id og antallet af subtasks tilhørende tasken
         Map<Integer, Integer> subtaskCount = new HashMap<>();
+        //loopet finder alle subtasks for en bestemt task og putter det i mappet
         for (Task task : tasks) {
-            int count = projectService.countSubtasksByID(task.getTaskID());
+            int count = projectService.countSubtasksByTaskID(task.getTaskID());
             subtaskCount.put(task.getTaskID(), count);
         }
         model.addAttribute("project", project);

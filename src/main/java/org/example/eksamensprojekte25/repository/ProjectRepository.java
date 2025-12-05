@@ -258,7 +258,8 @@ public class ProjectRepository {
         jdbcTemplate.update(sql, projectID);
     }
 
-    public int countSubtasksByID(Integer taskID) {
+    //henter alle subtasks med samme task id
+    public int countSubtasksByTaskID(Integer taskID) {
         String sql = """
                 SELECT COUNT(*) FROM subtask
                 WHERE taskID = ?
