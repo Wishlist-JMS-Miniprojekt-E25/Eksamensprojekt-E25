@@ -115,7 +115,7 @@ public class ProjectControllerTest {
         when(employeeService.getEmployeeByID(3)).thenReturn(employee);
         when(projectService.getTasksByProjectID(projectID)).thenReturn(List.of(task));
         when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
-        when(projectService.countSubtasksByID(7)).thenReturn(4);
+        when(projectService.countSubtasksByTaskID(7)).thenReturn(4);
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over

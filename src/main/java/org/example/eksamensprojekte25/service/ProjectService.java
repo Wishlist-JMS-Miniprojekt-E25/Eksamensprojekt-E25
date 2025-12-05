@@ -107,8 +107,8 @@ public class ProjectService {
         return projectRepository.getSubtasksByTaskID(taskID);
     }
 
-    public int countSubtasksByID(Integer taskID) {
-        return projectRepository.countSubtasksByID(taskID);
+    public int countSubtasksByTaskID(Integer taskID) {
+        return projectRepository.countSubtasksByTaskID(taskID);
     }
 
     public Subtask addSubtask (String subtaskName, String subtaskDescription, Integer taskID, Integer employeeID, Date plannedStartDate, Date plannedFinishDate){
