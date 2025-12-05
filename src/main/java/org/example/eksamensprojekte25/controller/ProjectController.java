@@ -2,10 +2,7 @@ package org.example.eksamensprojekte25.controller;
 
 
 import jakarta.servlet.http.HttpSession;
-import org.example.eksamensprojekte25.model.Employee;
-import org.example.eksamensprojekte25.model.Project;
-import org.example.eksamensprojekte25.model.Task;
-import org.example.eksamensprojekte25.model.Timeslot;
+import org.example.eksamensprojekte25.model.*;
 import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 import org.springframework.stereotype.Controller;
@@ -13,9 +10,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("")
@@ -40,10 +40,10 @@ public class ProjectController {
         List<Project> assignedToProjects = projectService.getProjectsByEmployeeID(loggedInEmployeeID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
         model.addAttribute("employee", loggedInEmployee);
-        model.addAttribute("allEmployees",allEmployees);
-        model.addAttribute("projectsYouManage", projectsYouManage );
+        model.addAttribute("allEmployees", allEmployees);
+        model.addAttribute("projectsYouManage", projectsYouManage);
         model.addAttribute("assignedToProjects", assignedToProjects);
-        model.addAttribute("timeslots",timeslots);
+        model.addAttribute("timeslots", timeslots);
         return "showsAllProjects";
     }
 
@@ -52,21 +52,46 @@ public class ProjectController {
     public String showsProject(@PathVariable int projectID, HttpSession session, Model model) {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
 
-        //Employee manager =
         Project project = projectService.getProjectByID(projectID);
         Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
         List<Task> tasks = projectService.getTasksByProjectID(projectID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
-        model.addAttribute("project",project);
+        Map<Integer, Integer> subtaskCount = new HashMap<>();
+        for (Task task : tasks) {
+            int count = projectService.countSubtasksByID(task.getTaskID());
+            subtaskCount.put(task.getTaskID(), count);
+        }
+        model.addAttribute("project", project);
         model.addAttribute("tasks", tasks);
         model.addAttribute("timeslots", timeslots);
-        model.addAttribute("manager",manager);
+        model.addAttribute("manager", manager);
+        model.addAttribute("subtaskCount",subtaskCount);
         return "showsProject";
+    }
+
+    //view for én enkelt task
+    @GetMapping("/task/{taskID}")
+    public String showsTask(@PathVariable int taskID, HttpSession session, Model model) {
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
+
+        Project project = projectService.getProjectByTaskID(taskID);
+        Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
+        List<Employee> allEmployees = employeeService.getAllEmployees();
+        Task task = projectService.getTaskByID(taskID);
+        List<Subtask> subtasks = projectService.getSubtasksByTaskID(taskID);
+        List<Timeslot> timeslots = projectService.getAllTimeslots();
+        model.addAttribute("project", project);
+        model.addAttribute("manager", manager);
+        model.addAttribute("allEmployees",allEmployees);
+        model.addAttribute("task", task);
+        model.addAttribute("subtasks", subtasks);
+        model.addAttribute("timeslots", timeslots);
+        return "showsTask";
     }
 
     //view for formen for projekt-oprettelse
     @GetMapping("/addProject")
-    public String addProject (HttpSession session, Model model){
+    public String addProject(HttpSession session, Model model) {
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
         Project project = new Project();
@@ -82,11 +107,11 @@ public class ProjectController {
 
     //får sendt et udfyldt projekt ned til repo'et, der inserter det i databasen
     @PostMapping("/saveProject")
-    public String saveProject (@ModelAttribute Project project,
-                               @RequestParam(value = "assignedEmployeeIDs", required = false) List<Integer> assignedEmployeeIDs,
-                               @RequestParam("plannedStartDate") String plannedStartDate,
-                               @RequestParam("plannedFinishDate") String plannedFinishDate,
-                               HttpSession session){
+    public String saveProject(@ModelAttribute Project project,
+                              @RequestParam(value = "assignedEmployeeIDs", required = false) List<Integer> assignedEmployeeIDs,
+                              @RequestParam("plannedStartDate") String plannedStartDate,
+                              @RequestParam("plannedFinishDate") String plannedFinishDate,
+                              HttpSession session) {
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
         Date plannedStartDateForProject = Date.valueOf(plannedStartDate);
@@ -98,13 +123,12 @@ public class ProjectController {
 
     //giver et projekt id videre til repo'et, der fjerner selve projektet i databasen
     @PostMapping("/deleteProject/{projectID}")
-    public String deleteProject (@PathVariable Integer projectID, HttpSession session){
-        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+    public String deleteProject (@PathVariable Integer projectID) {
 
-        projectService.deleteProjectByID(projectID);
+            projectService.deleteProjectByID(projectID);
 
-        return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
-    }
+            return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
+        }
 
     @GetMapping("/addTask/{projectID}")
     public String showAddTaskForm(@PathVariable Integer projectID, Model model) {
@@ -120,6 +144,36 @@ public class ProjectController {
         model.addAttribute("timeslots", projectService.getAllTimeslots());
 
         return "addTask";
+    }
+
+    @GetMapping("/task/{taskID}/addSubtask")
+    public String addSubtask(@PathVariable Integer taskID, Model model){
+
+        Subtask subtask = new Subtask();
+        subtask.setTaskID(taskID);
+
+        model.addAttribute("subtask", subtask);
+        model.addAttribute("taskID", taskID);
+
+        List<Employee> taskEmployees = projectService.getEmployeesByTaskID(taskID);
+        model.addAttribute("taskEmployees", taskEmployees);
+
+        return "addSubtask";
+    }
+
+    @PostMapping("/task/{taskID}/saveSubtask")
+    public String saveSubtask (@ModelAttribute Subtask subtask,
+                               @RequestParam("plannedStartDate") String plannedStartDate,
+                               @RequestParam("plannedFinishDate") String plannedFinishDate){
+
+        Date plannedStartDateForSubtask = Date.valueOf(plannedStartDate);
+        Date plannedFinishDateForSubtask = Date.valueOf(plannedFinishDate);
+
+        projectService.addSubtask(subtask.getSubtaskName(), subtask.getSubtaskDescription(), subtask.getTaskID(),
+                subtask.getEmployeeID(), plannedStartDateForSubtask,
+                plannedFinishDateForSubtask);
+
+        return "redirect:/task/" + subtask.getTaskID();
     }
 
     @PostMapping("/saveTask")
@@ -150,5 +204,15 @@ public class ProjectController {
 
         return "redirect:/task/" + taskID;
     }
+
+    @PostMapping("/deleteTask/{taskID}")
+    public String deleteTask(@PathVariable Integer taskID, RedirectAttributes redirectAttributes) {
+        Task task = projectService.getTaskByID(taskID);
+        projectService.deleteTaskByID(taskID);
+
+        redirectAttributes.addAttribute("projectID", task.getProjectID());
+        return "redirect:/project/{projectID}";
+    }
+
 
 }

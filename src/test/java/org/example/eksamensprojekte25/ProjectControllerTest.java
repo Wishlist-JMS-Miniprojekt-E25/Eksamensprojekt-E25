@@ -1,10 +1,7 @@
 package org.example.eksamensprojekte25;
 
 import org.example.eksamensprojekte25.controller.ProjectController;
-import org.example.eksamensprojekte25.model.Employee;
-import org.example.eksamensprojekte25.model.Project;
-import org.example.eksamensprojekte25.model.Task;
-import org.example.eksamensprojekte25.model.Timeslot;
+import org.example.eksamensprojekte25.model.*;
 import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 
@@ -19,7 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
@@ -81,7 +80,7 @@ public class ProjectControllerTest {
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("employee", employee))
-                .andExpect(model().attribute("allEmployees",List.of(employee)))
+                .andExpect(model().attribute("allEmployees", List.of(employee)))
                 .andExpect(model().attribute("projectsYouManage", List.of(managedProject)))
                 .andExpect(model().attribute("assignedToProjects", List.of(assignedToProject)))
                 .andExpect(model().attribute("timeslots", List.of(timeslot)));
@@ -90,6 +89,10 @@ public class ProjectControllerTest {
     //tester showsProject metoden
     @Test
     void shouldShowProject() throws Exception {
+        //fake HashMap
+        Map<Integer, Integer> fakeSubtaskCount = new HashMap<>();
+        fakeSubtaskCount.put(7, 4);
+
         //fake projekt id
         int projectID = 69;
 
@@ -99,6 +102,7 @@ public class ProjectControllerTest {
 
         //fake task
         Task task = new Task();
+        task.setTaskID(7);
 
         //fake employee
         Employee employee = new Employee();
@@ -111,6 +115,7 @@ public class ProjectControllerTest {
         when(employeeService.getEmployeeByID(3)).thenReturn(employee);
         when(projectService.getTasksByProjectID(projectID)).thenReturn(List.of(task));
         when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
+        when(projectService.countSubtasksByID(7)).thenReturn(4);
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
@@ -122,13 +127,68 @@ public class ProjectControllerTest {
                         "project",
                         "tasks",
                         "timeslots",
-                        "manager"
+                        "manager",
+                        "subtaskCount"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("project", project))
                 .andExpect(model().attribute("tasks", List.of(task)))
                 .andExpect(model().attribute("timeslots", List.of(timeslot)))
-                .andExpect(model().attribute("manager",employee));
+                .andExpect(model().attribute("manager", employee))
+                .andExpect(model().attribute("subtaskCount", fakeSubtaskCount));
+    }
+
+    //tester showsTask metoden
+    @Test
+    void shouldShowTask() throws Exception {
+        //fake task id
+        int taskID = 69;
+
+        //fake projekt
+        Project project = new Project();
+        project.setProjectManagerID(5);
+
+        //fake task
+        Task task = new Task();
+
+        //fake subtask
+        Subtask subtask = new Subtask();
+
+        //fake employee
+        Employee employee = new Employee();
+
+        //fake timeslot
+        Timeslot timeslot = new Timeslot();
+
+        //simulerer service metode kaldende med vores fake data
+        when(projectService.getProjectByTaskID(taskID)).thenReturn(project);
+        when(employeeService.getEmployeeByID(5)).thenReturn(employee);
+        when(employeeService.getAllEmployees()).thenReturn(List.of(employee));
+        when(projectService.getTaskByID(taskID)).thenReturn(task);
+        when(projectService.getSubtasksByTaskID(taskID)).thenReturn(List.of(subtask));
+        when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
+
+        //Tester at controller metoden gør hvad den skal, at den returnere html siden,
+        //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
+        mockMvc.perform(get("/task/{taskID}", taskID))
+                .andExpect(status().isOk())
+                .andExpect(view().name("showsTask"))
+                //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
+                .andExpect(model().attributeExists(
+                        "project",
+                        "manager",
+                        "allEmployees",
+                        "task",
+                        "subtasks",
+                        "timeslots"
+                ))
+                //vi giver attributterne vores fake værdier
+                .andExpect(model().attribute("project", project))
+                .andExpect(model().attribute("manager", employee))
+                .andExpect(model().attribute("allEmployees", List.of(employee)))
+                .andExpect(model().attribute("task", task))
+                .andExpect(model().attribute("subtasks", List.of(subtask)))
+                .andExpect(model().attribute("timeslots", List.of(timeslot)));
     }
 
     @Test
@@ -236,7 +296,7 @@ public class ProjectControllerTest {
                         .param("plannedFinishDate", "2025-02-20")
                         .param("assignedEmployeeIDs", "3", "4"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/userProjects"));
+                .andExpect(view().name("redirect:/project/" + 7));
 
         ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> descCaptor = ArgumentCaptor.forClass(String.class);
@@ -263,13 +323,89 @@ public class ProjectControllerTest {
     }
 
     @Test
+    void shouldDeleteTask() throws Exception {
+
+        Task task = new Task();
+        task.setTaskID(1);
+        task.setProjectID(10);
+
+        when(projectService.getTaskByID(1)).thenReturn(task);
+
+        mockMvc.perform(post("/deleteTask/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/10"));
+    @Test
     void shouldDeleteSubtask() throws Exception {
 
         mockMvc.perform(post("/task/{taskID}/deleteSubtask/{subtaskID}", 1, 3))
 
+        verify(projectService, times(1)).deleteTaskByID(1);
+    }
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/task/" + 1));
 
         verify(projectService, times(1)).deleteSubtaskByID(3);
+    }
+}
+
+
+    List<Employee> taskEmployees = List.of(
+            new Employee(1, "Hans", "h", "123", false),
+            new Employee(2, "Frede", "f", "321", false)
+    );
+
+    List<Timeslot> timeslots = List.of(
+            new Timeslot(1, 10, Date.valueOf("2025-01-01"),
+                    Date.valueOf("2025-01-10"), null, 0, 100, false)
+    );
+
+    @Test
+    void shouldShowAddSubtaskForm() throws Exception {
+        Integer taskID = 1;
+        when(projectService.getEmployeesByTaskID(taskID))
+                .thenReturn(taskEmployees);
+
+        mockMvc.perform(get("/task/{taskID}/addSubtask", taskID))
+                .andExpect(status().isOk())
+                .andExpect(view().name("addSubtask"))
+                .andExpect(model().attributeExists("subtask"))
+                .andExpect(model().attribute("taskEmployees", taskEmployees));
+    }
+
+    @Test
+    void shouldSaveSubtask() throws Exception {
+
+        mockMvc.perform(post("/task/{taskID}/saveSubtask", 1)
+                        .param("taskID", "1")
+                        .param("subtaskName", "Ny subtask")
+                        .param("subtaskDescription", "En beskrivelse")
+                        .param("plannedStartDate", "2025-02-01")
+                        .param("plannedFinishDate", "2025-02-20")
+                        .param("employeeID", "3"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/task/1"));
+
+        ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> descriptionCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Integer> taskIDCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Integer> employeeIDCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Date> startDateCaptor = ArgumentCaptor.forClass(Date.class);
+        ArgumentCaptor<Date> finishDateCaptor = ArgumentCaptor.forClass(Date.class);
+
+        verify(projectService).addSubtask(
+                nameCaptor.capture(),
+                descriptionCaptor.capture(),
+                taskIDCaptor.capture(),
+                employeeIDCaptor.capture(),
+                startDateCaptor.capture(),
+                finishDateCaptor.capture()
+        );
+
+        assertEquals("Ny subtask", nameCaptor.getValue());
+        assertEquals("En beskrivelse", descriptionCaptor.getValue());
+        assertEquals(1, taskIDCaptor.getValue());
+        assertEquals(3, employeeIDCaptor.getValue());
+        assertEquals(Date.valueOf("2025-02-01"), startDateCaptor.getValue());
+        assertEquals(Date.valueOf("2025-02-20"), finishDateCaptor.getValue());
     }
 }

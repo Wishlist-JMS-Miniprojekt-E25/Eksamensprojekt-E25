@@ -133,6 +133,16 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(sql, projectRowMapper, projectID);
     }
 
+    //henter et projekt baseret på task id
+    public Project getProjectByTaskID(Integer taskID) {
+        String sql = """
+                SELECT * FROM project p
+                JOIN task t ON p.projectID = t.projectID
+                WHERE taskID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, projectRowMapper, taskID);
+    }
+
     //henter en task baseret på task id
     public Task getTaskByID(Integer taskID) {
         String sql = """
@@ -245,6 +255,38 @@ public class ProjectRepository {
     public void deleteProjectByID(Integer projectID) {
         String sql = "DELETE FROM project WHERE projectID = ?";
         jdbcTemplate.update(sql, projectID);
+    }
+
+    public int countSubtasksByID(Integer taskID) {
+        String sql = """
+                SELECT COUNT(*) FROM subtask
+                WHERE taskID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, Integer.class,taskID);
+    }
+
+    public Subtask addSubtask (String subtaskName, String subtaskDescription, Integer timeslotID, Integer taskID, Integer employeeID){
+        String sql = "INSERT INTO subtask (subtaskName, subtaskDescription, timeslotID, taskID, employeeID) VALUES (?, ?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection ->{
+            PreparedStatement ps = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, subtaskName);
+            ps.setString(2, subtaskDescription);
+            ps.setInt(3, timeslotID);
+            ps.setInt(4, taskID);
+            ps.setInt(5, employeeID);
+            return ps;
+        }, keyHolder);
+
+        int subtaskID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
+
+        return new Subtask(subtaskID, subtaskName, subtaskDescription, timeslotID, taskID, employeeID);
+    }
+
+    public void deleteTaskByID(Integer taskID) {
+        String sql = "DELETE FROM task WHERE taskID = ?";
+        jdbcTemplate.update(sql, taskID);
     }
 
     public void deleteSubtaskByID(Integer subtaskID){
