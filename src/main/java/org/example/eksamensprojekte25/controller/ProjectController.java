@@ -95,8 +95,7 @@ public class ProjectController {
 
     //giver et projekt id videre til repo'et, der fjerner selve projektet i databasen
     @PostMapping("/deleteProject/{projectID}")
-    public String deleteProject (@PathVariable Integer projectID, HttpSession session){
-        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+    public String deleteProject (@PathVariable Integer projectID){
 
         projectService.deleteProjectByID(projectID);
 
@@ -104,8 +103,7 @@ public class ProjectController {
     }
 
     @GetMapping("/addSubtask")
-    public String addSubtask(@RequestParam("taskID") Integer taskID, HttpSession session, Model model){
-        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+    public String addSubtask(@RequestParam("taskID") Integer taskID, Model model){
 
         Subtask subtask = new Subtask();
         subtask.setSubtaskID(taskID);
@@ -121,16 +119,13 @@ public class ProjectController {
 
     @PostMapping("/saveSubtask")
     public String saveSubtask (@ModelAttribute Subtask subtask,
-                               @RequestParam(value = "assignedEmployeeID", required = false) Integer employeeID,
                                @RequestParam("plannedStartDate") String plannedStartDate,
-                               @RequestParam("plannedFinishDate") String plannedFinishDate,
-                               HttpSession session){
-        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+                               @RequestParam("plannedFinishDate") String plannedFinishDate){
 
         Date plannedStartDateForSubtask = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForSubtask = Date.valueOf(plannedFinishDate);
 
-        projectService.addSubtask(subtask.getSubtaskName(), subtask.getSubtaskDescription(), subtask.getSubtaskID(),
+        projectService.addSubtask(subtask.getSubtaskName(), subtask.getSubtaskDescription(), subtask.getTaskID(),
                 subtask.getEmployeeID(), plannedStartDateForSubtask,
                 plannedFinishDateForSubtask);
 
