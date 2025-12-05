@@ -20,6 +20,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -40,6 +41,7 @@ public class ProjectControllerTest {
     @MockitoBean
     private EmployeeService employeeService;
 
+
     //tester showsAllProjects metoden
     @Test
     void shouldShowAllProjects() throws Exception {
@@ -48,20 +50,17 @@ public class ProjectControllerTest {
 
         //fake employee
         Employee employee = new Employee();
-        employee.setEmployeeID(employeeID);
 
         //fake projekter
         Project managedProject = new Project();
-        managedProject.setProjectID(2);
         Project assignedToProject = new Project();
-        assignedToProject.setProjectID(3);
 
         //fake timeslot
         Timeslot timeslot = new Timeslot();
-        timeslot.setTimeslotID(4);
 
         //simulerer service metode kaldende med vores fake data
         when(employeeService.getEmployeeByID(employeeID)).thenReturn(employee);
+        when(employeeService.getAllEmployees()).thenReturn(List.of(employee));
         when(projectService.getProjectsByManagerID(employeeID)).thenReturn(List.of(managedProject));
         when(projectService.getProjectsByEmployeeID(employeeID)).thenReturn(List.of(assignedToProject));
         when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
@@ -74,19 +73,65 @@ public class ProjectControllerTest {
                 //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
                 .andExpect(model().attributeExists(
                         "employee",
+                        "allEmployees",
                         "projectsYouManage",
                         "assignedToProjects",
                         "timeslots"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("employee", employee))
+                .andExpect(model().attribute("allEmployees",List.of(employee)))
                 .andExpect(model().attribute("projectsYouManage", List.of(managedProject)))
                 .andExpect(model().attribute("assignedToProjects", List.of(assignedToProject)))
                 .andExpect(model().attribute("timeslots", List.of(timeslot)));
     }
 
+    //tester showsProject metoden
     @Test
-    void shouldAddProject() throws Exception{
+    void shouldShowProject() throws Exception {
+        //fake projekt id
+        int projectID = 69;
+
+        //fake projekt
+        Project project = new Project();
+        project.setProjectManagerID(3);
+
+        //fake task
+        Task task = new Task();
+
+        //fake employee
+        Employee employee = new Employee();
+
+        //fake timeslot
+        Timeslot timeslot = new Timeslot();
+
+        //simulerer service metode kaldende med vores fake data
+        when(projectService.getProjectByID(projectID)).thenReturn(project);
+        when(employeeService.getEmployeeByID(3)).thenReturn(employee);
+        when(projectService.getTasksByProjectID(projectID)).thenReturn(List.of(task));
+        when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
+
+        //Tester at controller metoden gør hvad den skal, at den returnere html siden,
+        //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
+        mockMvc.perform(get("/project/{projectID}", projectID))
+                .andExpect(status().isOk())
+                .andExpect(view().name("showsProject"))
+                //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
+                .andExpect(model().attributeExists(
+                        "project",
+                        "tasks",
+                        "timeslots",
+                        "manager"
+                ))
+                //vi giver attributterne vores fake værdier
+                .andExpect(model().attribute("project", project))
+                .andExpect(model().attribute("tasks", List.of(task)))
+                .andExpect(model().attribute("timeslots", List.of(timeslot)))
+                .andExpect(model().attribute("manager",employee));
+    }
+
+    @Test
+    void shouldAddProject() throws Exception {
 
         List<Employee> employees = new ArrayList<>();
         employees.add(new Employee(1, "Simon", "Sim", "123", true));
@@ -103,15 +148,15 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void shouldSaveProject() throws Exception{
+    void shouldSaveProject() throws Exception {
 
         mockMvc.perform(post("/saveProject")
-                .sessionAttr("employeeID", 1)
-                .param("projectName", "Test Projekt")
-                .param("ProjectDescription", "Beskrivelse")
-                .param("plannedStartDate", "2025-11-01")
-                .param("plannedFinishDate", "2025-12-01")
-                .param("assignedEmployeeIDs", "2", "3"))
+                        .sessionAttr("employeeID", 1)
+                        .param("projectName", "Test Projekt")
+                        .param("ProjectDescription", "Beskrivelse")
+                        .param("plannedStartDate", "2025-11-01")
+                        .param("plannedFinishDate", "2025-12-01")
+                        .param("assignedEmployeeIDs", "2", "3"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/userProjects"));
 
@@ -137,6 +182,16 @@ public class ProjectControllerTest {
         assertEquals(Date.valueOf("2025-11-01"), startDateCaptor.getValue());
         assertEquals(Date.valueOf("2025-12-01"), finishDateCaptor.getValue());
         assertEquals(List.of(2, 3), assignedEmployeesCaptor.getValue());
+    }
+
+    @Test
+    void shouldDeleteProject() throws Exception {
+        mockMvc.perform(post("/deleteProject/{projectID}", 3)
+                        .sessionAttr("employeeID", 1))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/userProjects"));
+
+        verify(projectService, times(1)).deleteProjectByID(3);
     }
 
     @Test

@@ -7,10 +7,8 @@ import org.example.eksamensprojekte25.model.Task;
 import org.example.eksamensprojekte25.model.Timeslot;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.engine.ElementModelStructureHandler;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.util.List;
 
 @Service
@@ -59,6 +57,7 @@ public class ProjectService {
         // 60 minutter = 1 time
         // 24 timer = 1 dag
         // Det er sådan Date fungerer
+        //metoden returnerer forskellen i dage
     }
 
     public Project addProject(Integer projectManagerID, String projectName, String projectDescription, Date plannedStartDate, Date plannedFinishDate, List<Integer> employeeIDs) {
@@ -75,9 +74,28 @@ public class ProjectService {
         return project;
     }
 
-    //henter et projekt baseret på projekt id
+    public void deleteProjectByID(Integer projectID) {
+        projectRepository.deleteProjectByID(projectID);
+    }
+
+    //henter et projekt baseret på projekt id, fylder også assignedemployees liste op
     public Project getProjectByID(Integer projectID) {
-        return projectRepository.getProjectByID(projectID);
+        Project project = projectRepository.getProjectByID(projectID);
+        List<Employee> employees = projectRepository.getEmployeesByProjectID(projectID);
+        project.setAssignedEmployees(employees);
+        return project;
+    }
+
+    public Task getTaskByID(Integer taskID) {
+        return projectRepository.getTaskByID(taskID);
+    }
+
+    public List<Task> getTasksByProjectID(Integer projectID) {
+        List<Task> tasks = projectRepository.getTasksByProjectID(projectID);
+        for (Task task : tasks) {
+            task.setAssignedEmployees(projectRepository.getEmployeesByTaskID(task.getTaskID()));
+        }
+        return tasks;
     }
 
     public Task addTask(String taskName,

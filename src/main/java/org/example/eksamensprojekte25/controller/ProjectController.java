@@ -29,22 +29,42 @@ public class ProjectController {
         this.employeeService = employeeService;
     }
 
-    //viser bruger forsiden
+    //view for bruger forsiden
     @GetMapping("/userProjects")
     public String showsAllProjects(HttpSession session, Model model) {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
 
-        Employee employee = employeeService.getEmployeeByID(loggedInEmployeeID);
+        Employee loggedInEmployee = employeeService.getEmployeeByID(loggedInEmployeeID);
+        List<Employee> allEmployees = employeeService.getAllEmployees();
         List<Project> projectsYouManage = projectService.getProjectsByManagerID(loggedInEmployeeID);
         List<Project> assignedToProjects = projectService.getProjectsByEmployeeID(loggedInEmployeeID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
-        model.addAttribute("employee", employee);
+        model.addAttribute("employee", loggedInEmployee);
+        model.addAttribute("allEmployees",allEmployees);
         model.addAttribute("projectsYouManage", projectsYouManage );
         model.addAttribute("assignedToProjects", assignedToProjects);
         model.addAttribute("timeslots",timeslots);
         return "showsAllProjects";
     }
 
+    //view for ét enkelt projekt
+    @GetMapping("/project/{projectID}")
+    public String showsProject(@PathVariable int projectID, HttpSession session, Model model) {
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
+
+        //Employee manager =
+        Project project = projectService.getProjectByID(projectID);
+        Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
+        List<Task> tasks = projectService.getTasksByProjectID(projectID);
+        List<Timeslot> timeslots = projectService.getAllTimeslots();
+        model.addAttribute("project",project);
+        model.addAttribute("tasks", tasks);
+        model.addAttribute("timeslots", timeslots);
+        model.addAttribute("manager",manager);
+        return "showsProject";
+    }
+
+    //view for formen for projekt-oprettelse
     @GetMapping("/addProject")
     public String addProject (HttpSession session, Model model){
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
@@ -60,6 +80,7 @@ public class ProjectController {
         return "addProject";
     }
 
+    //får sendt et udfyldt projekt ned til repo'et, der inserter det i databasen
     @PostMapping("/saveProject")
     public String saveProject (@ModelAttribute Project project,
                                @RequestParam(value = "assignedEmployeeIDs", required = false) List<Integer> assignedEmployeeIDs,
@@ -72,6 +93,16 @@ public class ProjectController {
         Date plannedFinishDateForProject = Date.valueOf(plannedFinishDate);
 
         projectService.addProject(currentEmployeeID, project.getProjectName(), project.getProjectDescription(), plannedStartDateForProject, plannedFinishDateForProject, assignedEmployeeIDs);
+        return "redirect:/userProjects";
+    }
+
+    //giver et projekt id videre til repo'et, der fjerner selve projektet i databasen
+    @PostMapping("/deleteProject/{projectID}")
+    public String deleteProject (@PathVariable Integer projectID, HttpSession session){
+        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+
+        projectService.deleteProjectByID(projectID);
+
         return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
     }
 

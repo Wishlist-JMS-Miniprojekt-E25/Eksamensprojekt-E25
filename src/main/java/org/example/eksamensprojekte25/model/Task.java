@@ -7,15 +7,15 @@ public class Task {
     private String taskName;
     private String taskDescription;
     private Integer timeslotID;
-    private List<Employee> employees;
+    private List<Employee> assignedEmployees;
     private Integer projectID;
 
-    public Task(Integer taskID, String taskName, String taskDescription,  Integer timeslotID,List<Employee> employees,Integer projectID) {
+    public Task(Integer taskID, String taskName, String taskDescription,  Integer timeslotID,List<Employee> assignedEmployees,Integer projectID) {
         this.taskID = taskID;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.timeslotID = timeslotID;
-        this.employees = employees;
+        this.assignedEmployees = assignedEmployees;
         this.projectID = projectID;
 
     }
@@ -23,12 +23,12 @@ public class Task {
     public Task() {
     }
 
-    public List<Employee> getEmployees() {
-        return employees;
+    public List<Employee> getAssignedEmployees() {
+        return assignedEmployees;
     }
 
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
+    public void setAssignedEmployees(List<Employee> assignedEmployees) {
+        this.assignedEmployees = assignedEmployees;
     }
 
     public Integer getProjectID() {
