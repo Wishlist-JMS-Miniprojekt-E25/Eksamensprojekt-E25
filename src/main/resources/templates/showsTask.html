@@ -28,8 +28,8 @@
         <td th:text="${project.projectName}"></td>
         <td th:text="${project.projectDescription}"></td>
         <td>
-            <div th:each="assignedEmployees: ${project.assignedEmployees}"
-                 th:text="${assignedEmployees.employeeName}"></div>
+            <div th:each="assignedEmployee: ${project.assignedEmployees}"
+                 th:text="${assignedEmployee.employeeName}"></div>
             <br> <br>
         </td>
         <td
@@ -171,8 +171,8 @@
 <a th:href="@{/task/{taskID}/addSubtask(taskID=${task.taskID})}">+ Add subtask</a>
 <!-- tabellen, der viser alle subtasks -->
 <table>
-    <tr th:if="${subtasks == null and subtasks.isEmpty()}">There are no subtasks for this task</tr>
-    <tr th:if="${subtasks != null and !subtasks.isEmpty()}">
+    <tr th:if="${task.subtasks == null and task.subtasks.isEmpty()}">There are no subtasks for this task</tr>
+    <tr th:if="${task.subtasks != null and !task.subtasks.isEmpty()}">
         <th>ID</th>
         <th>Name</th>
         <th>Description</th>
@@ -184,7 +184,7 @@
         <th>Difference in days</th>
         <th>Total workhours</th>
     </tr>
-    <tr th:each="subtask: ${subtasks}">
+    <tr th:each="subtask: ${task.subtasks}">
         <td th:text="${subtask.subtaskID}"></td>
         <td th:text="${subtask.subtaskName}"></td>
         <td th:text="${subtask.subtaskDescription}"></td>
@@ -251,11 +251,11 @@
             </div>
         </td>
         <td>
-        <form th:action="@{/task/{taskID}/deleteSubtask/{subtaskID}(taskID=${task.taskID}, subtaskID=${subtask.subtaskID})}"
-              method="post"
-              onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
-            <button type="submit">Delete</button>
-        </form>
+            <form th:action="@{/task/{taskID}/deleteSubtask/{subtaskID}(taskID=${task.taskID}, subtaskID=${subtask.subtaskID})}"
+                  method="post"
+                  onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
+                <button type="submit">Delete</button>
+            </form>
         </td>
     </tr>
 </table>

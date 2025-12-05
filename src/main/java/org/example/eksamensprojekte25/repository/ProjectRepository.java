@@ -124,6 +124,22 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, projectRowMapper, managerID);
     }
 
+    public List<Task> getTasksByProjectID(Integer projectID) {
+        String sql = """
+                SELECT * FROM task
+                WHERE projectID = ?
+                """;
+        return jdbcTemplate.query(sql, taskRowMapper, projectID);
+    }
+
+    public List<Subtask> getSubtasksByTaskID(Integer taskID) {
+        String sql = """
+                SELECT * FROM subtask
+                WHERE taskID = ?
+                """;
+        return jdbcTemplate.query(sql, subtaskRowMapper, taskID);
+    }
+
     //henter et projekt baseret på projekt id
     public Project getProjectByID(Integer projectID) {
         String sql = """
@@ -152,30 +168,9 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(sql, taskRowMapper, taskID);
     }
 
-    //Henter alle tasks for et bestemt projekt
-    public List<Task> getTasksByProjectID(Integer projectID) {
-        String sql = """
-                    SELECT * FROM task 
-                    WHERE projectID = ?
-                """;
-
-        return jdbcTemplate.query(sql, taskRowMapper, projectID);
-    }
-
-    //Henter alle subtasks for en bestemt task
-    public List<Subtask> getSubtasksByTaskID(Integer taskID) {
-        String sql = """
-                    SELECT * FROM subtask
-                    WHERE taskID = ?
-                """;
-
-        return jdbcTemplate.query(sql, subtaskRowMapper, taskID);
-    }
-
     //Inserter employees til junction table, når man vælger dem under oprettelse af projekt
     public void assignEmployeesToProject(Integer projectID, List<Integer> employeeIDs) {
         String sql = "INSERT INTO projectEmployee (employeeID, projectID) VALUES (?, ?)";
-
         for (Integer employeeID : employeeIDs) {
             jdbcTemplate.update(sql, employeeID, projectID);
         }
@@ -214,7 +209,6 @@ public class ProjectRepository {
             return ps;
         }, keyHolder);
 
-
         int projectID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
 
         return new Project(projectID, projectManagerID, projectName, projectDescription, timeslotID);
@@ -251,27 +245,17 @@ public class ProjectRepository {
         }
     }
 
-
     public void deleteProjectByID(Integer projectID) {
         String sql = "DELETE FROM project WHERE projectID = ?";
         jdbcTemplate.update(sql, projectID);
     }
 
-    //henter alle subtasks med samme task id
-    public int countSubtasksByTaskID(Integer taskID) {
-        String sql = """
-                SELECT COUNT(*) FROM subtask
-                WHERE taskID = ?
-                """;
-        return jdbcTemplate.queryForObject(sql, Integer.class,taskID);
-    }
-
-    public Subtask addSubtask (String subtaskName, String subtaskDescription, Integer timeslotID, Integer taskID, Integer employeeID){
+    public Subtask addSubtask(String subtaskName, String subtaskDescription, Integer timeslotID, Integer taskID, Integer employeeID) {
         String sql = "INSERT INTO subtask (subtaskName, subtaskDescription, timeslotID, taskID, employeeID) VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection ->{
-            PreparedStatement ps = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, subtaskName);
             ps.setString(2, subtaskDescription);
             ps.setInt(3, timeslotID);
@@ -290,7 +274,7 @@ public class ProjectRepository {
         jdbcTemplate.update(sql, taskID);
     }
 
-    public void deleteSubtaskByID(Integer subtaskID){
+    public void deleteSubtaskByID(Integer subtaskID) {
         String sql = "DELETE FROM subtask WHERE subtaskID = ?";
         jdbcTemplate.update(sql, subtaskID);
     }

@@ -54,20 +54,10 @@ public class ProjectController {
 
         Project project = projectService.getProjectByID(projectID);
         Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
-        List<Task> tasks = projectService.getTasksByProjectID(projectID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
-        //Map med task id og antallet af subtasks tilhørende tasken
-        Map<Integer, Integer> subtaskCount = new HashMap<>();
-        //loopet finder alle subtasks for en bestemt task og putter det i mappet
-        for (Task task : tasks) {
-            int count = projectService.countSubtasksByTaskID(task.getTaskID());
-            subtaskCount.put(task.getTaskID(), count);
-        }
         model.addAttribute("project", project);
-        model.addAttribute("tasks", tasks);
-        model.addAttribute("timeslots", timeslots);
         model.addAttribute("manager", manager);
-        model.addAttribute("subtaskCount",subtaskCount);
+        model.addAttribute("timeslots", timeslots);
         return "showsProject";
     }
 
@@ -78,15 +68,13 @@ public class ProjectController {
 
         Project project = projectService.getProjectByTaskID(taskID);
         Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
-        List<Employee> allEmployees = employeeService.getAllEmployees();
         Task task = projectService.getTaskByID(taskID);
-        List<Subtask> subtasks = projectService.getSubtasksByTaskID(taskID);
+        List<Employee> allEmployees = employeeService.getAllEmployees();
         List<Timeslot> timeslots = projectService.getAllTimeslots();
         model.addAttribute("project", project);
         model.addAttribute("manager", manager);
-        model.addAttribute("allEmployees",allEmployees);
         model.addAttribute("task", task);
-        model.addAttribute("subtasks", subtasks);
+        model.addAttribute("allEmployees", allEmployees);
         model.addAttribute("timeslots", timeslots);
         return "showsTask";
     }
@@ -125,12 +113,12 @@ public class ProjectController {
 
     //giver et projekt id videre til repo'et, der fjerner selve projektet i databasen
     @PostMapping("/deleteProject/{projectID}")
-    public String deleteProject (@PathVariable Integer projectID) {
+    public String deleteProject(@PathVariable Integer projectID) {
 
-            projectService.deleteProjectByID(projectID);
+        projectService.deleteProjectByID(projectID);
 
-            return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
-        }
+        return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
+    }
 
     @GetMapping("/addTask/{projectID}")
     public String showAddTaskForm(@PathVariable Integer projectID, Model model) {
@@ -149,7 +137,7 @@ public class ProjectController {
     }
 
     @GetMapping("/task/{taskID}/addSubtask")
-    public String addSubtask(@PathVariable Integer taskID, Model model){
+    public String addSubtask(@PathVariable Integer taskID, Model model) {
 
         Subtask subtask = new Subtask();
         subtask.setTaskID(taskID);
@@ -164,9 +152,9 @@ public class ProjectController {
     }
 
     @PostMapping("/task/{taskID}/saveSubtask")
-    public String saveSubtask (@ModelAttribute Subtask subtask,
-                               @RequestParam("plannedStartDate") String plannedStartDate,
-                               @RequestParam("plannedFinishDate") String plannedFinishDate){
+    public String saveSubtask(@ModelAttribute Subtask subtask,
+                              @RequestParam("plannedStartDate") String plannedStartDate,
+                              @RequestParam("plannedFinishDate") String plannedFinishDate) {
 
         Date plannedStartDateForSubtask = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForSubtask = Date.valueOf(plannedFinishDate);
@@ -201,7 +189,7 @@ public class ProjectController {
     }
 
     @PostMapping("task/{taskID}/deleteSubtask/{subtaskID}")
-    public String deleteSubtask(@PathVariable Integer taskID, @PathVariable Integer subtaskID){
+    public String deleteSubtask(@PathVariable Integer taskID, @PathVariable Integer subtaskID) {
         projectService.deleteSubtaskByID(subtaskID);
 
         return "redirect:/task/" + taskID;

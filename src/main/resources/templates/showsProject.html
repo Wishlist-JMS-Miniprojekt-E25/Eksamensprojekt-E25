@@ -91,8 +91,8 @@
 <a th:href="@{/addTask/{projectID}(projectID=${project.projectID})}">+ Add task</a>
 <!-- tabellen, der viser alle tasks -->
 <table>
-    <tr th:if="${tasks == null and tasks.isEmpty()}">There are no tasks for this project</tr>
-    <tr th:if="${tasks != null and !tasks.isEmpty()}">
+    <tr th:if="${project.tasks == null and project.tasks.isEmpty()}">There are no tasks for this project</tr>
+    <tr th:if="${project.tasks != null and !project.tasks.isEmpty()}">
         <th></th>
         <th>ID</th>
         <th>Name</th>
@@ -107,7 +107,7 @@
         <th>Total workhours</th>
         <th></th>
     </tr>
-    <tr th:each="task: ${tasks}">
+    <tr th:each="task: ${project.tasks}">
         <td>
             <a th:href="@{/task/{taskID}(taskID=${task.taskID})}">View task →</a>
         </td>
@@ -119,8 +119,7 @@
                  th:text="${assignedEmployee.employeeName}"></div>
             <br> <br>
         </td>
-        <!-- giver hash mappet et bestemt task id som nøgle -->
-        <td th:text="${subtaskCount[task.taskID]}"></td>
+        <td th:text="${task.subtasks.size()}"></td>
         <td>
             <div th:each="timeslot: ${timeslots}"
                  th:if="${timeslot.timeslotID == task.timeslotID}"

@@ -89,16 +89,13 @@ public class ProjectControllerTest {
     //tester showsProject metoden
     @Test
     void shouldShowProject() throws Exception {
-        //fake HashMap
-        Map<Integer, Integer> fakeSubtaskCount = new HashMap<>();
-        fakeSubtaskCount.put(7, 4);
-
         //fake projekt id
         int projectID = 69;
 
         //fake projekt
         Project project = new Project();
         project.setProjectManagerID(3);
+        project.setTasks(new ArrayList<>());
 
         //fake task
         Task task = new Task();
@@ -113,9 +110,7 @@ public class ProjectControllerTest {
         //simulerer service metode kaldende med vores fake data
         when(projectService.getProjectByID(projectID)).thenReturn(project);
         when(employeeService.getEmployeeByID(3)).thenReturn(employee);
-        when(projectService.getTasksByProjectID(projectID)).thenReturn(List.of(task));
         when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
-        when(projectService.countSubtasksByTaskID(7)).thenReturn(4);
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
@@ -125,17 +120,13 @@ public class ProjectControllerTest {
                 //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
                 .andExpect(model().attributeExists(
                         "project",
-                        "tasks",
-                        "timeslots",
                         "manager",
-                        "subtaskCount"
+                        "timeslots"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("project", project))
-                .andExpect(model().attribute("tasks", List.of(task)))
-                .andExpect(model().attribute("timeslots", List.of(timeslot)))
                 .andExpect(model().attribute("manager", employee))
-                .andExpect(model().attribute("subtaskCount", fakeSubtaskCount));
+                .andExpect(model().attribute("timeslots", List.of(timeslot)));
     }
 
     //tester showsTask metoden
@@ -150,6 +141,7 @@ public class ProjectControllerTest {
 
         //fake task
         Task task = new Task();
+        task.setSubtasks(new ArrayList<>());
 
         //fake subtask
         Subtask subtask = new Subtask();
@@ -165,7 +157,6 @@ public class ProjectControllerTest {
         when(employeeService.getEmployeeByID(5)).thenReturn(employee);
         when(employeeService.getAllEmployees()).thenReturn(List.of(employee));
         when(projectService.getTaskByID(taskID)).thenReturn(task);
-        when(projectService.getSubtasksByTaskID(taskID)).thenReturn(List.of(subtask));
         when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
@@ -177,17 +168,15 @@ public class ProjectControllerTest {
                 .andExpect(model().attributeExists(
                         "project",
                         "manager",
-                        "allEmployees",
                         "task",
-                        "subtasks",
+                        "allEmployees",
                         "timeslots"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("project", project))
                 .andExpect(model().attribute("manager", employee))
-                .andExpect(model().attribute("allEmployees", List.of(employee)))
                 .andExpect(model().attribute("task", task))
-                .andExpect(model().attribute("subtasks", List.of(subtask)))
+                .andExpect(model().attribute("allEmployees", List.of(employee)))
                 .andExpect(model().attribute("timeslots", List.of(timeslot)));
     }
 

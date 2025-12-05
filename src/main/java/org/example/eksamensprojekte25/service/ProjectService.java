@@ -27,6 +27,7 @@ public class ProjectService {
         List<Project> projects = projectRepository.getProjectsByEmployeeID(employeeID);
         for (Project project : projects) {
             project.setAssignedEmployees(projectRepository.getEmployeesByProjectID(project.getProjectID()));
+            populateListOfTasksForProject(project);
         }
         return projects;
     }
@@ -37,6 +38,7 @@ public class ProjectService {
         List<Project> projects = projectRepository.getProjectsByManagerID(managerID);
         for (Project project : projects) {
             project.setAssignedEmployees(projectRepository.getEmployeesByProjectID(project.getProjectID()));
+            populateListOfTasksForProject(project);
         }
         return projects;
     }
@@ -83,11 +85,7 @@ public class ProjectService {
         return projectRepository.getProjectByTaskID(taskID);
     }
 
-    public int countSubtasksByTaskID(Integer taskID) {
-        return projectRepository.countSubtasksByTaskID(taskID);
-    }
-
-    public Subtask addSubtask (String subtaskName, String subtaskDescription, Integer taskID, Integer employeeID, Date plannedStartDate, Date plannedFinishDate){
+    public Subtask addSubtask(String subtaskName, String subtaskDescription, Integer taskID, Integer employeeID, Date plannedStartDate, Date plannedFinishDate) {
         int plannedDays = calculatePlannedDays(plannedStartDate, plannedFinishDate);
 
         Timeslot timeslot = projectRepository.createTimeslot(plannedDays, plannedStartDate, plannedFinishDate);
@@ -118,50 +116,42 @@ public class ProjectService {
         return task;
     }
 
-    public void deleteTaskByID(Integer taskID){
+    public void deleteTaskByID(Integer taskID) {
         projectRepository.deleteTaskByID(taskID);
     }
 
-    public void deleteSubtaskByID(Integer subtaskID){
+    public void deleteSubtaskByID(Integer subtaskID) {
         projectRepository.deleteSubtaskByID(subtaskID);
     }
 
-    public void populateListOfTasksForProject(Integer projectID) {
-        Project project = projectRepository.getProjectByID(projectID);
-        List<Task> tasks = projectRepository.getTasksByProjectID(projectID);
+    public void populateListOfTasksForProject(Project project) {
+        List<Task> tasks = projectRepository.getTasksByProjectID(project.getProjectID());
         project.setTasks(tasks);
     }
 
-    public void populateListOfSubtasksForTask(Integer taskID) {
-        Task task = projectRepository.getTaskByID(taskID);
-        List<Subtask> subtasks = projectRepository.getSubtasksByTaskID(taskID);
+    public void populateListOfSubtasksForTask(Task task) {
+        List<Subtask> subtasks = projectRepository.getSubtasksByTaskID(task.getTaskID());
         task.setSubtasks(subtasks);
     }
 
-    //henter et projekt baseret på projekt id, fylder assignedemployees liste og task lise op
+    //henter et projekt baseret på projekt id, fylder assignedemployees, task og subtask lister op
     public Project getProjectByID(Integer projectID) {
         Project project = projectRepository.getProjectByID(projectID);
         List<Employee> employees = projectRepository.getEmployeesByProjectID(projectID);
         project.setAssignedEmployees(employees);
-        populateListOfTasksForProject(projectID);
+        populateListOfTasksForProject(project);
+        for (Task task : project.getTasks()) {
+            populateListOfSubtasksForTask(task);
+        }
         return project;
     }
 
+    //henter et projekt baseret på task id, fylder assignedemployees liste og task lise op
     public Task getTaskByID(Integer taskID) {
-        populateListOfSubtasksForTask(taskID);
-        return projectRepository.getTaskByID(taskID);
-    }
-
-    public List<Task> getTasksByProjectID(Integer projectID) {
-        List<Task> tasks = projectRepository.getTasksByProjectID(projectID);
-        for (Task task : tasks) {
-            populateListOfSubtasksForTask(task.getTaskID());
-            task.setAssignedEmployees(projectRepository.getEmployeesByTaskID(task.getTaskID()));
-        }
-        return tasks;
-    }
-
-    public List<Subtask> getSubtasksByTaskID(Integer taskID) {
-        return projectRepository.getSubtasksByTaskID(taskID);
+        Task task = projectRepository.getTaskByID(taskID);
+        List<Employee> employees = projectRepository.getEmployeesByTaskID(taskID);
+        task.setAssignedEmployees(employees);
+        populateListOfSubtasksForTask(task);
+        return task;
     }
 }
