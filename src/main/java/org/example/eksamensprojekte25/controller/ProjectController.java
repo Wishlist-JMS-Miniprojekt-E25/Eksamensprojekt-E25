@@ -144,7 +144,7 @@ public class ProjectController {
         return "redirect:/project/" + task.getProjectID();
     }
     //Knappen skal ind i task view
-    @PostMapping("task/{taskID}/deleteSubtask/{subtaskID]}")
+    @PostMapping("task/{taskID}/deleteSubtask/{subtaskID}")
     public String deleteSubtask(@PathVariable Integer taskID, @PathVariable Integer subtaskID){
         projectService.deleteSubtaskByID(subtaskID);
 
