@@ -91,7 +91,7 @@ public class ProjectControllerTest {
     void shouldShowProject() throws Exception {
         //fake HashMap
         Map<Integer, Integer> fakeSubtaskCount = new HashMap<>();
-        fakeSubtaskCount.put(7,4);
+        fakeSubtaskCount.put(7, 4);
 
         //fake projekt id
         int projectID = 69;
@@ -323,10 +323,6 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void shouldShowAddSubtaskForm() throws Exception {
-
-        Integer taskID = 1;
-    @Test
     void shouldDeleteTask() throws Exception {
 
         Task task = new Task();
@@ -343,16 +339,19 @@ public class ProjectControllerTest {
     }
 
 
-        List<Employee> taskEmployees = List.of(
-                new Employee(1, "Hans", "h", "123", false),
-                new Employee(2, "Frede", "f", "321", false)
-        );
+    List<Employee> taskEmployees = List.of(
+            new Employee(1, "Hans", "h", "123", false),
+            new Employee(2, "Frede", "f", "321", false)
+    );
 
-        List<Timeslot> timeslots = List.of(
-                new Timeslot(1, 10, Date.valueOf("2025-01-01"),
-                        Date.valueOf("2025-01-10"), null, 0, 100, false)
-        );
+    List<Timeslot> timeslots = List.of(
+            new Timeslot(1, 10, Date.valueOf("2025-01-01"),
+                    Date.valueOf("2025-01-10"), null, 0, 100, false)
+    );
 
+    @Test
+    void shouldShowAddSubtaskForm() throws Exception {
+        Integer taskID = 1;
         when(projectService.getEmployeesByTaskID(taskID))
                 .thenReturn(taskEmployees);
 
