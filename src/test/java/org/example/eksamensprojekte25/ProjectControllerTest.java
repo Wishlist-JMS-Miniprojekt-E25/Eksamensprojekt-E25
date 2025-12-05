@@ -326,6 +326,22 @@ public class ProjectControllerTest {
     void shouldShowAddSubtaskForm() throws Exception {
 
         Integer taskID = 1;
+    @Test
+    void shouldDeleteTask() throws Exception {
+
+        Task task = new Task();
+        task.setTaskID(1);
+        task.setProjectID(10);
+
+        when(projectService.getTaskByID(1)).thenReturn(task);
+
+        mockMvc.perform(post("/deleteTask/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/10"));
+
+        verify(projectService, times(1)).deleteTaskByID(1);
+    }
+
 
         List<Employee> taskEmployees = List.of(
                 new Employee(1, "Hans", "h", "123", false),

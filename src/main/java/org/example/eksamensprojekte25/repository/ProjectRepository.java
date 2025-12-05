@@ -284,4 +284,9 @@ public class ProjectRepository {
 
         return new Subtask(subtaskID, subtaskName, subtaskDescription, timeslotID, taskID, employeeID);
     }
+
+    public void deleteTaskByID(Integer taskID) {
+        String sql = "DELETE FROM task WHERE taskID = ?";
+        jdbcTemplate.update(sql, taskID);
+    }
 }
