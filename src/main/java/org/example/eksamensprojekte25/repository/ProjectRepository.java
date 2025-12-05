@@ -225,4 +225,12 @@ public class ProjectRepository {
         String sql = "DELETE FROM project WHERE projectID = ?";
         jdbcTemplate.update(sql, projectID);
     }
+
+    public int countSubtasksByID(Integer taskID) {
+        String sql = """
+                SELECT COUNT (*) FROM subtask
+                WHERE taskID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, Integer.class,taskID);
+    }
 }

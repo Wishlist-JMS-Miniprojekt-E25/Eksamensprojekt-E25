@@ -98,6 +98,7 @@
         <th>Name</th>
         <th>Description</th>
         <th>Assignees</th>
+        <th>Amount of subtasks</th>
         <th>Planned Days</th>
         <th>Planned Start Date</th>
         <th>Planned Finish Date</th>
@@ -117,6 +118,7 @@
                  th:text="${assignedEmployee.employeeName}"></div>
             <br> <br>
         </td>
+        <td th:text="${subtaskCount[task.taskID]}"></td>
         <td>
             <div th:each="timeslot: ${timeslots}"
                  th:if="${timeslot.timeslotID == task.timeslotID}"

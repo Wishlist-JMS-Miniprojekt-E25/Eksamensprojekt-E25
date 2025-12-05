@@ -106,4 +106,8 @@ public class ProjectService {
     public List<Subtask> getSubtasksByTaskID(Integer taskID) {
         return projectRepository.getSubtasksByTaskID(taskID);
     }
+
+    public int countSubtasksByID(Integer taskID) {
+        return projectRepository.countSubtasksByID(taskID);
+    }
 }

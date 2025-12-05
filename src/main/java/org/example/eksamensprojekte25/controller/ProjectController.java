@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("")
@@ -53,10 +55,16 @@ public class ProjectController {
         Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
         List<Task> tasks = projectService.getTasksByProjectID(projectID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
+        Map<Integer, Integer> subtaskCount = new HashMap<>();
+        for (Task task : tasks) {
+            int count = projectService.countSubtasksByID(task.getTaskID());
+            subtaskCount.put(task.getTaskID(), count);
+        }
         model.addAttribute("project", project);
         model.addAttribute("tasks", tasks);
         model.addAttribute("timeslots", timeslots);
         model.addAttribute("manager", manager);
+        model.addAttribute("subtaskCount",subtaskCount);
         return "showsProject";
     }
 
