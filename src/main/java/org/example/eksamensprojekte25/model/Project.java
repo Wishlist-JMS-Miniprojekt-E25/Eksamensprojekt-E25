@@ -9,10 +9,7 @@ public class Project {
     private String projectName;
     private String projectDescription;
     private Integer timeslotID;
-
     private List<Employee> assignedEmployees;
-
-
 
     public Project(Integer projectID, Integer projectManagerID, String projectName,  String projectDescription, Integer timeslotID, List<Employee> assignedEmployees) {
         this.projectName = projectName;
