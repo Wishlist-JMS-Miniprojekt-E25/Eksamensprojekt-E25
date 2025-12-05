@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Time;
 import java.util.List;
 
 @Repository
@@ -246,5 +245,10 @@ public class ProjectRepository {
     public void deleteProjectByID(Integer projectID) {
         String sql = "DELETE FROM project WHERE projectID = ?";
         jdbcTemplate.update(sql, projectID);
+    }
+
+    public void deleteSubtaskByID(Integer subtaskID){
+        String sql = "DELETE FROM subtask WHERE subtaskID = ?";
+        jdbcTemplate.update(sql, subtaskID);
     }
 }

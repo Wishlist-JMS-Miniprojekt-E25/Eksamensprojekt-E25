@@ -143,5 +143,12 @@ public class ProjectController {
         Integer employeeID = (Integer) session.getAttribute("employeeID");
         return "redirect:/project/" + task.getProjectID();
     }
+    //Knappen skal ind i task view
+    @PostMapping("task/{taskID}/deleteSubtask/{subtaskID]}")
+    public String deleteSubtask(@PathVariable Integer taskID, @PathVariable Integer subtaskID){
+        projectService.deleteSubtaskByID(subtaskID);
+
+        return "redirect:/task/" + taskID;
+    }
 
 }
