@@ -110,4 +110,26 @@ public class ProjectService {
     public int countSubtasksByID(Integer taskID) {
         return projectRepository.countSubtasksByID(taskID);
     }
+
+    public Task addTask(String taskName,
+                        String taskDescription,
+                        Date plannedStartDate,
+                        Date plannedFinishDate,
+                        Integer projectID,
+                        List<Integer> employeeIDs) {
+
+        int plannedDays = calculatePlannedDays(plannedStartDate, plannedFinishDate);
+
+        Timeslot timeslot = projectRepository.createTimeslot(
+                plannedDays, plannedStartDate, plannedFinishDate);
+
+        Task task = projectRepository.addTask(
+                taskName, taskDescription, timeslot.getTimeslotID(), projectID);
+
+        projectRepository.assignEmployeesToTask(task.getTaskID(), employeeIDs);
+
+
+        return task;
+    }
+
 }
