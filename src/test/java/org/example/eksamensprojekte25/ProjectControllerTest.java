@@ -262,5 +262,65 @@ public class ProjectControllerTest {
         assertEquals(List.of(3, 4), employeesCaptor.getValue());
     }
 
+    @Test
+    void shouldShowAddSubtaskForm() throws Exception {
 
+        Integer taskID = 1;
+
+        List<Employee> taskEmployees = List.of(
+                new Employee(1, "Hans", "h", "123", false),
+                new Employee(2, "Frede", "f", "321", false)
+        );
+
+        List<Timeslot> timeslots = List.of(
+                new Timeslot(1, 10, Date.valueOf("2025-01-01"),
+                        Date.valueOf("2025-01-10"), null, 0, 100, false)
+        );
+
+        when(projectService.getEmployeesByTaskID(taskID))
+                .thenReturn(taskEmployees);
+
+        mockMvc.perform(get("/task/{taskID}/addSubtask", taskID))
+                .andExpect(status().isOk())
+                .andExpect(view().name("addSubtask"))
+                .andExpect(model().attributeExists("subtask"))
+                .andExpect(model().attribute("taskEmployees", taskEmployees));
+    }
+
+    @Test
+    void shouldSaveSubtask() throws Exception {
+
+        mockMvc.perform(post("/task/{taskID}/saveSubtask", 1)
+                        .param("taskID", "1")
+                        .param("subtaskName", "Ny subtask")
+                        .param("subtaskDescription", "En beskrivelse")
+                        .param("plannedStartDate", "2025-02-01")
+                        .param("plannedFinishDate", "2025-02-20")
+                        .param("employeeID", "3"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/task/1"));
+
+        ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> descriptionCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Integer> taskIDCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Integer> employeeIDCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Date> startDateCaptor = ArgumentCaptor.forClass(Date.class);
+        ArgumentCaptor<Date> finishDateCaptor = ArgumentCaptor.forClass(Date.class);
+
+        verify(projectService).addSubtask(
+                nameCaptor.capture(),
+                descriptionCaptor.capture(),
+                taskIDCaptor.capture(),
+                employeeIDCaptor.capture(),
+                startDateCaptor.capture(),
+                finishDateCaptor.capture()
+        );
+
+        assertEquals("Ny subtask", nameCaptor.getValue());
+        assertEquals("En beskrivelse", descriptionCaptor.getValue());
+        assertEquals(1, taskIDCaptor.getValue());
+        assertEquals(3, employeeIDCaptor.getValue());
+        assertEquals(Date.valueOf("2025-02-01"), startDateCaptor.getValue());
+        assertEquals(Date.valueOf("2025-02-20"), finishDateCaptor.getValue());
+    }
 }
