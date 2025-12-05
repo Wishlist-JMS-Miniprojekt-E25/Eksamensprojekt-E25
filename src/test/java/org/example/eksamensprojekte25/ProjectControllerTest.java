@@ -297,7 +297,6 @@ public class ProjectControllerTest {
                         .param("assignedEmployeeIDs", "3", "4"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/project/" + 7));
-                .andExpect(view().name("redirect:/project/7"));
 
         ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> descCaptor = ArgumentCaptor.forClass(String.class);

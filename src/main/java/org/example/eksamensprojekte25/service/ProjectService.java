@@ -111,10 +111,6 @@ public class ProjectService {
         return projectRepository.countSubtasksByID(taskID);
     }
 
-    public List<Employee> getEmployeesByTaskID(Integer taskID){
-        return projectRepository.getEmployeesByTaskID(taskID);
-    }
-
     public Subtask addSubtask (String subtaskName, String subtaskDescription, Integer taskID, Integer employeeID, Date plannedStartDate, Date plannedFinishDate){
         int plannedDays = calculatePlannedDays(plannedStartDate, plannedFinishDate);
 

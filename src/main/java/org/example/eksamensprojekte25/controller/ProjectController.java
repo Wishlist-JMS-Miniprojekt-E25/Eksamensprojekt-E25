@@ -122,14 +122,12 @@ public class ProjectController {
 
     //giver et projekt id videre til repo'et, der fjerner selve projektet i databasen
     @PostMapping("/deleteProject/{projectID}")
-    public String deleteProject (@PathVariable Integer projectID){
-    public String deleteProject(@PathVariable Integer projectID, HttpSession session) {
-        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+    public String deleteProject (@PathVariable Integer projectID) {
 
-        projectService.deleteProjectByID(projectID);
+            projectService.deleteProjectByID(projectID);
 
-        return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
-    }
+            return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
+        }
 
     @GetMapping("/addTask/{projectID}")
     public String showAddTaskForm(@PathVariable Integer projectID, Model model) {

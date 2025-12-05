@@ -10,7 +10,7 @@
     <div>
         <h2>Add Subtask</h2>
 
-        <form th:action="@{/task/{taskID}/saveSubtask(taskID=${taskID})}" th:object="${subtask}" method="post">
+        <form th:action="@{/task/{taskID}/saveSubtask(taskID=${subtask.taskID})}" th:object="${subtask}" method="post">
             <input type="hidden" th:field="*{taskID}">
 
             <label>Name</label>

@@ -167,7 +167,7 @@
     </tr>
 </table>
 <br> <br> <br> <br> <br> <br>
-<a th:href="@{/addSubtask}">+ Add subtask</a>
+<a th:href="@{/task/{taskID}/addSubtask(taskID=${task.taskID})}">+ Add subtask</a>
 <!-- tabellen, der viser alle subtasks -->
 <table>
     <tr th:if="${subtasks == null and subtasks.isEmpty()}">There are no subtasks for this task</tr>
