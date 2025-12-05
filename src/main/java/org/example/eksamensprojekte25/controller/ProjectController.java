@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Date;
 import java.util.HashMap;
@@ -124,13 +125,12 @@ public class ProjectController {
 
     //giver et projekt id videre til repo'et, der fjerner selve projektet i databasen
     @PostMapping("/deleteProject/{projectID}")
-    public String deleteProject(@PathVariable Integer projectID, HttpSession session) {
-        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+    public String deleteProject (@PathVariable Integer projectID) {
 
-        projectService.deleteProjectByID(projectID);
+            projectService.deleteProjectByID(projectID);
 
-        return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
-    }
+            return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
+        }
 
     @GetMapping("/addTask/{projectID}")
     public String showAddTaskForm(@PathVariable Integer projectID, Model model) {
@@ -146,6 +146,36 @@ public class ProjectController {
         model.addAttribute("timeslots", projectService.getAllTimeslots());
 
         return "addTask";
+    }
+
+    @GetMapping("/task/{taskID}/addSubtask")
+    public String addSubtask(@PathVariable Integer taskID, Model model){
+
+        Subtask subtask = new Subtask();
+        subtask.setTaskID(taskID);
+
+        model.addAttribute("subtask", subtask);
+        model.addAttribute("taskID", taskID);
+
+        List<Employee> taskEmployees = projectService.getEmployeesByTaskID(taskID);
+        model.addAttribute("taskEmployees", taskEmployees);
+
+        return "addSubtask";
+    }
+
+    @PostMapping("/task/{taskID}/saveSubtask")
+    public String saveSubtask (@ModelAttribute Subtask subtask,
+                               @RequestParam("plannedStartDate") String plannedStartDate,
+                               @RequestParam("plannedFinishDate") String plannedFinishDate){
+
+        Date plannedStartDateForSubtask = Date.valueOf(plannedStartDate);
+        Date plannedFinishDateForSubtask = Date.valueOf(plannedFinishDate);
+
+        projectService.addSubtask(subtask.getSubtaskName(), subtask.getSubtaskDescription(), subtask.getTaskID(),
+                subtask.getEmployeeID(), plannedStartDateForSubtask,
+                plannedFinishDateForSubtask);
+
+        return "redirect:/task/" + subtask.getTaskID();
     }
 
     @PostMapping("/saveTask")
@@ -169,5 +199,15 @@ public class ProjectController {
         Integer employeeID = (Integer) session.getAttribute("employeeID");
         return "redirect:/project/" + task.getProjectID();
     }
+
+    @PostMapping("/deleteTask/{taskID}")
+    public String deleteTask(@PathVariable Integer taskID, RedirectAttributes redirectAttributes) {
+        Task task = projectService.getTaskByID(taskID);
+        projectService.deleteTaskByID(taskID);
+
+        redirectAttributes.addAttribute("projectID", task.getProjectID());
+        return "redirect:/project/{projectID}";
+    }
+
 
 }

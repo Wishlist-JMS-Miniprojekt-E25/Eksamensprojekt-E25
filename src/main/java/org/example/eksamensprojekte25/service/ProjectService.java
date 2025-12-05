@@ -111,6 +111,16 @@ public class ProjectService {
         return projectRepository.countSubtasksByTaskID(taskID);
     }
 
+    public Subtask addSubtask (String subtaskName, String subtaskDescription, Integer taskID, Integer employeeID, Date plannedStartDate, Date plannedFinishDate){
+        int plannedDays = calculatePlannedDays(plannedStartDate, plannedFinishDate);
+
+        Timeslot timeslot = projectRepository.createTimeslot(plannedDays, plannedStartDate, plannedFinishDate);
+
+        Subtask subtask = projectRepository.addSubtask(subtaskName, subtaskDescription, timeslot.getTimeslotID(), taskID, employeeID);
+
+        return subtask;
+    }
+
     public Task addTask(String taskName,
                         String taskDescription,
                         Date plannedStartDate,
@@ -130,6 +140,10 @@ public class ProjectService {
 
 
         return task;
+    }
+
+    public void deleteTaskByID(Integer taskID){
+        projectRepository.deleteTaskByID(taskID);
     }
 
 }

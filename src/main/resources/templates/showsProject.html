@@ -105,6 +105,7 @@
         <th>Actual Finish Date</th>
         <th>Difference in days</th>
         <th>Total workhours</th>
+        <th></th>
     </tr>
     <tr th:each="task: ${tasks}">
         <td>
@@ -175,6 +176,13 @@
                  th:if="${timeslot.timeslotID == task.timeslotID}"
                  th:text="${timeslot.totalWorkhours}">
             </div>
+        </td>
+        <td>
+            <form th:action="@{/deleteTask/{taskID}(taskID=${task.taskID})}"
+                  method="post"
+                  onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
+                <button type="submit">Delete</button>
+            </form>
         </td>
     </tr>
 </table>
