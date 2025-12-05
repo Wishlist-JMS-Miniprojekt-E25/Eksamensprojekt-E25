@@ -102,7 +102,7 @@ public class ProjectController {
         return "redirect:/userProjects";
     }
 
-    @GetMapping("/addSubtask")
+    @GetMapping("/task/{taskID}/addSubtask")
     public String addSubtask(@RequestParam("taskID") Integer taskID, Model model){
 
         Subtask subtask = new Subtask();
@@ -117,7 +117,7 @@ public class ProjectController {
         return "addSubtask";
     }
 
-    @PostMapping("/saveSubtask")
+    @PostMapping("/task/{taskID}/saveSubtask")
     public String saveSubtask (@ModelAttribute Subtask subtask,
                                @RequestParam("plannedStartDate") String plannedStartDate,
                                @RequestParam("plannedFinishDate") String plannedFinishDate){

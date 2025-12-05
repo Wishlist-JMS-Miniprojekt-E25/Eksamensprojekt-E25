@@ -2,22 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Project</title>
+    <title>Add Subtask</title>
 </head>
 <body>
 
 <main>
     <div>
-        <h2>Add Project</h2>
+        <h2>Add Subtask</h2>
 
-        <form th:action="@{/saveSubtask}" th:object="${Subtask}" method="post">
+        <form th:action="@{/saveSubtask}" th:object="${subtask}" method="post">
             <input type="hidden" th:field="*{taskID}">
 
             <label>Name</label>
-            <input type="text" th:field="*{projectName}" required>
+            <input type="text" th:field="*{subtaskName}" required>
 
             <label>Description</label>
-            <input type="text" th:field="*{projectDescription}">
+            <input type="text" th:field="*{subtaskDescription}">
 
             <label>Planned Start Date</label>
             <input type="date" name="plannedStartDate" required>
@@ -25,10 +25,10 @@
             <label>Planned Finish Date</label>
             <input type="date" name="plannedFinishDate" required>
 
-            <p>Assing employees</p>
+            <p>Assing employee</p>
             <div th:each="employee : ${allEmployees}">
                 <label>
-                    <input type="checkbox"
+                    <input type="radio"
                            th:name="assignedEmployeeIDs"
                            th:value="${employee.employeeID}">
                     <span th:text="${employee.employeeName}">
