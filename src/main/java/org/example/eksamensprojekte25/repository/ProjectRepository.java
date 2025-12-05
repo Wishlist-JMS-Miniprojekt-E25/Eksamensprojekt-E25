@@ -260,7 +260,7 @@ public class ProjectRepository {
 
     public int countSubtasksByID(Integer taskID) {
         String sql = """
-                SELECT COUNT (*) FROM subtask
+                SELECT COUNT(*) FROM subtask
                 WHERE taskID = ?
                 """;
         return jdbcTemplate.queryForObject(sql, Integer.class,taskID);

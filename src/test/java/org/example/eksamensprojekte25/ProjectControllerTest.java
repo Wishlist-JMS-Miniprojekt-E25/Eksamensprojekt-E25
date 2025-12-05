@@ -16,7 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
@@ -87,6 +89,10 @@ public class ProjectControllerTest {
     //tester showsProject metoden
     @Test
     void shouldShowProject() throws Exception {
+        //fake HashMap
+        Map<Integer, Integer> fakeSubtaskCount = new HashMap<>();
+        fakeSubtaskCount.put(7,4);
+
         //fake projekt id
         int projectID = 69;
 
@@ -96,6 +102,7 @@ public class ProjectControllerTest {
 
         //fake task
         Task task = new Task();
+        task.setTaskID(7);
 
         //fake employee
         Employee employee = new Employee();
@@ -108,6 +115,7 @@ public class ProjectControllerTest {
         when(employeeService.getEmployeeByID(3)).thenReturn(employee);
         when(projectService.getTasksByProjectID(projectID)).thenReturn(List.of(task));
         when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
+        when(projectService.countSubtasksByID(7)).thenReturn(4);
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
@@ -119,13 +127,15 @@ public class ProjectControllerTest {
                         "project",
                         "tasks",
                         "timeslots",
-                        "manager"
+                        "manager",
+                        "subtaskCount"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("project", project))
                 .andExpect(model().attribute("tasks", List.of(task)))
                 .andExpect(model().attribute("timeslots", List.of(timeslot)))
-                .andExpect(model().attribute("manager", employee));
+                .andExpect(model().attribute("manager", employee))
+                .andExpect(model().attribute("subtaskCount", fakeSubtaskCount));
     }
 
     //tester showsTask metoden
@@ -286,7 +296,7 @@ public class ProjectControllerTest {
                         .param("plannedFinishDate", "2025-02-20")
                         .param("assignedEmployeeIDs", "3", "4"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/userProjects"));
+                .andExpect(view().name("redirect:/project/" + 7));
 
         ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> descCaptor = ArgumentCaptor.forClass(String.class);
