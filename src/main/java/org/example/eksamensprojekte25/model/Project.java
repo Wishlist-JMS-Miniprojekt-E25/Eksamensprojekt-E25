@@ -10,15 +10,7 @@ public class Project {
     private String projectDescription;
     private Integer timeslotID;
     private List<Employee> assignedEmployees;
-
-    public Project(Integer projectID, Integer projectManagerID, String projectName,  String projectDescription, Integer timeslotID, List<Employee> assignedEmployees) {
-        this.projectName = projectName;
-        this.projectID = projectID;
-        this.projectDescription = projectDescription;
-        this.timeslotID = timeslotID;
-        this.assignedEmployees = assignedEmployees;
-        this.projectManagerID = projectManagerID;
-    }
+    private List<Task> tasks;
 
     public Project(Integer projectID, Integer projectManagerID, String projectName, String projectDescription, Integer timeslotID) {
         this.projectID = projectID;
@@ -30,6 +22,14 @@ public class Project {
 
     public Project() {
 
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public String getProjectName() {

@@ -9,6 +9,7 @@ public class Task {
     private Integer timeslotID;
     private List<Employee> assignedEmployees;
     private Integer projectID;
+    private List<Subtask> subtasks;
 
     public Task(Integer taskID, String taskName, String taskDescription,  Integer timeslotID,List<Employee> assignedEmployees,Integer projectID) {
         this.taskID = taskID;
@@ -18,6 +19,14 @@ public class Task {
         this.assignedEmployees = assignedEmployees;
         this.projectID = projectID;
 
+    }
+
+    public List<Subtask> getSubtasks() {
+        return subtasks;
+    }
+
+    public void setSubtasks(List<Subtask> subtasks) {
+        this.subtasks = subtasks;
     }
 
     public Task() {
