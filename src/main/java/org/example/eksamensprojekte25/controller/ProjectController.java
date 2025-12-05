@@ -127,8 +127,8 @@ public class ProjectController {
         model.addAttribute("subtask", subtask);
         model.addAttribute("taskID", taskID);
 
-        List<Employee> allEmployees = employeeService.getAllEmployees();
-        model.addAttribute("allEmployees", allEmployees);
+        List<Employee> taskEmployees = projectService.getEmployeesByTaskID(taskID);
+        model.addAttribute("taskEmployees", taskEmployees);
 
         return "addSubtask";
     }

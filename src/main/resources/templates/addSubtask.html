@@ -26,7 +26,7 @@
             <input type="date" name="plannedFinishDate" required>
 
             <p>Assing employee</p>
-            <div th:each="employee : ${allEmployees}">
+            <div th:each="employee : ${taskEmployees}">
                 <label>
                     <input type="radio"
                            th:field="*{employeeID}"
