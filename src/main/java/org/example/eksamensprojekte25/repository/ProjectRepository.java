@@ -215,4 +215,23 @@ public class ProjectRepository {
         String sql = "DELETE FROM project WHERE projectID = ?";
         jdbcTemplate.update(sql, projectID);
     }
+
+    public Subtask addSubtask (String subtaskName, String subtaskDescription, Integer timeslotID, Integer taskID, Integer employeeID){
+        String sql = "INSERT INTO subtask (subtaskName, subtaskDescription, timeslotID, taskID, employeeID) VALUES (?, ?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection ->{
+            PreparedStatement ps = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, subtaskName);
+            ps.setString(2, subtaskDescription);
+            ps.setInt(3, timeslotID);
+            ps.setInt(4, taskID);
+            ps.setInt(5, employeeID);
+            return ps;
+        }, keyHolder);
+
+        int subtaskID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
+
+        return new Subtask(subtaskID, subtaskName, subtaskDescription, timeslotID, taskID, employeeID);
+    }
 }

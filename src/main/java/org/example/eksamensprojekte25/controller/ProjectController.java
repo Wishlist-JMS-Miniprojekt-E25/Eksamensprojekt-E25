@@ -2,10 +2,7 @@ package org.example.eksamensprojekte25.controller;
 
 
 import jakarta.servlet.http.HttpSession;
-import org.example.eksamensprojekte25.model.Employee;
-import org.example.eksamensprojekte25.model.Project;
-import org.example.eksamensprojekte25.model.Task;
-import org.example.eksamensprojekte25.model.Timeslot;
+import org.example.eksamensprojekte25.model.*;
 import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 import org.springframework.stereotype.Controller;
@@ -102,6 +99,40 @@ public class ProjectController {
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
         projectService.deleteProjectByID(projectID);
+
+        return "redirect:/userProjects";
+    }
+
+    @GetMapping("/addSubtask")
+    public String addSubtask(@RequestParam("taskID") Integer taskID, HttpSession session, Model model){
+        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+
+        Subtask subtask = new Subtask();
+        subtask.setSubtaskID(taskID);
+
+        model.addAttribute("subtask", subtask);
+        model.addAttribute("taskID", taskID);
+
+        List<Employee> allEmployees = employeeService.getAllEmployees();
+        model.addAttribute("allEmployees", allEmployees);
+
+        return "addSubtask";
+    }
+
+    @PostMapping("/saveSubtask")
+    public String saveSubtask (@ModelAttribute Subtask subtask,
+                               @RequestParam(value = "assignedEmployeeID", required = false) Integer employeeID,
+                               @RequestParam("plannedStartDate") String plannedStartDate,
+                               @RequestParam("plannedFinishDate") String plannedFinishDate,
+                               HttpSession session){
+        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+
+        Date plannedStartDateForSubtask = Date.valueOf(plannedStartDate);
+        Date plannedFinishDateForSubtask = Date.valueOf(plannedFinishDate);
+
+        projectService.addSubtask(subtask.getSubtaskName(), subtask.getSubtaskDescription(), subtask.getSubtaskID(),
+                subtask.getEmployeeID(), plannedStartDateForSubtask,
+                plannedFinishDateForSubtask);
 
         return "redirect:/userProjects";
     }

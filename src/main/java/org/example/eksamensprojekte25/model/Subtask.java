@@ -1,16 +1,16 @@
 package org.example.eksamensprojekte25.model;
 
 public class Subtask {
-    private String subtaskName;
     private Integer subtaskID;
+    private String subtaskName;
     private String subtaskDescription;
     private Integer timeslotID;
     private Integer taskID;
     private Integer employeeID;
 
-    public Subtask(String subtaskName, Integer subtaskID, String subtaskDescription, Integer timeslotID, Integer taskID, Integer employeeID) {
-        this.subtaskName = subtaskName;
+    public Subtask(Integer subtaskID, String subtaskName, String subtaskDescription, Integer timeslotID, Integer taskID, Integer employeeID) {
         this.subtaskID = subtaskID;
+        this.subtaskName = subtaskName;
         this.subtaskDescription = subtaskDescription;
         this.timeslotID = timeslotID;
         this.taskID = taskID;

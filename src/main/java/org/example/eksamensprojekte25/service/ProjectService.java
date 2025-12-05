@@ -1,10 +1,7 @@
 package org.example.eksamensprojekte25.service;
 
 
-import org.example.eksamensprojekte25.model.Employee;
-import org.example.eksamensprojekte25.model.Project;
-import org.example.eksamensprojekte25.model.Task;
-import org.example.eksamensprojekte25.model.Timeslot;
+import org.example.eksamensprojekte25.model.*;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
@@ -100,5 +97,15 @@ public class ProjectService {
             task.setAssignedEmployees(projectRepository.getEmployeesByTaskID(task.getTaskID()));
         }
         return tasks;
+    }
+
+    public Subtask addSubtask (String subtaskName, String subtaskDescription, Integer taskID, Integer employeeID, Date plannedStartDate, Date plannedFinishDate){
+        int plannedDays = calculatePlannedDays(plannedStartDate, plannedFinishDate);
+
+        Timeslot timeslot = projectRepository.createTimeslot(plannedDays, plannedStartDate, plannedFinishDate);
+
+        Subtask subtask = projectRepository.addSubtask(subtaskName, subtaskDescription, timeslot.getTimeslotID(), taskID, employeeID);
+
+        return subtask;
     }
 }
