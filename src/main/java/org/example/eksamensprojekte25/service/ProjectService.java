@@ -1,10 +1,7 @@
 package org.example.eksamensprojekte25.service;
 
 
-import org.example.eksamensprojekte25.model.Employee;
-import org.example.eksamensprojekte25.model.Project;
-import org.example.eksamensprojekte25.model.Task;
-import org.example.eksamensprojekte25.model.Timeslot;
+import org.example.eksamensprojekte25.model.*;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +87,10 @@ public class ProjectService {
         return project;
     }
 
+    public Project getProjectByTaskID(Integer taskID) {
+        return projectRepository.getProjectByTaskID(taskID);
+    }
+
     public Task getTaskByID(Integer taskID) {
         return projectRepository.getTaskByID(taskID);
     }
@@ -100,5 +101,9 @@ public class ProjectService {
             task.setAssignedEmployees(projectRepository.getEmployeesByTaskID(task.getTaskID()));
         }
         return tasks;
+    }
+
+    public List<Subtask> getSubtasksByTaskID(Integer taskID) {
+        return projectRepository.getSubtasksByTaskID(taskID);
     }
 }

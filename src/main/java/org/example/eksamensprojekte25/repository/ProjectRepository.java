@@ -134,6 +134,16 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(sql, projectRowMapper, projectID);
     }
 
+    //henter et projekt baseret på task id
+    public Project getProjectByTaskID(Integer taskID) {
+        String sql = """
+                SELECT * FROM project p
+                JOIN task t ON p.projectID = t.projectID
+                WHERE taskID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, projectRowMapper, taskID);
+    }
+
     //henter en task baseret på task id
     public Task getTaskByID(Integer taskID) {
         String sql = """
