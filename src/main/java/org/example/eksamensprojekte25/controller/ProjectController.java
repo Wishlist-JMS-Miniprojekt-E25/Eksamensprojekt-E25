@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("")
@@ -37,10 +39,10 @@ public class ProjectController {
         List<Project> assignedToProjects = projectService.getProjectsByEmployeeID(loggedInEmployeeID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
         model.addAttribute("employee", loggedInEmployee);
-        model.addAttribute("allEmployees",allEmployees);
-        model.addAttribute("projectsYouManage", projectsYouManage );
+        model.addAttribute("allEmployees", allEmployees);
+        model.addAttribute("projectsYouManage", projectsYouManage);
         model.addAttribute("assignedToProjects", assignedToProjects);
-        model.addAttribute("timeslots",timeslots);
+        model.addAttribute("timeslots", timeslots);
         return "showsAllProjects";
     }
 
@@ -49,21 +51,46 @@ public class ProjectController {
     public String showsProject(@PathVariable int projectID, HttpSession session, Model model) {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
 
-        //Employee manager =
         Project project = projectService.getProjectByID(projectID);
         Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
         List<Task> tasks = projectService.getTasksByProjectID(projectID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
-        model.addAttribute("project",project);
+        Map<Integer, Integer> subtaskCount = new HashMap<>();
+        for (Task task : tasks) {
+            int count = projectService.countSubtasksByID(task.getTaskID());
+            subtaskCount.put(task.getTaskID(), count);
+        }
+        model.addAttribute("project", project);
         model.addAttribute("tasks", tasks);
         model.addAttribute("timeslots", timeslots);
-        model.addAttribute("manager",manager);
+        model.addAttribute("manager", manager);
+        model.addAttribute("subtaskCount",subtaskCount);
         return "showsProject";
+    }
+
+    //view for én enkelt task
+    @GetMapping("/task/{taskID}")
+    public String showsTask(@PathVariable int taskID, HttpSession session, Model model) {
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
+
+        Project project = projectService.getProjectByTaskID(taskID);
+        Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
+        List<Employee> allEmployees = employeeService.getAllEmployees();
+        Task task = projectService.getTaskByID(taskID);
+        List<Subtask> subtasks = projectService.getSubtasksByTaskID(taskID);
+        List<Timeslot> timeslots = projectService.getAllTimeslots();
+        model.addAttribute("project", project);
+        model.addAttribute("manager", manager);
+        model.addAttribute("allEmployees",allEmployees);
+        model.addAttribute("task", task);
+        model.addAttribute("subtasks", subtasks);
+        model.addAttribute("timeslots", timeslots);
+        return "showsTask";
     }
 
     //view for formen for projekt-oprettelse
     @GetMapping("/addProject")
-    public String addProject (HttpSession session, Model model){
+    public String addProject(HttpSession session, Model model) {
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
         Project project = new Project();
@@ -79,11 +106,11 @@ public class ProjectController {
 
     //får sendt et udfyldt projekt ned til repo'et, der inserter det i databasen
     @PostMapping("/saveProject")
-    public String saveProject (@ModelAttribute Project project,
-                               @RequestParam(value = "assignedEmployeeIDs", required = false) List<Integer> assignedEmployeeIDs,
-                               @RequestParam("plannedStartDate") String plannedStartDate,
-                               @RequestParam("plannedFinishDate") String plannedFinishDate,
-                               HttpSession session){
+    public String saveProject(@ModelAttribute Project project,
+                              @RequestParam(value = "assignedEmployeeIDs", required = false) List<Integer> assignedEmployeeIDs,
+                              @RequestParam("plannedStartDate") String plannedStartDate,
+                              @RequestParam("plannedFinishDate") String plannedFinishDate,
+                              HttpSession session) {
         Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
         Date plannedStartDateForProject = Date.valueOf(plannedStartDate);
@@ -96,6 +123,8 @@ public class ProjectController {
     //giver et projekt id videre til repo'et, der fjerner selve projektet i databasen
     @PostMapping("/deleteProject/{projectID}")
     public String deleteProject (@PathVariable Integer projectID){
+    public String deleteProject(@PathVariable Integer projectID, HttpSession session) {
+        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
 
         projectService.deleteProjectByID(projectID);
 

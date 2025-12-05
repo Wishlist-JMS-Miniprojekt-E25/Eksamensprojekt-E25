@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Project</title>
+    <title>Task/Subtasks</title>
 </head>
 <body>
-<a th:href="@{/userProjects}">← Go back</a>
+<a th:href="@{/project/{projectID}(projectID=${project.projectID})}">← Go back</a>
 <br> <br>
 <!-- tabellen, der viser det enkelte projekt -->
 <table>
@@ -88,17 +88,13 @@
     </tr>
 </table>
 <br> <br> <br> <br> <br> <br>
-<a th:href="@{/addTask/{projectID}(projectID=${project.projectID})}">+ Add task</a>
-<!-- tabellen, der viser alle tasks -->
+<!-- tabellen, der viser den enkelte task -->
 <table>
-    <tr th:if="${tasks == null and tasks.isEmpty()}">There are no tasks for this project</tr>
-    <tr th:if="${tasks != null and !tasks.isEmpty()}">
-        <th></th>
+    <tr>
         <th>ID</th>
         <th>Name</th>
         <th>Description</th>
         <th>Assignees</th>
-        <th>Amount of subtasks</th>
         <th>Planned Days</th>
         <th>Planned Start Date</th>
         <th>Planned Finish Date</th>
@@ -106,10 +102,7 @@
         <th>Difference in days</th>
         <th>Total workhours</th>
     </tr>
-    <tr th:each="task: ${tasks}">
-        <td>
-            <a th:href="@{/task/{taskID}(taskID=${task.taskID})}">View task →</a>
-        </td>
+    <tr>
         <td th:text="${task.taskID}"></td>
         <td th:text="${task.taskName}"></td>
         <td th:text="${task.taskDescription}"></td>
@@ -118,7 +111,6 @@
                  th:text="${assignedEmployee.employeeName}"></div>
             <br> <br>
         </td>
-        <td th:text="${subtaskCount[task.taskID]}"></td>
         <td>
             <div th:each="timeslot: ${timeslots}"
                  th:if="${timeslot.timeslotID == task.timeslotID}"
@@ -137,7 +129,6 @@
                  th:text="${timeslot.plannedFinishDate}">
             </div>
         </td>
-
         <td>
             <div th:each="timeslot: ${timeslots}"
                  th:if="${timeslot.timeslotID == task.timeslotID}">
@@ -153,10 +144,93 @@
                 </div>
             </div>
         </td>
-
         <td>
             <div th:each="timeslot: ${timeslots}"
                  th:if="${timeslot.timeslotID == task.timeslotID}">
+                <div
+                        th:if="${timeslot.differenceInDays == 0}"> Will be calculated later
+                </div>
+
+                <div th:unless="${timeslot.differenceInDays == 0}">
+                    <div
+                            th:text="${timeslot.differenceInDays}">
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == task.timeslotID}"
+                 th:text="${timeslot.totalWorkhours}">
+            </div>
+        </td>
+    </tr>
+</table>
+<br> <br> <br> <br> <br> <br>
+<a th:href="@{/addSubtask}">+ Add subtask</a>
+<!-- tabellen, der viser alle subtasks -->
+<table>
+    <tr th:if="${subtasks == null and subtasks.isEmpty()}">There are no subtasks for this task</tr>
+    <tr th:if="${subtasks != null and !subtasks.isEmpty()}">
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Assignees</th>
+        <th>Planned Days</th>
+        <th>Planned Start Date</th>
+        <th>Planned Finish Date</th>
+        <th>Actual Finish Date</th>
+        <th>Difference in days</th>
+        <th>Total workhours</th>
+    </tr>
+    <tr th:each="subtask: ${subtasks}">
+        <td th:text="${subtask.subtaskID}"></td>
+        <td th:text="${subtask.subtaskName}"></td>
+        <td th:text="${subtask.subtaskDescription}"></td>
+        <td>
+            <div th:each="employee: ${allEmployees}"
+                 th:if="${subtask.employeeID == employee.employeeID}"
+                 th:text="${employee.employeeName}">
+            </div>
+        </td>
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == subtask.timeslotID}"
+                 th:text="${timeslot.plannedDays}">
+            </div>
+        </td>
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == subtask.timeslotID}"
+                 th:text="${timeslot.plannedStartDate}">
+            </div>
+        </td>
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == subtask.timeslotID}"
+                 th:text="${timeslot.plannedFinishDate}">
+            </div>
+        </td>
+
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == subtask.timeslotID}">
+
+                <div
+                        th:if="${timeslot.actualFinishDate==null}"> Will be calculated later
+                </div>
+
+                <div th:unless="${timeslot.actualFinishDate==null}">
+                    <div
+                            th:text="${timeslot.actualFinishDate}">
+                    </div>
+                </div>
+            </div>
+        </td>
+
+        <td>
+            <div th:each="timeslot: ${timeslots}"
+                 th:if="${timeslot.timeslotID == subtask.timeslotID}">
                 <div
                         th:if="${timeslot.differenceInDays == 0}"> Will be calculated later
                 </div>
@@ -171,7 +245,7 @@
         </td>
         <td>
             <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == task.timeslotID}"
+                 th:if="${timeslot.timeslotID == subtask.timeslotID}"
                  th:text="${timeslot.totalWorkhours}">
             </div>
         </td>

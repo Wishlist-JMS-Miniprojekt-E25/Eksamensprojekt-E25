@@ -46,6 +46,11 @@ public class ProjectService {
         return projectRepository.getEmployeesByProjectID(projectID);
     }
 
+    //henter de employees, som er på samme task
+    public List<Employee> getEmployeesByTaskID(Integer taskID) {
+        return projectRepository.getEmployeesByTaskID(taskID);
+    }
+
     public int calculatePlannedDays(Date plannedStartDate, Date plannedFinishDate) {
         long differenceInMilliseconds = plannedFinishDate.getTime() - plannedStartDate.getTime();
         return (int) (differenceInMilliseconds / (1000 * 60 * 60 * 24));
@@ -67,7 +72,6 @@ public class ProjectService {
 
         projectRepository.assignEmployeesToProject(project.getProjectID(), employeeIDs);
 
-
         return project;
     }
 
@@ -83,6 +87,10 @@ public class ProjectService {
         return project;
     }
 
+    public Project getProjectByTaskID(Integer taskID) {
+        return projectRepository.getProjectByTaskID(taskID);
+    }
+
     public Task getTaskByID(Integer taskID) {
         return projectRepository.getTaskByID(taskID);
     }
@@ -93,6 +101,14 @@ public class ProjectService {
             task.setAssignedEmployees(projectRepository.getEmployeesByTaskID(task.getTaskID()));
         }
         return tasks;
+    }
+
+    public List<Subtask> getSubtasksByTaskID(Integer taskID) {
+        return projectRepository.getSubtasksByTaskID(taskID);
+    }
+
+    public int countSubtasksByID(Integer taskID) {
+        return projectRepository.countSubtasksByID(taskID);
     }
 
     public List<Employee> getEmployeesByTaskID(Integer taskID){
