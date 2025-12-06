@@ -37,6 +37,7 @@ public class EmployeeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    //henter alle employees fra databasen
     public List<Employee> getAllEmployees() {
         String sql = "SELECT * FROM employee";
         return jdbcTemplate.query(sql, employeeRowMapper);
@@ -51,7 +52,7 @@ public class EmployeeRepository {
         return jdbcTemplate.queryForObject(sql, employeeRowMapper, employeeID);
     }
 
-    //Henter alle projekter baseret op employee id
+    //Henter alle projekter en employee er assignet til
     public List<Project> getProjectsByEmployeeID(Integer employeeID) {
         String sql = """ 
                      SELECT * FROM project p
@@ -62,7 +63,7 @@ public class EmployeeRepository {
         return jdbcTemplate.query(sql, projectRowMapper, employeeID);
     }
 
-    //henter alle projekter baseret på manager id
+    //henter alle projekter som en employee er manager for
     public List<Project> getProjectsByManagerID(Integer managerID) {
         String sql = """ 
                      SELECT * FROM project p
@@ -83,4 +84,3 @@ public class EmployeeRepository {
         return employees.isEmpty() ? null : employees.get(0);
     }
 }
-

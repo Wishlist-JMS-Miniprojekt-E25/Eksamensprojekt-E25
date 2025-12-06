@@ -56,9 +56,4 @@ public class EmployeeService {
         }
         return projects;
     }
-
-    public List<Project> getProjectsByManagerID(Integer managerID) {
-        return employeeRepository.getProjectsByManagerID(managerID);
-    }
-
 }

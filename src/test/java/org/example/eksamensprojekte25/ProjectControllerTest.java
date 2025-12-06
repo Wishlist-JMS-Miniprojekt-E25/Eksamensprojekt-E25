@@ -142,9 +142,6 @@ public class ProjectControllerTest {
         Task task = new Task();
         task.setSubtasks(new ArrayList<>());
 
-        //fake subtask
-        Subtask subtask = new Subtask();
-
         //fake employee
         Employee employee = new Employee();
 
