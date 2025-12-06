@@ -80,6 +80,27 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, timeslotRowMapper);
     }
 
+    //tilføjer et nyt timeslot i databasen
+    public Timeslot createTimeslot(int plannedDays, Date plannedStartDate, Date plannedFinishDate) {
+        String sql = "INSERT INTO timeslot (plannedDays, plannedStartDate, plannedFinishDate) VALUES (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, plannedDays);
+            ps.setDate(2, plannedStartDate);
+            ps.setDate(3, plannedFinishDate);
+            return ps;
+        }, keyHolder);
+
+        int timeslotID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
+        String timeslotSql = """
+                SELECT * FROM timeslot
+                WHERE timeslotID = ?
+                """;
+        return jdbcTemplate.queryForObject(timeslotSql, timeslotRowMapper, timeslotID);
+    }
+
     //henter de employees, som er på samme projekt
     public List<Employee> getEmployeesByProjectID(Integer projectID) {
         String sql = """
@@ -102,20 +123,21 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, employeeRowMapper, taskID);
     }
 
-    public List<Task> getTasksByProjectID(Integer projectID) {
-        String sql = """
-                SELECT * FROM task
-                WHERE projectID = ?
-                """;
-        return jdbcTemplate.query(sql, taskRowMapper, projectID);
+    //Inserter employees til junction table, når man vælger dem under oprettelse af projekt
+    public void assignEmployeesToProject(Integer projectID, List<Integer> employeeIDs) {
+        String sql = "INSERT INTO projectEmployee (employeeID, projectID) VALUES (?, ?)";
+        for (Integer employeeID : employeeIDs) {
+            jdbcTemplate.update(sql, employeeID, projectID);
+        }
     }
 
-    public List<Subtask> getSubtasksByTaskID(Integer taskID) {
-        String sql = """
-                SELECT * FROM subtask
-                WHERE taskID = ?
-                """;
-        return jdbcTemplate.query(sql, subtaskRowMapper, taskID);
+    //inserter employees til juntion tabel, når man vælger dem under oprettelse af task
+    public void assignEmployeesToTask(Integer taskID, List<Integer> employeeIDs) {
+        String sql = "INSERT INTO taskEmployee (employeeID, taskID) VALUES (?, ?)";
+
+        for (Integer empID : employeeIDs) {
+            jdbcTemplate.update(sql, empID, taskID);
+        }
     }
 
     //henter et projekt baseret på projekt id
@@ -137,43 +159,7 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(sql, projectRowMapper, taskID);
     }
 
-    //henter en task baseret på task id
-    public Task getTaskByID(Integer taskID) {
-        String sql = """
-                SELECT * FROM task
-                WHERE taskID = ?
-                """;
-        return jdbcTemplate.queryForObject(sql, taskRowMapper, taskID);
-    }
-
-    //Inserter employees til junction table, når man vælger dem under oprettelse af projekt
-    public void assignEmployeesToProject(Integer projectID, List<Integer> employeeIDs) {
-        String sql = "INSERT INTO projectEmployee (employeeID, projectID) VALUES (?, ?)";
-        for (Integer employeeID : employeeIDs) {
-            jdbcTemplate.update(sql, employeeID, projectID);
-        }
-    }
-
-    public Timeslot createTimeslot(int plannedDays, Date plannedStartDate, Date plannedFinishDate) {
-        String sql = "INSERT INTO timeslot (plannedDays, plannedStartDate, plannedFinishDate) VALUES (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, plannedDays);
-            ps.setDate(2, plannedStartDate);
-            ps.setDate(3, plannedFinishDate);
-            return ps;
-        }, keyHolder);
-
-        int timeslotID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
-        String timeslotSql = """
-                SELECT * FROM timeslot
-                WHERE timeslotID = ?
-                """;
-        return jdbcTemplate.queryForObject(timeslotSql, timeslotRowMapper, timeslotID);
-    }
-
+    //tilføjet et projekt til databasen
     public Project addProject(Integer projectManagerID, String projectName, String projectDescription, Integer timeslotID) {
         String sql = "INSERT INTO project (projectManagerID, projectName, projectDescription, timeslotID) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -192,6 +178,31 @@ public class ProjectRepository {
         return new Project(projectID, projectManagerID, projectName, projectDescription, timeslotID);
     }
 
+    //fjerner et projekt fra databasen
+    public void deleteProjectByID(Integer projectID) {
+        String sql = "DELETE FROM project WHERE projectID = ?";
+        jdbcTemplate.update(sql, projectID);
+    }
+
+    //henter en task baseret på task id
+    public Task getTaskByID(Integer taskID) {
+        String sql = """
+                SELECT * FROM task
+                WHERE taskID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, taskRowMapper, taskID);
+    }
+
+    //henter alle tasks baseret på et projekt id
+    public List<Task> getTasksByProjectID(Integer projectID) {
+        String sql = """
+                SELECT * FROM task
+                WHERE projectID = ?
+                """;
+        return jdbcTemplate.query(sql, taskRowMapper, projectID);
+    }
+
+    //tilføjer en task til databasen
     public Task addTask(String taskName, String taskDescription, Integer timeslotID, Integer projectID) {
 
         String sql = """
@@ -215,19 +226,22 @@ public class ProjectRepository {
         return new Task(taskID, taskName, taskDescription, timeslotID, null, projectID);
     }
 
-    public void assignEmployeesToTask(Integer taskID, List<Integer> employeeIDs) {
-        String sql = "INSERT INTO taskEmployee (employeeID, taskID) VALUES (?, ?)";
-
-        for (Integer empID : employeeIDs) {
-            jdbcTemplate.update(sql, empID, taskID);
-        }
+    //fjerner en task fra databasen
+    public void deleteTaskByID(Integer taskID) {
+        String sql = "DELETE FROM task WHERE taskID = ?";
+        jdbcTemplate.update(sql, taskID);
     }
 
-    public void deleteProjectByID(Integer projectID) {
-        String sql = "DELETE FROM project WHERE projectID = ?";
-        jdbcTemplate.update(sql, projectID);
+    //henter alle subtasks baseret på et task id
+    public List<Subtask> getSubtasksByTaskID(Integer taskID) {
+        String sql = """
+                SELECT * FROM subtask
+                WHERE taskID = ?
+                """;
+        return jdbcTemplate.query(sql, subtaskRowMapper, taskID);
     }
 
+    //tilføjer en subtask til databasen
     public Subtask addSubtask(String subtaskName, String subtaskDescription, Integer timeslotID, Integer taskID, Integer employeeID) {
         String sql = "INSERT INTO subtask (subtaskName, subtaskDescription, timeslotID, taskID, employeeID) VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -247,11 +261,7 @@ public class ProjectRepository {
         return new Subtask(subtaskID, subtaskName, subtaskDescription, timeslotID, taskID, employeeID);
     }
 
-    public void deleteTaskByID(Integer taskID) {
-        String sql = "DELETE FROM task WHERE taskID = ?";
-        jdbcTemplate.update(sql, taskID);
-    }
-
+    //fjerner en subtask fra databasen
     public void deleteSubtaskByID(Integer subtaskID) {
         String sql = "DELETE FROM subtask WHERE subtaskID = ?";
         jdbcTemplate.update(sql, subtaskID);
