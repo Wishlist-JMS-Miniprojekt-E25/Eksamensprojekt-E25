@@ -10,15 +10,11 @@ public class Employee {
     private String userPassword;
     private List<Project> managedProjects;
 
-    //isManager skal slettes fra program og database - siger ikke noget om hvad man er manager for...
-    private boolean isManager;
-
-    public Employee(Integer employeeID, String employeeName, String userName, String userPassword, boolean isManager) {
+    public Employee(Integer employeeID, String employeeName, String userName, String userPassword) {
         this.employeeID = employeeID;
         this.employeeName = employeeName;
         this.userName = userName;
         this.userPassword = userPassword;
-        this.isManager = isManager;
     }
 
     public Employee() {
@@ -64,14 +60,4 @@ public class Employee {
     public void setManagedProjects(List<Project> managedProjects) {
         this.managedProjects = managedProjects;
     }
-
-    public boolean isManager() {
-        return isManager;
-    }
-
-    public void setManager(boolean manager) {
-        isManager = manager;
-    }
-
-
 }
