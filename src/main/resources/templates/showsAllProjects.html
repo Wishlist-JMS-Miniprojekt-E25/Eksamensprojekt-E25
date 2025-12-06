@@ -5,7 +5,7 @@
     <title>Projects</title>
 </head>
 <body>
-<h1 th:text="${employee.employeeName} + 's projects'"></h1>
+<h1 th:text="${loggedInEmployee.employeeName} + 's projects'"></h1>
 <form th:action="@{/logout}" method="post">
     <button type="submit">Log out</button>
 </form>
@@ -14,8 +14,10 @@
     <a href="/addProject">+ Add project</a>
 </div>
 <table>
-    <tr th:if="${projectsYouManage == null and projectsYouManage.isEmpty()}">You are not managing any projects</tr>
-    <tr th:if="${projectsYouManage != null and !projectsYouManage.isEmpty()}">
+    <tr th:if="${loggedInEmployee.managedProjects == null and loggedInEmployee.managedProjects.isEmpty()}">You are not
+        managing any projects
+    </tr>
+    <tr th:if="${loggedInEmployee.managedProjects != null and !loggedInEmployee.managedProjects.isEmpty()}">
         <th></th>
         <th>ID</th>
         <th>Name</th>
@@ -30,7 +32,7 @@
         <th></th>
     </tr>
 
-    <tr th:each="project: ${projectsYouManage}">
+    <tr th:each="project: ${loggedInEmployee.managedProjects}">
         <td>
             <a th:href="@{/project/{projectID}(projectID=${project.projectID})}">View project →</a>
         </td>

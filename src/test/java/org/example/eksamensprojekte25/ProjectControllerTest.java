@@ -50,9 +50,9 @@ public class ProjectControllerTest {
 
         //fake employee
         Employee employee = new Employee();
+        employee.setManagedProjects(new ArrayList<>());
 
-        //fake projekter
-        Project managedProject = new Project();
+        //fake projekt
         Project assignedToProject = new Project();
 
         //fake timeslot
@@ -61,8 +61,7 @@ public class ProjectControllerTest {
         //simulerer service metode kaldende med vores fake data
         when(employeeService.getEmployeeByID(employeeID)).thenReturn(employee);
         when(employeeService.getAllEmployees()).thenReturn(List.of(employee));
-        when(projectService.getProjectsByManagerID(employeeID)).thenReturn(List.of(managedProject));
-        when(projectService.getProjectsByEmployeeID(employeeID)).thenReturn(List.of(assignedToProject));
+        when(employeeService.getProjectsByEmployeeID(employeeID)).thenReturn(List.of(assignedToProject));
         when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
@@ -72,16 +71,14 @@ public class ProjectControllerTest {
                 .andExpect(view().name("showsAllProjects"))
                 //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
                 .andExpect(model().attributeExists(
-                        "employee",
+                        "loggedInEmployee",
                         "allEmployees",
-                        "projectsYouManage",
                         "assignedToProjects",
                         "timeslots"
                 ))
                 //vi giver attributterne vores fake værdier
-                .andExpect(model().attribute("employee", employee))
+                .andExpect(model().attribute("loggedInEmployee", employee))
                 .andExpect(model().attribute("allEmployees", List.of(employee)))
-                .andExpect(model().attribute("projectsYouManage", List.of(managedProject)))
                 .andExpect(model().attribute("assignedToProjects", List.of(assignedToProject)))
                 .andExpect(model().attribute("timeslots", List.of(timeslot)));
     }

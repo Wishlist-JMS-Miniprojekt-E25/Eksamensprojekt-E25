@@ -103,27 +103,6 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, employeeRowMapper, taskID);
     }
 
-    //Henter alle projekter baseret op employee id
-    public List<Project> getProjectsByEmployeeID(Integer employeeID) {
-        String sql = """ 
-                     SELECT * FROM project p
-                     JOIN projectEmployee pe ON p.projectID = pe.projectID 
-                     WHERE pe.employeeID = ?
-                """;
-
-        return jdbcTemplate.query(sql, projectRowMapper, employeeID);
-    }
-
-    //henter alle projekter baseret på manager id
-    public List<Project> getProjectsByManagerID(Integer managerID) {
-        String sql = """ 
-                     SELECT * FROM project p
-                     WHERE p.projectManagerID = ?
-                """;
-
-        return jdbcTemplate.query(sql, projectRowMapper, managerID);
-    }
-
     public List<Task> getTasksByProjectID(Integer projectID) {
         String sql = """
                 SELECT * FROM task

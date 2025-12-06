@@ -1,11 +1,16 @@
 package org.example.eksamensprojekte25.model;
 
+import java.util.List;
+
 public class Employee {
 
     private Integer employeeID;
     private String employeeName;
     private String userName;
     private String userPassword;
+    private List<Project> managedProjects;
+
+    //isManager skal slettes fra program og database - siger ikke noget om hvad man er manager for...
     private boolean isManager;
 
     public Employee(Integer employeeID, String employeeName, String userName, String userPassword, boolean isManager) {
@@ -50,6 +55,14 @@ public class Employee {
 
     public void setEmployeeID(Integer employeeID) {
         this.employeeID = employeeID;
+    }
+
+    public List<Project> getManagedProjects() {
+        return managedProjects;
+    }
+
+    public void setManagedProjects(List<Project> managedProjects) {
+        this.managedProjects = managedProjects;
     }
 
     public boolean isManager() {

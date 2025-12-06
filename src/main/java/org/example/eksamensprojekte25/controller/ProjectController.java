@@ -33,15 +33,12 @@ public class ProjectController {
     @GetMapping("/userProjects")
     public String showsAllProjects(HttpSession session, Model model) {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
-
         Employee loggedInEmployee = employeeService.getEmployeeByID(loggedInEmployeeID);
         List<Employee> allEmployees = employeeService.getAllEmployees();
-        List<Project> projectsYouManage = projectService.getProjectsByManagerID(loggedInEmployeeID);
-        List<Project> assignedToProjects = projectService.getProjectsByEmployeeID(loggedInEmployeeID);
+        List<Project> assignedToProjects = employeeService.getProjectsByEmployeeID(loggedInEmployeeID);
         List<Timeslot> timeslots = projectService.getAllTimeslots();
-        model.addAttribute("employee", loggedInEmployee);
+        model.addAttribute("loggedInEmployee", loggedInEmployee);
         model.addAttribute("allEmployees", allEmployees);
-        model.addAttribute("projectsYouManage", projectsYouManage);
         model.addAttribute("assignedToProjects", assignedToProjects);
         model.addAttribute("timeslots", timeslots);
         return "showsAllProjects";
