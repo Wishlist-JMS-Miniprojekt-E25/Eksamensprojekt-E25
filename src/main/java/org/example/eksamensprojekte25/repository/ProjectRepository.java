@@ -53,7 +53,6 @@ public class ProjectRepository {
         employee.setEmployeeName(rs.getString("employeeName"));
         employee.setUserName(rs.getString("userName"));
         employee.setUserPassword(rs.getString("userPassword"));
-        employee.setManager(rs.getBoolean("isManager"));
         return employee;
     };
     private final RowMapper<Timeslot> timeslotRowMapper = (rs, rowNum) -> {

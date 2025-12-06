@@ -19,7 +19,6 @@ public class EmployeeRepository {
         employee.setEmployeeName(rs.getString("employeeName"));
         employee.setUserName(rs.getString("userName"));
         employee.setUserPassword(rs.getString("userPassword"));
-        employee.setManager(rs.getBoolean("isManager"));
         return employee;
 
     };
