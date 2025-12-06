@@ -111,19 +111,21 @@ public class ProjectControllerTest {
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
-        mockMvc.perform(get("/project/{projectID}", projectID))
+        mockMvc.perform(get("/project/{projectID}", projectID).sessionAttr("employeeID", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("showsProject"))
                 //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
                 .andExpect(model().attributeExists(
                         "project",
                         "manager",
-                        "timeslots"
+                        "timeslots",
+                        "loggedInEmployee"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("project", project))
                 .andExpect(model().attribute("manager", employee))
-                .andExpect(model().attribute("timeslots", List.of(timeslot)));
+                .andExpect(model().attribute("timeslots", List.of(timeslot)))
+                .andExpect(model().attribute("loggedInEmployee", 1));
     }
 
     //tester showsTask metoden
@@ -158,7 +160,7 @@ public class ProjectControllerTest {
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
-        mockMvc.perform(get("/task/{taskID}", taskID))
+        mockMvc.perform(get("/task/{taskID}", taskID).sessionAttr("employeeID", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("showsTask"))
                 //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
@@ -167,22 +169,24 @@ public class ProjectControllerTest {
                         "manager",
                         "task",
                         "allEmployees",
-                        "timeslots"
+                        "timeslots",
+                        "loggedInEmployee"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("project", project))
                 .andExpect(model().attribute("manager", employee))
                 .andExpect(model().attribute("task", task))
                 .andExpect(model().attribute("allEmployees", List.of(employee)))
-                .andExpect(model().attribute("timeslots", List.of(timeslot)));
+                .andExpect(model().attribute("timeslots", List.of(timeslot)))
+                .andExpect(model().attribute("loggedInEmployee", 1));
     }
 
     @Test
     void shouldAddProject() throws Exception {
 
         List<Employee> employees = new ArrayList<>();
-        employees.add(new Employee(1, "Simon", "Sim", "123", true));
-        employees.add(new Employee(2, "Martin", "Mar", "abc", false));
+        employees.add(new Employee(1, "Simon", "Sim", "123"));
+        employees.add(new Employee(2, "Martin", "Mar", "abc"));
 
         when(employeeService.getAllEmployees()).thenReturn(employees);
 
@@ -247,8 +251,8 @@ public class ProjectControllerTest {
         Integer projectID = 5;
 
         List<Employee> projectEmployees = List.of(
-                new Employee(1, "Hans", "h", "123", false),
-                new Employee(2, "Frede", "f", "321", false)
+                new Employee(1, "Hans", "h", "123"),
+                new Employee(2, "Frede", "f", "321")
         );
 
         List<Timeslot> timeslots = List.of(
@@ -332,20 +336,15 @@ public class ProjectControllerTest {
         verify(projectService, times(1)).deleteSubtaskByID(3);
     }
 
-
-    List<Employee> taskEmployees = List.of(
-            new Employee(1, "Hans", "h", "123", false),
-            new Employee(2, "Frede", "f", "321", false)
-    );
-
-    List<Timeslot> timeslots = List.of(
-            new Timeslot(1, 10, Date.valueOf("2025-01-01"),
-                    Date.valueOf("2025-01-10"), null, 0, 100, false)
-    );
-
     @Test
     void shouldShowAddSubtaskForm() throws Exception {
         Integer taskID = 1;
+
+        List<Employee> taskEmployees = List.of(
+                new Employee(1, "Hans", "h", "123"),
+                new Employee(2, "Frede", "f", "321")
+        );
+
         when(projectService.getEmployeesByTaskID(taskID))
                 .thenReturn(taskEmployees);
 

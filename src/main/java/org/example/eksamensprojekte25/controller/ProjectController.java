@@ -55,6 +55,7 @@ public class ProjectController {
         model.addAttribute("project", project);
         model.addAttribute("manager", manager);
         model.addAttribute("timeslots", timeslots);
+        model.addAttribute("loggedInEmployee",loggedInEmployeeID);
         return "showsProject";
     }
 
@@ -73,6 +74,8 @@ public class ProjectController {
         model.addAttribute("task", task);
         model.addAttribute("allEmployees", allEmployees);
         model.addAttribute("timeslots", timeslots);
+        model.addAttribute("loggedInEmployee",loggedInEmployeeID);
+
         return "showsTask";
     }
 

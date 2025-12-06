@@ -251,11 +251,13 @@
             </div>
         </td>
         <td>
-            <form th:action="@{/task/{taskID}/deleteSubtask/{subtaskID}(taskID=${task.taskID}, subtaskID=${subtask.subtaskID})}"
-                  method="post"
-                  onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
-                <button type="submit">Delete</button>
-            </form>
+            <div th:if="${project.projectManagerID == loggedInEmployee}">
+                <form th:action="@{/task/{taskID}/deleteSubtask/{subtaskID}(taskID=${task.taskID}, subtaskID=${subtask.subtaskID})}"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
         </td>
     </tr>
 </table>
