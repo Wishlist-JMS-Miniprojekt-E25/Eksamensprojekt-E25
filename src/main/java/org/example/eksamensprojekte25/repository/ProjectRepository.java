@@ -233,15 +233,6 @@ public class ProjectRepository {
         jdbcTemplate.update(sql, taskID);
     }
 
-    //henter en subtask baseret på et subtask id
-    public Subtask getSubtaskByID(Integer subtaskID) {
-        String sql = """
-                SELECT * FROM subtask
-                WHERE subtaskID = ?
-                """;
-        return jdbcTemplate.queryForObject(sql, subtaskRowMapper, subtaskID);
-    }
-
     //henter alle subtasks baseret på et task id
     public List<Subtask> getSubtasksByTaskID(Integer taskID) {
         String sql = """
