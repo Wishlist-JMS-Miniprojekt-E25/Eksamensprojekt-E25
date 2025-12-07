@@ -80,7 +80,8 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, timeslotRowMapper);
     }
 
-    //tilføjer et nyt timeslot i databasen
+    //tilføjer et nyt timeslot i databasen og henter det igen,
+    //for at returnere et timeslot objekt til skabelse af project, task og subtaks.
     public Timeslot createTimeslot(int plannedDays, Date plannedStartDate, Date plannedFinishDate) {
         String sql = "INSERT INTO timeslot (plannedDays, plannedStartDate, plannedFinishDate) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -230,6 +231,15 @@ public class ProjectRepository {
     public void deleteTaskByID(Integer taskID) {
         String sql = "DELETE FROM task WHERE taskID = ?";
         jdbcTemplate.update(sql, taskID);
+    }
+
+    //henter en subtask baseret på et subtask id
+    public Subtask getSubtaskByID(Integer subtaskID) {
+        String sql = """
+                SELECT * FROM subtask
+                WHERE subtaskID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, subtaskRowMapper, subtaskID);
     }
 
     //henter alle subtasks baseret på et task id
