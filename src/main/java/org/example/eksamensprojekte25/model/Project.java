@@ -1,6 +1,5 @@
 package org.example.eksamensprojekte25.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Project {
