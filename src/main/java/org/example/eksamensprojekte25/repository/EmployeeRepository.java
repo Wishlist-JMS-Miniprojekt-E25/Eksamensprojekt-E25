@@ -4,6 +4,7 @@ package org.example.eksamensprojekte25.repository;
 import org.apache.catalina.User;
 import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
+import org.example.eksamensprojekte25.model.Timeslot;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -28,13 +29,34 @@ public class EmployeeRepository {
         project.setProjectManagerID(rs.getInt("projectManagerID"));
         project.setProjectName(rs.getString("projectName"));
         project.setProjectDescription(rs.getString("projectDescription"));
-        project.setTimeslotID(rs.getInt("timeSlotID"));
+        project.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
 
         return project;
+    };
+    private final RowMapper<Timeslot> timeslotRowMapper = (rs, rowNum) -> {
+        Timeslot timeslot = new Timeslot();
+        timeslot.setTimeslotID(rs.getInt("timeslotID"));
+        timeslot.setPlannedDays(rs.getInt("plannedDays"));
+        timeslot.setPlannedStartDate(rs.getDate("plannedStartDate"));
+        timeslot.setPlannedFinishDate(rs.getDate("plannedFinishDate"));
+        timeslot.setActualFinishDate(rs.getDate("actualFinishDate"));
+        timeslot.setDifferenceInDays(rs.getInt("differenceInDays"));
+        timeslot.setTotalWorkhours(rs.getInt("totalWorkhours"));
+        timeslot.setDone(rs.getBoolean("isDone"));
+        return timeslot;
     };
 
     public EmployeeRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    //henter et timeslot baseret på timeslot id
+    public Timeslot getTimeslotByID(Integer timeslotID) {
+        String sql = """
+                SELECT * FROM timeslot
+                WHERE timeslotID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, timeslotRowMapper, timeslotID);
     }
 
     //henter alle employees fra databasen

@@ -36,11 +36,9 @@ public class ProjectController {
         Employee loggedInEmployee = employeeService.getEmployeeByID(loggedInEmployeeID);
         List<Employee> allEmployees = employeeService.getAllEmployees();
         List<Project> assignedToProjects = employeeService.getProjectsByEmployeeID(loggedInEmployeeID);
-        List<Timeslot> timeslots = projectService.getAllTimeslots();
         model.addAttribute("loggedInEmployee", loggedInEmployee);
         model.addAttribute("allEmployees", allEmployees);
         model.addAttribute("assignedToProjects", assignedToProjects);
-        model.addAttribute("timeslots", timeslots);
         return "showsAllProjects";
     }
 

@@ -14,7 +14,7 @@
     <a href="/addProject">+ Add project</a>
 </div>
 <table>
-    <tr th:if="${loggedInEmployee.managedProjects == null and loggedInEmployee.managedProjects.isEmpty()}">You are not
+    <tr th:if="${loggedInEmployee.managedProjects == null or loggedInEmployee.managedProjects.isEmpty()}">You are not
         managing any projects
     </tr>
     <tr th:if="${loggedInEmployee.managedProjects != null and !loggedInEmployee.managedProjects.isEmpty()}">
@@ -31,7 +31,6 @@
         <th>Total workhours</th>
         <th></th>
     </tr>
-
     <tr th:each="project: ${loggedInEmployee.managedProjects}">
         <td>
             <a th:href="@{/project/{projectID}(projectID=${project.projectID})}">View project →</a>
@@ -44,60 +43,12 @@
                  th:text="${assignedEmployee.employeeName}"></div>
             <br> <br>
         </td>
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}"
-                 th:text="${timeslot.plannedDays}">
-            </div>
-        </td>
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}"
-                 th:text="${timeslot.plannedStartDate}">
-            </div>
-        </td>
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}"
-                 th:text="${timeslot.plannedFinishDate}">
-            </div>
-        </td>
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}">
-
-                <div
-                        th:if="${timeslot.actualFinishDate==null}"> Will be calculated later
-                </div>
-
-                <div th:unless="${timeslot.actualFinishDate==null}">
-                    <div
-                            th:text="${timeslot.actualFinishDate}">
-                    </div>
-                </div>
-            </div>
-        </td>
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}">
-                <div
-                        th:if="${timeslot.differenceInDays == 0}"> Will be calculated later
-                </div>
-
-                <div th:unless="${timeslot.differenceInDays == 0}">
-                    <div
-                            th:text="${timeslot.differenceInDays}">
-                    </div>
-                </div>
-
-            </div>
-        </td>
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}"
-                 th:text="${timeslot.totalWorkhours}">
-            </div>
-        </td>
+        <td th:text="${project.timeslot.getPlannedDays}"></td>
+        <td th:text="${project.timeslot.plannedStartDate}"></td>
+        <td th:text="${project.timeslot.getPlannedFinishDate}"></td>
+        <td th:text="${project.timeslot.getActualFinishDate}"></td>
+        <td th:text="${project.timeslot.getDifferenceInDays}"></td>
+        <td th:text="${project.timeslot.totalWorkhours}"></td>
         <td>
             <form th:action="@{/deleteProject/{projectID}(projectID=${project.projectID})}" method="post"
                   onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
@@ -109,7 +60,7 @@
 </table>
 <h3>Projects you are assigned to</h3>
 <table>
-    <tr th:if="${assignedToProjects == null and assignedToProjects.isEmpty()}">You are not assigned to any projects</tr>
+    <tr th:if="${assignedToProjects == null or assignedToProjects.isEmpty()}">You are not assigned to any projects</tr>
     <tr th:if="${assignedToProjects != null and !assignedToProjects.isEmpty()}">
         <th></th>
         <th>ID</th>
@@ -143,62 +94,12 @@
                  th:text="${foundManager.employeeName}">
             </div>
         </td>
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}"
-                 th:text="${timeslot.plannedDays}">
-            </div>
-        </td>
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}"
-                 th:text="${timeslot.plannedStartDate}">
-            </div>
-        </td>
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}"
-                 th:text="${timeslot.plannedFinishDate}">
-            </div>
-        </td>
-
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}">
-
-                <div
-                        th:if="${timeslot.actualFinishDate==null}"> Will be calculated later
-                </div>
-
-                <div th:unless="${timeslot.actualFinishDate==null}">
-                    <div
-                            th:text="${timeslot.actualFinishDate}">
-                    </div>
-                </div>
-            </div>
-        </td>
-
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}">
-                <div
-                        th:if="${timeslot.differenceInDays == 0}"> Will be calculated later
-                </div>
-
-                <div th:unless="${timeslot.differenceInDays == 0}">
-                    <div
-                            th:text="${timeslot.differenceInDays}">
-                    </div>
-                </div>
-
-            </div>
-        </td>
-        <td>
-            <div th:each="timeslot: ${timeslots}"
-                 th:if="${timeslot.timeslotID == project.timeslotID}"
-                 th:text="${timeslot.totalWorkhours}">
-            </div>
-        </td>
+        <td th:text="${project.timeslot.getPlannedDays}"></td>
+        <td th:text="${project.timeslot.plannedStartDate}"></td>
+        <td th:text="${project.timeslot.getPlannedFinishDate}"></td>
+        <td th:text="${project.timeslot.getActualFinishDate}"></td>
+        <td th:text="${project.timeslot.getDifferenceInDays}"></td>
+        <td th:text="${project.timeslot.totalWorkhours}"></td>
     </tr>
 </table>
 </body>

@@ -8,16 +8,16 @@ public class Project {
     private Integer projectManagerID;
     private String projectName;
     private String projectDescription;
-    private Integer timeslotID;
+    private Timeslot timeslot;
     private List<Employee> assignedEmployees;
     private List<Task> tasks;
 
-    public Project(Integer projectID, Integer projectManagerID, String projectName, String projectDescription, Integer timeslotID) {
+    public Project(Integer projectID, Integer projectManagerID, String projectName, String projectDescription, Timeslot timeslot) {
         this.projectID = projectID;
         this.projectManagerID = projectManagerID;
         this.projectName = projectName;
         this.projectDescription = projectDescription;
-        this.timeslotID = timeslotID;
+        this.timeslot = timeslot;
     }
 
     public Project() {
@@ -56,12 +56,12 @@ public class Project {
         this.projectDescription = projectDescription;
     }
 
-    public Integer getTimeslotID() {
-        return timeslotID;
+    public Timeslot getTimeslot() {
+        return timeslot;
     }
 
-    public void setTimeslotID(Integer timeslotID) {
-        this.timeslotID = timeslotID;
+    public void setTimeslot(Timeslot timeslot) {
+        this.timeslot = timeslot;
     }
 
     public List<Employee> getAssignedEmployees() {

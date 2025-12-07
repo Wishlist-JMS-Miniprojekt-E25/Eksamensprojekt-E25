@@ -73,6 +73,7 @@ public class ProjectService {
         int plannedDays = calculatePlannedDays(plannedStartDate, plannedFinishDate);
         Timeslot timeslot = projectRepository.createTimeslot(plannedDays, plannedStartDate, plannedFinishDate);
         Project project = projectRepository.addProject(projectManagerID, projectName, projectDescription, timeslot.getTimeslotID());
+        project.setTimeslot(timeslot);
         projectRepository.assignEmployeesToProject(project.getProjectID(), employeeIDs);
         return project;
     }

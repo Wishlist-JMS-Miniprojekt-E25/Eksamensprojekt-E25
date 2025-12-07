@@ -22,7 +22,7 @@ public class ProjectRepository {
         project.setProjectManagerID(rs.getInt("projectManagerID"));
         project.setProjectName(rs.getString("projectName"));
         project.setProjectDescription(rs.getString("projectDescription"));
-        project.setTimeslotID(rs.getInt("timeSlotID"));
+        project.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
 
         return project;
     };
@@ -70,6 +70,15 @@ public class ProjectRepository {
 
     public ProjectRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    //henter et timeslot baseret på timeslot id
+    public Timeslot getTimeslotByID(Integer timeslotID) {
+        String sql = """
+                SELECT * FROM timeslot
+                WHERE timeslotID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, timeslotRowMapper, timeslotID);
     }
 
     //henter alle timeslots
@@ -175,7 +184,7 @@ public class ProjectRepository {
         }, keyHolder);
 
         int projectID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
-        return new Project(projectID, projectManagerID, projectName, projectDescription, timeslotID);
+        return new Project(projectID, projectManagerID, projectName, projectDescription, null);
     }
 
     //fjerner et projekt fra databasen
