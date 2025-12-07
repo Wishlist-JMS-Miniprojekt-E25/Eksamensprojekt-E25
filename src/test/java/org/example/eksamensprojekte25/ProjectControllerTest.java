@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,15 +55,15 @@ public class ProjectControllerTest {
 
         //fake projekt
         Project assignedToProject = new Project();
-
         //fake timeslot
         Timeslot timeslot = new Timeslot();
+        timeslot.setPlannedDays(0);
+        assignedToProject.setTimeslot(timeslot);
 
         //simulerer service metode kaldende med vores fake data
         when(employeeService.getEmployeeByID(employeeID)).thenReturn(employee);
         when(employeeService.getAllEmployees()).thenReturn(List.of(employee));
         when(employeeService.getProjectsByEmployeeID(employeeID)).thenReturn(List.of(assignedToProject));
-        when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
@@ -73,14 +74,12 @@ public class ProjectControllerTest {
                 .andExpect(model().attributeExists(
                         "loggedInEmployee",
                         "allEmployees",
-                        "assignedToProjects",
-                        "timeslots"
+                        "assignedToProjects"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("loggedInEmployee", employee))
                 .andExpect(model().attribute("allEmployees", List.of(employee)))
-                .andExpect(model().attribute("assignedToProjects", List.of(assignedToProject)))
-                .andExpect(model().attribute("timeslots", List.of(timeslot)));
+                .andExpect(model().attribute("assignedToProjects", List.of(assignedToProject)));
     }
 
     //tester showsProject metoden
@@ -93,21 +92,17 @@ public class ProjectControllerTest {
         Project project = new Project();
         project.setProjectManagerID(3);
         project.setTasks(new ArrayList<>());
-
-        //fake task
-        Task task = new Task();
-        task.setTaskID(7);
+        //fake timeslot
+        Timeslot timeslot = new Timeslot();
+        timeslot.setPlannedDays(0);
+        project.setTimeslot(timeslot);
 
         //fake employee
         Employee employee = new Employee();
 
-        //fake timeslot
-        Timeslot timeslot = new Timeslot();
-
         //simulerer service metode kaldende med vores fake data
         when(projectService.getProjectByID(projectID)).thenReturn(project);
         when(employeeService.getEmployeeByID(3)).thenReturn(employee);
-        when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
@@ -118,13 +113,11 @@ public class ProjectControllerTest {
                 .andExpect(model().attributeExists(
                         "project",
                         "manager",
-                        "timeslots",
                         "loggedInEmployee"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("project", project))
                 .andExpect(model().attribute("manager", employee))
-                .andExpect(model().attribute("timeslots", List.of(timeslot)))
                 .andExpect(model().attribute("loggedInEmployee", 1));
     }
 
@@ -137,23 +130,26 @@ public class ProjectControllerTest {
         //fake projekt
         Project project = new Project();
         project.setProjectManagerID(5);
+        //fake projekt timeslot
+        Timeslot projectTimeslot = new Timeslot();
+        projectTimeslot.setPlannedDays(0);
+        project.setTimeslot(projectTimeslot);
 
         //fake task
         Task task = new Task();
         task.setSubtasks(new ArrayList<>());
+        //fake task timeslot
+        Timeslot taskTimeslot = new Timeslot();
+        taskTimeslot.setPlannedDays(0);
+        task.setTimeslot(taskTimeslot);
 
         //fake employee
         Employee employee = new Employee();
 
-        //fake timeslot
-        Timeslot timeslot = new Timeslot();
-
         //simulerer service metode kaldende med vores fake data
         when(projectService.getProjectByTaskID(taskID)).thenReturn(project);
         when(employeeService.getEmployeeByID(5)).thenReturn(employee);
-        when(employeeService.getAllEmployees()).thenReturn(List.of(employee));
         when(projectService.getTaskByID(taskID)).thenReturn(task);
-        when(projectService.getAllTimeslots()).thenReturn(List.of(timeslot));
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
@@ -165,16 +161,12 @@ public class ProjectControllerTest {
                         "project",
                         "manager",
                         "task",
-                        "allEmployees",
-                        "timeslots",
                         "loggedInEmployee"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("project", project))
                 .andExpect(model().attribute("manager", employee))
                 .andExpect(model().attribute("task", task))
-                .andExpect(model().attribute("allEmployees", List.of(employee)))
-                .andExpect(model().attribute("timeslots", List.of(timeslot)))
                 .andExpect(model().attribute("loggedInEmployee", 1));
     }
 
@@ -247,28 +239,22 @@ public class ProjectControllerTest {
 
         Integer projectID = 5;
 
-        List<Employee> projectEmployees = List.of(
-                new Employee(1, "Hans", "h", "123"),
-                new Employee(2, "Frede", "f", "321")
-        );
+        Employee employee = new Employee();
 
-        List<Timeslot> timeslots = List.of(
-                new Timeslot(1, 10, Date.valueOf("2025-01-01"),
-                        Date.valueOf("2025-01-10"), null, 0, 100, false)
-        );
+        Task task = new Task();
+        task.setProjectID(projectID);
 
         when(projectService.getEmployeesByProjectID(projectID))
-                .thenReturn(projectEmployees);
-
-        when(projectService.getAllTimeslots())
-                .thenReturn(timeslots);
+                .thenReturn(List.of(employee));
 
         mockMvc.perform(get("/addTask/{projectID}", projectID))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addTask"))
-                .andExpect(model().attributeExists("task"))
-                .andExpect(model().attribute("projectEmployees", projectEmployees))
-                .andExpect(model().attribute("timeslots", timeslots));
+                .andExpect(model().attributeExists(
+                        "task",
+                        "projectEmployees"))
+                .andExpect(model().attribute("task", samePropertyValuesAs(task)))
+                .andExpect(model().attribute("projectEmployees", List.of(employee)));
     }
 
     @Test

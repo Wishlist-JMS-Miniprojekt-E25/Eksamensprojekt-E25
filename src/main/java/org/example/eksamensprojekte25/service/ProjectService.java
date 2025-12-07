@@ -30,11 +30,6 @@ public class ProjectService {
         //metoden returnerer forskellen i dage
     }
 
-    //henter alle timeslots
-    public List<Timeslot> getAllTimeslots() {
-        return projectRepository.getAllTimeslots();
-    }
-
     //henter de employees, som er på samme projekt
     public List<Employee> getEmployeesByProjectID(Integer projectID) {
         return projectRepository.getEmployeesByProjectID(projectID);

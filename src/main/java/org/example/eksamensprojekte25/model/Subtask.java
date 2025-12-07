@@ -4,15 +4,15 @@ public class Subtask {
     private Integer subtaskID;
     private String subtaskName;
     private String subtaskDescription;
-    private Integer timeslotID;
+    private Timeslot timeslot;
     private Integer taskID;
     private Integer employeeID;
 
-    public Subtask(Integer subtaskID, String subtaskName, String subtaskDescription, Integer timeslotID, Integer taskID, Integer employeeID) {
+    public Subtask(Integer subtaskID, String subtaskName, String subtaskDescription, Timeslot timeslot, Integer taskID, Integer employeeID) {
         this.subtaskID = subtaskID;
         this.subtaskName = subtaskName;
         this.subtaskDescription = subtaskDescription;
-        this.timeslotID = timeslotID;
+        this.timeslot = timeslot;
         this.taskID = taskID;
         this.employeeID = employeeID;
     }
@@ -36,12 +36,12 @@ public class Subtask {
         this.taskID = taskID;
     }
 
-    public Integer getTimeslotID() {
-        return timeslotID;
+    public Timeslot getTimeslot() {
+        return timeslot;
     }
 
-    public void setTimeslotID(Integer timeslotID) {
-        this.timeslotID = timeslotID;
+    public void setTimeslot(Timeslot timeslot) {
+        this.timeslot = timeslot;
     }
 
     public String getSubtaskDescription() {

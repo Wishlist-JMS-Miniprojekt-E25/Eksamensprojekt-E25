@@ -32,7 +32,7 @@ public class ProjectRepository {
         task.setTaskName(rs.getString("taskName"));
         task.setTaskDescription(rs.getString("taskDescription"));
         task.setProjectID(rs.getInt("projectID"));
-        task.setTimeslotID(rs.getInt("timeSlotID"));
+        task.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
 
         return task;
     };
@@ -43,7 +43,7 @@ public class ProjectRepository {
         subtask.setSubtaskDescription(rs.getString("subtaskDescription"));
         subtask.setTaskID(rs.getInt("taskID"));
         subtask.setEmployeeID(rs.getInt("employeeID"));
-        subtask.setTimeslotID(rs.getInt("timeSlotID"));
+        subtask.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
 
         return subtask;
     };
@@ -79,14 +79,6 @@ public class ProjectRepository {
                 WHERE timeslotID = ?
                 """;
         return jdbcTemplate.queryForObject(sql, timeslotRowMapper, timeslotID);
-    }
-
-    //henter alle timeslots
-    public List<Timeslot> getAllTimeslots() {
-        String sql = """
-                SELECT * FROM timeslot
-                """;
-        return jdbcTemplate.query(sql, timeslotRowMapper);
     }
 
     //tilføjer et nyt timeslot i databasen og henter det igen,
@@ -232,7 +224,7 @@ public class ProjectRepository {
 
         int taskID = keyHolder.getKey().intValue();
 
-        return new Task(taskID, taskName, taskDescription, timeslotID, null, projectID);
+        return new Task(taskID, taskName, taskDescription, null, null, projectID);
     }
 
     //fjerner en task fra databasen
@@ -267,7 +259,7 @@ public class ProjectRepository {
 
         int subtaskID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
 
-        return new Subtask(subtaskID, subtaskName, subtaskDescription, timeslotID, taskID, employeeID);
+        return new Subtask(subtaskID, subtaskName, subtaskDescription, null, taskID, employeeID);
     }
 
     //fjerner en subtask fra databasen

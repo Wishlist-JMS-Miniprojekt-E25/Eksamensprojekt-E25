@@ -48,10 +48,8 @@ public class ProjectController {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
         Project project = projectService.getProjectByID(projectID);
         Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
-        List<Timeslot> timeslots = projectService.getAllTimeslots();
         model.addAttribute("project", project);
         model.addAttribute("manager", manager);
-        model.addAttribute("timeslots", timeslots);
         model.addAttribute("loggedInEmployee",loggedInEmployeeID);
         return "showsProject";
     }
@@ -63,13 +61,9 @@ public class ProjectController {
         Project project = projectService.getProjectByTaskID(taskID);
         Employee manager = employeeService.getEmployeeByID(project.getProjectManagerID());
         Task task = projectService.getTaskByID(taskID);
-        List<Employee> allEmployees = employeeService.getAllEmployees();
-        List<Timeslot> timeslots = projectService.getAllTimeslots();
         model.addAttribute("project", project);
         model.addAttribute("manager", manager);
         model.addAttribute("task", task);
-        model.addAttribute("allEmployees", allEmployees);
-        model.addAttribute("timeslots", timeslots);
         model.addAttribute("loggedInEmployee",loggedInEmployeeID);
         return "showsTask";
     }
@@ -126,10 +120,9 @@ public class ProjectController {
         List<Employee> projectEmployees = projectService.getEmployeesByProjectID(projectID);
         model.addAttribute("projectEmployees", projectEmployees);
 
-        model.addAttribute("timeslots", projectService.getAllTimeslots());
-
         return "addTask";
     }
+
     @PostMapping("/saveTask")
     public String saveTask(@ModelAttribute Task task,
                            @RequestParam String taskName,
