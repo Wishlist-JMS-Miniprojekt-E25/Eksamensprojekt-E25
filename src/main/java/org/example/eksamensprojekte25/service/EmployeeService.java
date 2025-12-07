@@ -3,6 +3,7 @@ package org.example.eksamensprojekte25.service;
 
 import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
+import org.example.eksamensprojekte25.model.Timeslot;
 import org.example.eksamensprojekte25.repository.EmployeeRepository;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
@@ -31,29 +32,29 @@ public class EmployeeService {
     //henter en employee baseret på employee id
     public Employee getEmployeeByID(Integer employeeID) {
         Employee employee = employeeRepository.getEmployeeByID(employeeID);
-        populateListOfManagedProjects(employee);
+        populateListOfManagedProjectsOfEmployee(employee);
         for(Project project : employee.getManagedProjects()) {
-            populateListOfAssignedEmployees(project);
+            populateListOfAssignedEmployeesOfProject(project);
         }
         return employee;
-    }
-
-    public void populateListOfManagedProjects(Employee employee) {
-        List<Project> managedProjects = employeeRepository.getProjectsByManagerID(employee.getEmployeeID());
-        employee.setManagedProjects(managedProjects);
-    }
-
-    public void populateListOfAssignedEmployees(Project project) {
-        List<Employee> employees = projectRepository.getEmployeesByProjectID(project.getProjectID());
-        project.setAssignedEmployees(employees);
     }
 
     //Henter alle projekter, som man er assigned til baseret på employee id
     public List<Project> getProjectsByEmployeeID(Integer employeeID) {
         List<Project> projects = employeeRepository.getProjectsByEmployeeID(employeeID);
         for (Project project : projects) {
-            populateListOfAssignedEmployees(project);
+            populateListOfAssignedEmployeesOfProject(project);
         }
         return projects;
+    }
+
+    public void populateListOfManagedProjectsOfEmployee(Employee employee) {
+        List<Project> managedProjects = employeeRepository.getProjectsByManagerID(employee.getEmployeeID());
+        employee.setManagedProjects(managedProjects);
+    }
+
+    public void populateListOfAssignedEmployeesOfProject(Project project) {
+        List<Employee> employees = projectRepository.getEmployeesByProjectID(project.getProjectID());
+        project.setAssignedEmployees(employees);
     }
 }

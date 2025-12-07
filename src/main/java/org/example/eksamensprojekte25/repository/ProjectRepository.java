@@ -175,7 +175,6 @@ public class ProjectRepository {
         }, keyHolder);
 
         int projectID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
-
         return new Project(projectID, projectManagerID, projectName, projectDescription, timeslotID);
     }
 
