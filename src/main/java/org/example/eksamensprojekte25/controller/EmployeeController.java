@@ -59,5 +59,4 @@ public class EmployeeController {
         session.invalidate();
         return "redirect:/login";
     }
-
 }
