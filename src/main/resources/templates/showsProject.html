@@ -88,7 +88,9 @@
     </tr>
 </table>
 <br> <br> <br> <br> <br> <br>
-<a th:href="@{/addTask/{projectID}(projectID=${project.projectID})}">+ Add task</a>
+<div th:if="${project.projectManagerID == loggedInEmployee}">
+    <a th:href="@{/addTask/{projectID}(projectID=${project.projectID})}">+ Add task</a>
+</div>
 <!-- tabellen, der viser alle tasks -->
 <table>
     <tr th:if="${project.tasks == null and project.tasks.isEmpty()}">There are no tasks for this project</tr>
