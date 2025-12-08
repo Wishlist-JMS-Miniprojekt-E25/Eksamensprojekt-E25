@@ -12,6 +12,8 @@
 
         <form th:action="@{/saveTask}" th:object="${task}" method="post">
 
+            <input type="hidden" name="projectID" th:value="${task.project.projectID}">
+
             <label>Task Name</label>
             <input type="text" th:field="*{taskName}" required>
 
@@ -25,12 +27,12 @@
             <input type="date" name="plannedFinishDate" required>
 
             <p>Assign employees</p>
-            <div th:each="emp : ${projectEmployees}">
+            <div th:each="employee : ${task.project.assignedEmployees}">
                 <label>
                     <input type="checkbox"
                            name="assignedEmployeeIDs"
-                           th:value="${emp.employeeID}">
-                    <span th:text="${emp.employeeName}"></span>
+                           th:value="${employee.employeeID}">
+                    <span th:text="${employee.employeeName}"></span>
                 </label>
             </div>
             <div>

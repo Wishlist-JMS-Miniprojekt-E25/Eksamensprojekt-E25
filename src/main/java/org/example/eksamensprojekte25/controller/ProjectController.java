@@ -106,9 +106,6 @@ public class ProjectController {
         task.setProject(projectService.getProjectByID(projectID));
         model.addAttribute("task", task);
 
-        List<Employee> projectEmployees = projectService.getEmployeesByProjectID(projectID);
-        model.addAttribute("projectEmployees", projectEmployees);
-
         return "addTask";
     }
 
@@ -118,17 +115,20 @@ public class ProjectController {
                            @RequestParam String taskDescription,
                            @RequestParam("plannedStartDate") String plannedStartDate,
                            @RequestParam("plannedFinishDate") String plannedFinishDate,
-                           @RequestParam(required = false) List<Integer> assignedEmployeeIDs) {
+                           @RequestParam(required = false) List<Integer> assignedEmployeeIDs,
+                           @RequestParam Integer projectID) {
 
         Date plannedStartDateForTask = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForTask = Date.valueOf(plannedFinishDate);
 
+        Project project = projectService.getProjectByID(projectID);
+
         projectService.addTask(taskName, taskDescription,
                 plannedStartDateForTask, plannedFinishDateForTask,
-                task.getProject().getProjectID(),
+                project.getProjectID(),
                 assignedEmployeeIDs);
 
-        return "redirect:/project/" + task.getProject().getProjectID();
+        return "redirect:/project/" + project.getProjectID();
     }
 
     @PostMapping("/deleteTask/{taskID}")
@@ -144,38 +144,37 @@ public class ProjectController {
     public String addSubtask(@PathVariable Integer taskID, Model model) {
 
         Subtask subtask = new Subtask();
-        subtask.setTaskID(taskID);
-
+        subtask.setTask(projectService.getTaskByID(taskID));
         model.addAttribute("subtask", subtask);
-        model.addAttribute("taskID", taskID);
-
-        List<Employee> taskEmployees = projectService.getEmployeesByTaskID(taskID);
-        model.addAttribute("taskEmployees", taskEmployees);
 
         return "addSubtask";
     }
 
-    @PostMapping("/task/{taskID}/saveSubtask")
+    @PostMapping("/task/saveSubtask")
     public String saveSubtask(@ModelAttribute Subtask subtask,
                               @RequestParam("plannedStartDate") String plannedStartDate,
                               @RequestParam("plannedFinishDate") String plannedFinishDate,
-                              @RequestParam(required = false) Integer assignedEmployeeID) {
+                              @RequestParam(required = false) Integer assignedEmployeeID,
+                              @RequestParam Integer taskID) {
 
         Date plannedStartDateForSubtask = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForSubtask = Date.valueOf(plannedFinishDate);
 
-        projectService.addSubtask(subtask.getSubtaskName(), subtask.getSubtaskDescription(), subtask.getTaskID(),
+        Task task = projectService.getTaskByID(taskID);
+
+        projectService.addSubtask(subtask.getSubtaskName(), subtask.getSubtaskDescription(), task.getTaskID(),
                 assignedEmployeeID, plannedStartDateForSubtask,
                 plannedFinishDateForSubtask);
 
-        return "redirect:/task/" + subtask.getTaskID();
+        return "redirect:/task/" + task.getTaskID();
     }
 
 
-    @PostMapping("task/{taskID}/deleteSubtask/{subtaskID}")
-    public String deleteSubtask(@PathVariable Integer taskID, @PathVariable Integer subtaskID) {
+    @PostMapping("/deleteSubtask/{subtaskID}")
+    public String deleteSubtask(@PathVariable Integer subtaskID) {
+        Subtask subtask = projectService.getSubtaskByID(subtaskID);
         projectService.deleteSubtaskByID(subtaskID);
 
-        return "redirect:/task/" + taskID;
+        return "redirect:/task/" + subtask.getTask().getTaskID();
     }
 }

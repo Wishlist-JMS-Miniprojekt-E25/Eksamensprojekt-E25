@@ -42,7 +42,7 @@ public class ProjectRepository {
         subtask.setSubtaskName(rs.getString("subtaskName"));
         subtask.setSubtaskDescription(rs.getString("subtaskDescription"));
         subtask.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
-        subtask.setTaskID(rs.getInt("taskID"));
+        subtask.setTask(getTaskByID(rs.getInt("taskID")));
         subtask.setAssignedEmployee(getEmployeeByID(rs.getInt("employeeID")));
 
         return subtask;
@@ -232,6 +232,15 @@ public class ProjectRepository {
         jdbcTemplate.update(sql, taskID);
     }
 
+    //henter en subtask baseret på subtask id
+    public Subtask getSubtaskByID(Integer subtaskID) {
+        String sql = """
+                SELECT * FROM subtask
+                WHERE subtaskID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, subtaskRowMapper, subtaskID);
+    }
+
     //henter alle subtasks baseret på et task id
     public List<Subtask> getSubtasksByTaskID(Integer taskID) {
         String sql = """
@@ -258,7 +267,7 @@ public class ProjectRepository {
 
         int subtaskID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
 
-        return new Subtask(subtaskID, subtaskName, subtaskDescription, null, taskID, null);
+        return new Subtask(subtaskID, subtaskName, subtaskDescription, null, null,null);
     }
 
     //fjerner en subtask fra databasen

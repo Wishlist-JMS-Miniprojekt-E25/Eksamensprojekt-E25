@@ -103,6 +103,10 @@ public class ProjectService {
         projectRepository.deleteTaskByID(taskID);
     }
 
+    public Subtask getSubtaskByID(Integer subtaskID) {
+        return projectRepository.getSubtaskByID(subtaskID);
+    }
+
     public Subtask addSubtask(String subtaskName,
                               String subtaskDescription,
                               Integer taskID, Integer employeeID,
