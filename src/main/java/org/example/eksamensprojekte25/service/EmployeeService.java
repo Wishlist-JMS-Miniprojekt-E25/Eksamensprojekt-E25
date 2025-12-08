@@ -57,4 +57,9 @@ public class EmployeeService {
         List<Employee> employees = projectRepository.getEmployeesByProjectID(project.getProjectID());
         project.setAssignedEmployees(employees);
     }
+
+    public Employee addEmployee(Integer employeeID, String employeeName, String userName, String userPassword){
+        Employee employee = employeeRepository.addEmployee(employeeID, employeeName, userName, userPassword);
+        return employee;
+    }
 }

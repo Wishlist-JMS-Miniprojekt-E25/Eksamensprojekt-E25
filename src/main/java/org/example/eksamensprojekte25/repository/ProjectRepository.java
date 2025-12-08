@@ -276,4 +276,5 @@ public class ProjectRepository {
         String sql = "DELETE FROM subtask WHERE subtaskID = ?";
         jdbcTemplate.update(sql, subtaskID);
     }
+
 }

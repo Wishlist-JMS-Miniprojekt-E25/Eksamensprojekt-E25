@@ -7,8 +7,12 @@ import org.example.eksamensprojekte25.model.Project;
 import org.example.eksamensprojekte25.model.Timeslot;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -104,5 +108,22 @@ public class EmployeeRepository {
                 """;
         List<Employee> employees = jdbcTemplate.query(sql, employeeRowMapper, userName, userPassword);
         return employees.isEmpty() ? null : employees.get(0);
+    }
+
+    //tilføjer en employee til databasen
+    public Employee addEmployee(Integer employeeID, String employeeName, String userName, String userPassword){
+        String sql = "INSERT INTO employee (employeeID, employeeName, userName, userPassword) VALUES (?,?,?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, employeeID);
+            ps.setString(2, employeeName);
+            ps.setString(3, userName);
+            ps.setString(4, userPassword);
+            return ps;
+        }, keyHolder);
+        
+        return new Employee(employeeID, employeeName, userName, userPassword);
     }
 }
