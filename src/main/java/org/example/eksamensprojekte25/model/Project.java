@@ -5,16 +5,16 @@ import java.util.List;
 public class Project {
 
     private Integer projectID;
-    private Integer projectManagerID;
+    private Employee projectManager;
     private String projectName;
     private String projectDescription;
     private Timeslot timeslot;
     private List<Employee> assignedEmployees;
     private List<Task> tasks;
 
-    public Project(Integer projectID, Integer projectManagerID, String projectName, String projectDescription, Timeslot timeslot) {
+    public Project(Integer projectID, Employee projectManager, String projectName, String projectDescription, Timeslot timeslot) {
         this.projectID = projectID;
-        this.projectManagerID = projectManagerID;
+        this.projectManager = projectManager;
         this.projectName = projectName;
         this.projectDescription = projectDescription;
         this.timeslot = timeslot;
@@ -72,11 +72,11 @@ public class Project {
         this.assignedEmployees = assignedEmployees;
     }
 
-    public Integer getProjectManagerID() {
-        return projectManagerID;
+    public Employee getProjectManager() {
+        return projectManager;
     }
 
-    public void setProjectManagerID(Integer projectManagerID) {
-        this.projectManagerID = projectManagerID;
+    public void setProjectManager(Employee projectManager) {
+        this.projectManager = projectManager;
     }
 }

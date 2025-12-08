@@ -29,13 +29,12 @@
             <div th:each="employee : ${taskEmployees}">
                 <label>
                     <input type="radio"
-                           th:field="*{employeeID}"
+                           name="assignedEmployeeID"
                            th:value="${employee.employeeID}">
                     <span th:text="${employee.employeeName}">
                    </span>
                 </label>
             </div>
-
             <div>
                 <button type="submit">Save</button>
                 <a th:href="@{/task/{taskID}(taskID=${taskID})}">Cancel</a>
@@ -43,6 +42,5 @@
         </form>
     </div>
 </main>
-
 </body>
 </html>
