@@ -5,7 +5,7 @@
     <title>Task/Subtasks</title>
 </head>
 <body>
-<a th:href="@{/project/{projectID}(projectID=${project.projectID})}">← Go back</a>
+<a th:href="@{/project/{projectID}(projectID=${task.project.projectID})}">← Go back</a>
 <br> <br>
 <!-- tabellen, der viser det enkelte projekt -->
 <table>
@@ -24,21 +24,21 @@
         <th></th>
     </tr>
     <tr>
-        <td th:text="${project.projectID}"></td>
-        <td th:text="${project.projectName}"></td>
-        <td th:text="${project.projectDescription}"></td>
+        <td th:text="${task.project.projectID}"></td>
+        <td th:text="${task.project.projectName}"></td>
+        <td th:text="${task.project.projectDescription}"></td>
         <td>
-            <div th:each="assignedEmployee: ${project.assignedEmployees}"
+            <div th:each="assignedEmployee: ${task.project.assignedEmployees}"
                  th:text="${assignedEmployee.employeeName}"></div>
             <br> <br>
         </td>
-        <td th:text="${project.projectManager.employeeName}"></td>
-        <td th:text="${project.timeslot.getPlannedDays}"></td>
-        <td th:text="${project.timeslot.plannedStartDate}"></td>
-        <td th:text="${project.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${project.timeslot.getActualFinishDate}"></td>
-        <td th:text="${project.timeslot.getDifferenceInDays}"></td>
-        <td th:text="${project.timeslot.totalWorkhours}"></td>
+        <td th:text="${task.project.projectManager.employeeName}"></td>
+        <td th:text="${task.project.timeslot.getPlannedDays}"></td>
+        <td th:text="${task.project.timeslot.plannedStartDate}"></td>
+        <td th:text="${task.project.timeslot.getPlannedFinishDate}"></td>
+        <td th:text="${task.project.timeslot.getActualFinishDate}"></td>
+        <td th:text="${task.project.timeslot.getDifferenceInDays}"></td>
+        <td th:text="${task.project.timeslot.totalWorkhours}"></td>
     </tr>
 </table>
 <br> <br> <br> <br> <br> <br>
@@ -74,7 +74,7 @@
     </tr>
 </table>
 <br> <br> <br> <br> <br> <br>
-<div th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}">
+<div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
     <a th:href="@{/task/{taskID}/addSubtask(taskID=${task.taskID})}">+ Add subtask</a>
 </div>
 <!-- tabellen, der viser alle subtasks -->
@@ -104,7 +104,7 @@
         <td th:text="${subtask.timeslot.getDifferenceInDays}"></td>
         <td th:text="${subtask.timeslot.totalWorkhours}"></td>
         <td>
-            <div th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}">
+            <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
                 <form th:action="@{/task/{taskID}/deleteSubtask/{subtaskID}(taskID=${task.taskID}, subtaskID=${subtask.subtaskID})}"
                       method="post"
                       onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">

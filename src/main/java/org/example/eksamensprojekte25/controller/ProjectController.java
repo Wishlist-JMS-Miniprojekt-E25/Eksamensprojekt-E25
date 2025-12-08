@@ -56,9 +56,7 @@ public class ProjectController {
     public String showsTask(@PathVariable int taskID, HttpSession session, Model model) {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
         Employee loggedInEmployee = employeeService.getEmployeeByID(loggedInEmployeeID);
-        Project project = projectService.getProjectByTaskID(taskID);
         Task task = projectService.getTaskByID(taskID);
-        model.addAttribute("project", project);
         model.addAttribute("task", task);
         model.addAttribute("loggedInEmployee", loggedInEmployee);
         return "showsTask";
@@ -105,8 +103,7 @@ public class ProjectController {
     public String showAddTaskForm(@PathVariable Integer projectID, Model model) {
 
         Task task = new Task();
-        task.setProjectID(projectID);
-
+        task.setProject(projectService.getProjectByID(projectID));
         model.addAttribute("task", task);
 
         List<Employee> projectEmployees = projectService.getEmployeesByProjectID(projectID);
@@ -128,10 +125,10 @@ public class ProjectController {
 
         projectService.addTask(taskName, taskDescription,
                 plannedStartDateForTask, plannedFinishDateForTask,
-                task.getProjectID(),
+                task.getProject().getProjectID(),
                 assignedEmployeeIDs);
 
-        return "redirect:/project/" + task.getProjectID();
+        return "redirect:/project/" + task.getProject().getProjectID();
     }
 
     @PostMapping("/deleteTask/{taskID}")
@@ -139,7 +136,7 @@ public class ProjectController {
         Task task = projectService.getTaskByID(taskID);
         projectService.deleteTaskByID(taskID);
 
-        redirectAttributes.addAttribute("projectID", task.getProjectID());
+        redirectAttributes.addAttribute("projectID", task.getProject().getProjectID());
         return "redirect:/project/{projectID}";
     }
 

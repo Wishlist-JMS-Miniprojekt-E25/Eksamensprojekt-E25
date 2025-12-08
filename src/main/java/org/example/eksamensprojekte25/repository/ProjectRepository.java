@@ -31,7 +31,7 @@ public class ProjectRepository {
         task.setTaskID(rs.getInt("taskID"));
         task.setTaskName(rs.getString("taskName"));
         task.setTaskDescription(rs.getString("taskDescription"));
-        task.setProjectID(rs.getInt("projectID"));
+        task.setProject(getProjectByID(rs.getInt("projectID")));
         task.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
 
         return task;
@@ -160,16 +160,6 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(sql, projectRowMapper, projectID);
     }
 
-    //henter et projekt baseret på task id
-    public Project getProjectByTaskID(Integer taskID) {
-        String sql = """
-                SELECT * FROM project p
-                JOIN task t ON p.projectID = t.projectID
-                WHERE taskID = ?
-                """;
-        return jdbcTemplate.queryForObject(sql, projectRowMapper, taskID);
-    }
-
     //tilføjet et projekt til databasen
     public Project addProject(Integer projectManagerID, String projectName, String projectDescription, Integer timeslotID) {
         String sql = "INSERT INTO project (projectManagerID, projectName, projectDescription, timeslotID) VALUES (?, ?, ?, ?)";
@@ -233,7 +223,7 @@ public class ProjectRepository {
 
         int taskID = keyHolder.getKey().intValue();
 
-        return new Task(taskID, taskName, taskDescription, null, null, projectID);
+        return new Task(taskID, taskName, taskDescription, null, null, null);
     }
 
     //fjerner en task fra databasen
