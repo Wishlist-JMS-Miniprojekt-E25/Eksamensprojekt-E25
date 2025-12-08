@@ -83,6 +83,9 @@ public class ProjectService {
         List<Employee> employees = projectRepository.getEmployeesByTaskID(taskID);
         task.setAssignedEmployees(employees);
         populateListOfSubtasksForTask(task);
+        /*for (Subtask subtask : task.getSubtasks()) {
+            subtask.setAssignedEmployee()
+        } */
         return task;
     }
 

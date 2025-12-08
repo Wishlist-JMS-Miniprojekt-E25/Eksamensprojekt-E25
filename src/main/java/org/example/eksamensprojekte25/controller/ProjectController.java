@@ -175,7 +175,7 @@ public class ProjectController {
         Date plannedFinishDateForSubtask = Date.valueOf(plannedFinishDate);
 
         projectService.addSubtask(subtask.getSubtaskName(), subtask.getSubtaskDescription(), subtask.getTaskID(),
-                subtask.getEmployeeID(), plannedStartDateForSubtask,
+                subtask.getAssignedEmployee().getEmployeeID(), plannedStartDateForSubtask,
                 plannedFinishDateForSubtask);
 
         return "redirect:/task/" + subtask.getTaskID();

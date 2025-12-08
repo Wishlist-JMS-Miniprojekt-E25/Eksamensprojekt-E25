@@ -41,9 +41,9 @@ public class ProjectRepository {
         subtask.setSubtaskID(rs.getInt("subtaskID"));
         subtask.setSubtaskName(rs.getString("subtaskName"));
         subtask.setSubtaskDescription(rs.getString("subtaskDescription"));
-        subtask.setTaskID(rs.getInt("taskID"));
-        subtask.setEmployeeID(rs.getInt("employeeID"));
         subtask.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
+        subtask.setTaskID(rs.getInt("taskID"));
+        subtask.setAssignedEmployee(getEmployeeByID(rs.getInt("employeeID")));
 
         return subtask;
     };
@@ -101,6 +101,15 @@ public class ProjectRepository {
                 WHERE timeslotID = ?
                 """;
         return jdbcTemplate.queryForObject(timeslotSql, timeslotRowMapper, timeslotID);
+    }
+
+    //henter en employee baseret på employee id
+    public Employee getEmployeeByID(Integer employeeID) {
+        String sql = """
+                SELECT * FROM employee
+                WHERE employeeID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, employeeRowMapper, employeeID);
     }
 
     //henter de employees, som er på samme projekt
@@ -259,7 +268,7 @@ public class ProjectRepository {
 
         int subtaskID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
 
-        return new Subtask(subtaskID, subtaskName, subtaskDescription, null, taskID, employeeID);
+        return new Subtask(subtaskID, subtaskName, subtaskDescription, null, taskID, null);
     }
 
     //fjerner en subtask fra databasen

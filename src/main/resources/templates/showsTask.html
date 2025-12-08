@@ -96,12 +96,7 @@
         <td th:text="${subtask.subtaskID}"></td>
         <td th:text="${subtask.subtaskName}"></td>
         <td th:text="${subtask.subtaskDescription}"></td>
-        <td>
-            <div th:each="employee: ${task.assignedEmployees}"
-                 th:if="${subtask.employeeID == employee.employeeID}"
-                 th:text="${employee.employeeName}">
-            </div>
-        </td>
+        <td th:text="${subtask.assignedEmployee.employeeName}"></td>
         <td th:text="${subtask.timeslot.getPlannedDays}"></td>
         <td th:text="${subtask.timeslot.plannedStartDate}"></td>
         <td th:text="${subtask.timeslot.getPlannedFinishDate}"></td>
