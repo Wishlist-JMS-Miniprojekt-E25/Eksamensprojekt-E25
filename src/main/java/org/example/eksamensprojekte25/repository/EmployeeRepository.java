@@ -111,19 +111,27 @@ public class EmployeeRepository {
     }
 
     //tilføjer en employee til databasen
-    public Employee addEmployee(Integer employeeID, String employeeName, String userName, String userPassword){
-        String sql = "INSERT INTO employee (employeeID, employeeName, userName, userPassword) VALUES (?,?,?,?)";
+    public Employee addEmployee(String employeeName, String userName, String userPassword) {
+        String sql = "INSERT INTO employee (employeeName, userName, userPassword) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, employeeID);
-            ps.setString(2, employeeName);
-            ps.setString(3, userName);
-            ps.setString(4, userPassword);
+            ps.setString(1, employeeName);
+            ps.setString(2, userName);
+            ps.setString(3, userPassword);
             return ps;
         }, keyHolder);
-        
-        return new Employee(employeeID, employeeName, userName, userPassword);
+
+        int generatedEmployeeID = keyHolder.getKey().intValue();
+
+        return new Employee(generatedEmployeeID, employeeName, userName, userPassword);
     }
+    //checker om brugernavnet allerede findes
+    public boolean usernameExists(String userName) {
+        String sql = "SELECT COUNT(*) FROM employee WHERE userName = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userName);
+        return count != null && count > 0;
+    }
+
 }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Employee</title>
+</head>
+<body>
+
+<h2>Create New Employee</h2>
+
+<!-- Viser fejl hvis brugernavn er taget -->
+<div th:if="${errorMessage}" class="error">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<form th:action="@{/saveEmployee}" method="post">
+
+    <label>Full name</label>
+    <input type="text" name="employeeName"
+           th:value="${employeeName}"
+           required>
+
+    <label>Username</label>
+    <input type="text" name="userName"
+           th:value="${userName}"
+           required>
+
+    <label>Password</label>
+    <input type="password" name="userPassword"
+           th:value="${userPassword}"
+           required>
+
+    <button type="submit">Save</button>
+
+</form>
+
+</body>
+</html>

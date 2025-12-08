@@ -58,8 +58,16 @@ public class EmployeeService {
         project.setAssignedEmployees(employees);
     }
 
-    public Employee addEmployee(Integer employeeID, String employeeName, String userName, String userPassword){
-        Employee employee = employeeRepository.addEmployee(employeeID, employeeName, userName, userPassword);
-        return employee;
+    public Employee addEmployee(String employeeName, String userName, String userPassword) {
+
+        if (employeeRepository.usernameExists(userName)) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
+        return employeeRepository.addEmployee(employeeName, userName, userPassword);
     }
+
+
+
+
 }
