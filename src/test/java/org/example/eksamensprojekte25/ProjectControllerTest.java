@@ -50,19 +50,19 @@ public class ProjectControllerTest {
         int employeeID = 1;
 
         //fake employee
-        Employee employee = new Employee();
-        employee.setManagedProjects(new ArrayList<>());
+        Employee manager = new Employee();
+        manager.setEmployeeName("Manager Name");
 
         //fake projekt
         Project assignedToProject = new Project();
+        assignedToProject.setProjectManager(manager);
         //fake timeslot
         Timeslot timeslot = new Timeslot();
         timeslot.setPlannedDays(0);
         assignedToProject.setTimeslot(timeslot);
 
         //simulerer service metode kaldende med vores fake data
-        when(employeeService.getEmployeeByID(employeeID)).thenReturn(employee);
-        when(employeeService.getAllEmployees()).thenReturn(List.of(employee));
+        when(employeeService.getEmployeeByID(employeeID)).thenReturn(manager);
         when(employeeService.getProjectsByEmployeeID(employeeID)).thenReturn(List.of(assignedToProject));
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
@@ -73,12 +73,10 @@ public class ProjectControllerTest {
                 //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
                 .andExpect(model().attributeExists(
                         "loggedInEmployee",
-                        "allEmployees",
                         "assignedToProjects"
                 ))
                 //vi giver attributterne vores fake værdier
-                .andExpect(model().attribute("loggedInEmployee", employee))
-                .andExpect(model().attribute("allEmployees", List.of(employee)))
+                .andExpect(model().attribute("loggedInEmployee", manager))
                 .andExpect(model().attribute("assignedToProjects", List.of(assignedToProject)));
     }
 
@@ -88,21 +86,29 @@ public class ProjectControllerTest {
         //fake projekt id
         int projectID = 69;
 
+        //fake manager
+        Employee manager = new Employee();
+        manager.setEmployeeName("manager name");
+        manager.setEmployeeID(3);
+        //fake loggedIn employee
+        Employee employee = new Employee();
+        employee.setEmployeeID(1);
+
         //fake projekt
         Project project = new Project();
-        project.setProjectManagerID(3);
+        project.setProjectManager(manager);
+        project.setAssignedEmployees(new ArrayList<>());
         project.setTasks(new ArrayList<>());
         //fake timeslot
         Timeslot timeslot = new Timeslot();
         timeslot.setPlannedDays(0);
         project.setTimeslot(timeslot);
 
-        //fake employee
-        Employee employee = new Employee();
 
         //simulerer service metode kaldende med vores fake data
+        when(employeeService.getEmployeeByID(1)).thenReturn(employee);
         when(projectService.getProjectByID(projectID)).thenReturn(project);
-        when(employeeService.getEmployeeByID(3)).thenReturn(employee);
+
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
@@ -112,13 +118,11 @@ public class ProjectControllerTest {
                 //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
                 .andExpect(model().attributeExists(
                         "project",
-                        "manager",
                         "loggedInEmployee"
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("project", project))
-                .andExpect(model().attribute("manager", employee))
-                .andExpect(model().attribute("loggedInEmployee", 1));
+                .andExpect(model().attribute("loggedInEmployee", employee));
     }
 
     //tester showsTask metoden
@@ -126,14 +130,6 @@ public class ProjectControllerTest {
     void shouldShowTask() throws Exception {
         //fake task id
         int taskID = 69;
-
-        //fake projekt
-        Project project = new Project();
-        project.setProjectManagerID(5);
-        //fake projekt timeslot
-        Timeslot projectTimeslot = new Timeslot();
-        projectTimeslot.setPlannedDays(0);
-        project.setTimeslot(projectTimeslot);
 
         //fake task
         Task task = new Task();
@@ -147,7 +143,6 @@ public class ProjectControllerTest {
         Employee employee = new Employee();
 
         //simulerer service metode kaldende med vores fake data
-        when(projectService.getProjectByTaskID(taskID)).thenReturn(project);
         when(employeeService.getEmployeeByID(5)).thenReturn(employee);
         when(projectService.getTaskByID(taskID)).thenReturn(task);
 
@@ -158,14 +153,10 @@ public class ProjectControllerTest {
                 .andExpect(view().name("showsTask"))
                 //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
                 .andExpect(model().attributeExists(
-                        "project",
-                        "manager",
                         "task",
                         "loggedInEmployee"
                 ))
                 //vi giver attributterne vores fake værdier
-                .andExpect(model().attribute("project", project))
-                .andExpect(model().attribute("manager", employee))
                 .andExpect(model().attribute("task", task))
                 .andExpect(model().attribute("loggedInEmployee", 1));
     }
@@ -173,18 +164,19 @@ public class ProjectControllerTest {
     @Test
     void shouldAddProject() throws Exception {
 
-        List<Employee> employees = new ArrayList<>();
-        employees.add(new Employee(1, "Simon", "Sim", "123"));
-        employees.add(new Employee(2, "Martin", "Mar", "abc"));
+        Employee employee = new Employee();
+        Project project = new Project();
 
-        when(employeeService.getAllEmployees()).thenReturn(employees);
+        when(employeeService.getAllEmployees()).thenReturn(List.of(employee));
 
-        mockMvc.perform(get("/addProject")
-                        .sessionAttr("employeeID", 1))
+        mockMvc.perform(get("/addProject"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addProject"))
-                .andExpect(model().attribute("projectManager", 1))
-                .andExpect(model().attribute("allEmployees", employees));
+                .andExpect(model().attributeExists(
+                        "project",
+                        "allEmployees"))
+                .andExpect(model().attribute("project", project))
+                .andExpect(model().attribute("allEmployees", List.of(employee)));
     }
 
     @Test
@@ -226,8 +218,7 @@ public class ProjectControllerTest {
 
     @Test
     void shouldDeleteProject() throws Exception {
-        mockMvc.perform(post("/deleteProject/{projectID}", 3)
-                        .sessionAttr("employeeID", 1))
+        mockMvc.perform(post("/deleteProject/{projectID}", 3))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/userProjects"));
 
@@ -242,7 +233,6 @@ public class ProjectControllerTest {
         Employee employee = new Employee();
 
         Task task = new Task();
-        task.setProjectID(projectID);
 
         when(projectService.getEmployeesByProjectID(projectID))
                 .thenReturn(List.of(employee));
@@ -250,18 +240,14 @@ public class ProjectControllerTest {
         mockMvc.perform(get("/addTask/{projectID}", projectID))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addTask"))
-                .andExpect(model().attributeExists(
-                        "task",
-                        "projectEmployees"))
-                .andExpect(model().attribute("task", samePropertyValuesAs(task)))
-                .andExpect(model().attribute("projectEmployees", List.of(employee)));
+                .andExpect(model().attributeExists("task"))
+                .andExpect(model().attribute("task", samePropertyValuesAs(task)));
     }
 
     @Test
     void shouldSaveTask() throws Exception {
 
         mockMvc.perform(post("/saveTask")
-                        .sessionAttr("employeeID", 1)
                         .param("projectID", "7")
                         .param("taskName", "Nyt task")
                         .param("taskDescription", "En beskrivelse")
@@ -300,7 +286,6 @@ public class ProjectControllerTest {
 
         Task task = new Task();
         task.setTaskID(1);
-        task.setProjectID(10);
 
         when(projectService.getTaskByID(1)).thenReturn(task);
 
@@ -311,10 +296,11 @@ public class ProjectControllerTest {
 
     @Test
     void shouldDeleteSubtask() throws Exception {
-
-        mockMvc.perform(post("/task/{taskID}/deleteSubtask/{subtaskID}", 1, 3))
+        //fake task id
+        int taskID = 1;
+        mockMvc.perform(post("/deleteSubtask/{subtaskID}", 3))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/task/" + 1));
+                .andExpect(view().name("redirect:/task/" + taskID));
 
         verify(projectService, times(1)).deleteSubtaskByID(3);
     }
@@ -323,38 +309,37 @@ public class ProjectControllerTest {
     void shouldShowAddSubtaskForm() throws Exception {
         Integer taskID = 1;
 
-        List<Employee> taskEmployees = List.of(
-                new Employee(1, "Hans", "h", "123"),
-                new Employee(2, "Frede", "f", "321")
-        );
+        Employee employee = new Employee();
+
+        Subtask subtask = new Subtask();
 
         when(projectService.getEmployeesByTaskID(taskID))
-                .thenReturn(taskEmployees);
+                .thenReturn(List.of(employee));
 
         mockMvc.perform(get("/task/{taskID}/addSubtask", taskID))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addSubtask"))
                 .andExpect(model().attributeExists("subtask"))
-                .andExpect(model().attribute("taskEmployees", taskEmployees));
+                .andExpect(model().attribute("subtask", subtask));
     }
 
     @Test
     void shouldSaveSubtask() throws Exception {
 
-        mockMvc.perform(post("/task/{taskID}/saveSubtask", 1)
+        mockMvc.perform(post("/task/saveSubtask")
                         .param("taskID", "1")
                         .param("subtaskName", "Ny subtask")
                         .param("subtaskDescription", "En beskrivelse")
                         .param("plannedStartDate", "2025-02-01")
                         .param("plannedFinishDate", "2025-02-20")
-                        .param("employeeID", "3"))
+                        .param("assignedEmployeeID", "3"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/task/1"));
 
         ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> descriptionCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Integer> taskIDCaptor = ArgumentCaptor.forClass(Integer.class);
-        ArgumentCaptor<Integer> employeeIDCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Integer> assignedEmployeeIDCaptor = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<Date> startDateCaptor = ArgumentCaptor.forClass(Date.class);
         ArgumentCaptor<Date> finishDateCaptor = ArgumentCaptor.forClass(Date.class);
 
@@ -362,7 +347,7 @@ public class ProjectControllerTest {
                 nameCaptor.capture(),
                 descriptionCaptor.capture(),
                 taskIDCaptor.capture(),
-                employeeIDCaptor.capture(),
+                assignedEmployeeIDCaptor.capture(),
                 startDateCaptor.capture(),
                 finishDateCaptor.capture()
         );
@@ -370,7 +355,7 @@ public class ProjectControllerTest {
         assertEquals("Ny subtask", nameCaptor.getValue());
         assertEquals("En beskrivelse", descriptionCaptor.getValue());
         assertEquals(1, taskIDCaptor.getValue());
-        assertEquals(3, employeeIDCaptor.getValue());
+        assertEquals(3, assignedEmployeeIDCaptor.getValue());
         assertEquals(Date.valueOf("2025-02-01"), startDateCaptor.getValue());
         assertEquals(Date.valueOf("2025-02-20"), finishDateCaptor.getValue());
     }
