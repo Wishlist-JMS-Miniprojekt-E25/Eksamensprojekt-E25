@@ -276,4 +276,38 @@ public class ProjectRepository {
         String sql = "DELETE FROM subtask WHERE subtaskID = ?";
         jdbcTemplate.update(sql, subtaskID);
     }
+
+    public void addEmployeeToProject (Integer projectID, Integer employeeID){
+        String sql = "INSERT INTO projectEmployee (projectID, employeeID) VALUES (?, ?)";
+
+        jdbcTemplate.update(sql, projectID, employeeID);
+    }
+
+    public void removeEmployeeFromProject (Integer projectID, Integer employeeID){
+        String sql = "DELETE FROM projectEmployee WHERE projectID = ? AND employeeID = ?";
+
+        jdbcTemplate.update(sql, projectID, employeeID);
+    }
+
+    public void editTimeslot (Integer timeslotID, Integer plannedDays, Date plannedStartDate, Date plannedFinishDate){
+        String sql = """
+                UPDATE timeslot
+                SET plannedDays = ?,
+                plannedStartDate = ?,
+                plannedFinishDate = ?
+                WHERE timeslotID = ?
+                """;
+        jdbcTemplate.update(sql, plannedDays, plannedStartDate, plannedFinishDate, timeslotID);
+    }
+
+    public void editProject (Project project, Integer projectID){
+        String sql = """
+                UPDATE project
+                SET projectName = ?,
+                projectDescription = ?,
+                timeslotID = ?
+                WHERE projectID = ?
+                """;
+        jdbcTemplate.update(sql, project.getProjectName(), project.getProjectDescription(), project.getTimeslot().getTimeslotID(), projectID);
+    }
 }

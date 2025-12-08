@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Project</title>
+</head>
+<body>
+
+<form th:action="@{/projects/updateProject}" th:object="${project}" method="post">
+    <input type="hidden" th:field="*{projectID}">
+
+    <label>Name</label>
+    <input type="text" th:field="*{projectName}">
+
+    <label>Description</label>
+    <input type="text" th:field="*{projectDescription}">
+
+    <label>Planned Start Date</label>
+    <input type="date" th:field="*{timeslot.plannedStartDate}">
+
+    <label>Planned Finish Date</label>
+    <input type="date" th:field="*{timeslot.plannedFinishDate}">
+
+    <input type="hidden" name="assignedEmployeeIDs" value="">
+
+    <p>Assign employees</p>
+    <div th:each="employees : ${allEmployees}">
+        <label>
+            <input type="checkbox" name="assignedEmployeeIDs" th:value="${employees.employeeID}"
+            th:checked="${assignedEmployeeIDs.contains(employees.employeeID)}">
+            <span th:text="${employees.employeeName}"></span>
+        </label>
+    </div>
+
+    <button type="submit">Save</button>
+    <a th:href="@{/userProjects}">Cancel</a>
+</form>
+
+</body>
+</html>

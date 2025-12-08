@@ -7,6 +7,7 @@ import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -143,5 +144,61 @@ public class ProjectService {
     public void populateListOfAssignedEmployeesOfTask(Task task) {
         List<Employee> employees = projectRepository.getEmployeesByTaskID(task.getTaskID());
         task.setAssignedEmployees(employees);
+    }
+
+    public void editProject (Project project, List<Integer> assignedEmployeeIDs){
+
+        Integer projectID = project.getProjectID();
+        String newName = project.getProjectName();
+        String newDescription = project.getProjectDescription();
+
+        Date newPlannedStartDate = project.getTimeslot().getPlannedStartDate();
+        Date newPlannedFinishDate = project.getTimeslot().getPlannedFinishDate();
+
+        int plannedDays = calculatePlannedDays(newPlannedStartDate, newPlannedFinishDate);
+
+        Project currentProject = projectRepository.getProjectByID(projectID);
+
+        Integer timeslotID = currentProject.getTimeslot().getTimeslotID();
+        projectRepository.editTimeslot(timeslotID, plannedDays, newPlannedStartDate, newPlannedFinishDate);
+
+        Project newProject = new Project();
+        newProject.setProjectName(newName);
+        newProject.setProjectDescription(newDescription);
+        newProject.setTimeslot(projectRepository.getTimeslotByID(timeslotID));
+        projectRepository.editProject(newProject, projectID);
+
+        //Henter listen med alle nuværende employees
+        List<Employee> currentEmployees = projectRepository.getEmployeesByProjectID(projectID);
+
+        //konverterer listen til ID'er frem for objekter
+        List<Integer> currentEmployeeIDs = new ArrayList<>();
+        for(Employee e : currentEmployees){
+            currentEmployeeIDs.add(e.getEmployeeID());
+        }
+
+        //tilføjer kun nye employees, når de vælges på checklisten
+        List<Integer> employeeToAdd = new ArrayList<>();
+        for (Integer eID : assignedEmployeeIDs){
+            if(!currentEmployeeIDs.contains(eID)){
+                employeeToAdd.add(eID);
+            }
+        }
+
+        for (Integer addID : employeeToAdd) {
+            projectRepository.addEmployeeToProject(projectID, addID);
+        }
+
+        //Fjerner kun de assigned employees, som er fravalgt i checklisten
+        List<Integer> employeeToRemove = new ArrayList<>();
+        for (Integer eID : currentEmployeeIDs){
+            if (!assignedEmployeeIDs.contains(eID)){
+                employeeToRemove.add(eID);
+            }
+        }
+
+        for (Integer removeID : employeeToRemove){
+            projectRepository.removeEmployeeFromProject(projectID, removeID);
+        }
     }
 }

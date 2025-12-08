@@ -189,4 +189,26 @@ public class ProjectController {
 
         return "redirect:/task/" + taskID;
     }
+
+    @GetMapping("/editProject/{projectID}")
+    public String editProject (@PathVariable Integer projectID, Model model){
+
+        Project project = projectService.getProjectByID(projectID);
+
+        model.addAttribute("project", project);
+
+        List<Employee> allEmployees = employeeService.getAllEmployees();
+        model.addAttribute("allEmployees", allEmployees);
+
+        return "editProject";
+    }
+
+    @PostMapping("/updateProject")
+    public String updateProject (@ModelAttribute Project project, @RequestParam List<Integer> assignedEmployeeIDs){
+
+
+        projectService.editProject(project, assignedEmployeeIDs);
+
+        return "redirect:/project/" + project.getProjectID();
+    }
 }
