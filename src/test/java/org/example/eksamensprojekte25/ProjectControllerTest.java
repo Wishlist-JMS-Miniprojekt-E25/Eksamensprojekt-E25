@@ -374,4 +374,56 @@ public class ProjectControllerTest {
         assertEquals(Date.valueOf("2025-02-01"), startDateCaptor.getValue());
         assertEquals(Date.valueOf("2025-02-20"), finishDateCaptor.getValue());
     }
+
+    @Test
+    void shouldShowEditProject() throws Exception{
+
+        //Fake projekt, med 2 assigned employees
+        Employee hans = new Employee(2, "Hans", "hans", "kodeord");
+        Employee frede = new Employee(3, "Frede", "frede", "1234");
+
+        Project project = new Project();
+        project.setProjectID(7);
+        project.setAssignedEmployees(List.of(hans, frede));
+
+        //Fake liste med alle employees til checkbox-listen
+        List<Employee> allEmployees = List.of(hans, frede, new Employee(1, "Lotte", "lotte", "password"));
+
+        when(projectService.getProjectByID(7)).thenReturn(project);
+        when(employeeService.getAllEmployees()).thenReturn(allEmployees);
+
+        mockMvc.perform(get("/editProject/{projectID}", 7))
+                .andExpect(status().isOk())
+                .andExpect(view().name("editProject"))
+                .andExpect(model().attributeExists("project", "allEmployees", "assignedEmployeeIDs"))
+                .andExpect(model().attribute("project", project))
+                .andExpect(model().attribute("allEmployees", allEmployees))
+                .andExpect(model().attribute("assignedEmployeeIDs", List.of(2, 3)));
+    }
+
+    @Test
+    void shouldUpdateProject() throws Exception{
+
+        //Laver fake projekt
+        Project project = new Project();
+        project.setProjectID(7);
+        project.setProjectName("Nyt projekt navn");
+
+        mockMvc.perform(post("/updateProject")
+                .flashAttr("project", project) //FlashAttr = @ModelAttribute
+                .param("assignedEmployeeIDs", "2", "3"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/userProjects"));
+
+        //Fanger argumenterne, som controlleren sender videre til service-laget
+        ArgumentCaptor<List<Integer>> listCaptor = ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
+
+        //Tjekker om service-laget bliver kaldt som forventet
+        verify(projectService).editProject(projectCaptor.capture(), listCaptor.capture());
+
+        //Tjekker om det rigtige projekt og de rigtige valgte employee IDs bliver sendt
+        assertEquals(7, projectCaptor.getValue().getProjectID());
+        assertEquals(List.of(2, 3), listCaptor.getValue());
+    }
 }
