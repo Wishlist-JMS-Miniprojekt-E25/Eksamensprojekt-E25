@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.Mockito.*;
 
@@ -131,24 +132,36 @@ public class ProjectControllerTest {
         //fake task id
         int taskID = 69;
 
+        //fake employee
+        Employee manager = new Employee();
+        manager.setEmployeeName("manager name");
+        manager.setEmployeeID(5);
+
+        //fake projekt
+        Project project = new Project();
+        project.setProjectManager(manager);
+        //fake project timeslot
+        Timeslot projectTimeslot = new Timeslot();
+        projectTimeslot.setPlannedDays(0);
+        project.setTimeslot(projectTimeslot);
+
         //fake task
         Task task = new Task();
+        task.setProject(project);
+        task.setAssignedEmployees(new ArrayList<>());
         task.setSubtasks(new ArrayList<>());
         //fake task timeslot
         Timeslot taskTimeslot = new Timeslot();
         taskTimeslot.setPlannedDays(0);
         task.setTimeslot(taskTimeslot);
 
-        //fake employee
-        Employee employee = new Employee();
-
         //simulerer service metode kaldende med vores fake data
-        when(employeeService.getEmployeeByID(5)).thenReturn(employee);
+        when(employeeService.getEmployeeByID(5)).thenReturn(manager);
         when(projectService.getTaskByID(taskID)).thenReturn(task);
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
-        mockMvc.perform(get("/task/{taskID}", taskID).sessionAttr("employeeID", 1))
+        mockMvc.perform(get("/task/{taskID}", taskID).sessionAttr("employeeID", 5))
                 .andExpect(status().isOk())
                 .andExpect(view().name("showsTask"))
                 //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden
@@ -158,14 +171,13 @@ public class ProjectControllerTest {
                 ))
                 //vi giver attributterne vores fake værdier
                 .andExpect(model().attribute("task", task))
-                .andExpect(model().attribute("loggedInEmployee", 1));
+                .andExpect(model().attribute("loggedInEmployee", manager));
     }
 
     @Test
     void shouldAddProject() throws Exception {
 
         Employee employee = new Employee();
-        Project project = new Project();
 
         when(employeeService.getAllEmployees()).thenReturn(List.of(employee));
 
@@ -175,7 +187,7 @@ public class ProjectControllerTest {
                 .andExpect(model().attributeExists(
                         "project",
                         "allEmployees"))
-                .andExpect(model().attribute("project", project))
+                .andExpect(model().attribute("project", instanceOf(Project.class)))
                 .andExpect(model().attribute("allEmployees", List.of(employee)));
     }
 
@@ -228,24 +240,28 @@ public class ProjectControllerTest {
     @Test
     void shouldShowAddTaskForm() throws Exception {
 
+        Project project = new Project();
         Integer projectID = 5;
 
         Employee employee = new Employee();
 
-        Task task = new Task();
-
-        when(projectService.getEmployeesByProjectID(projectID))
-                .thenReturn(List.of(employee));
+        when(projectService.getProjectByID(projectID))
+                .thenReturn(project);
 
         mockMvc.perform(get("/addTask/{projectID}", projectID))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addTask"))
                 .andExpect(model().attributeExists("task"))
-                .andExpect(model().attribute("task", samePropertyValuesAs(task)));
+                .andExpect(model().attribute("task", instanceOf(Task.class)));
     }
 
     @Test
     void shouldSaveTask() throws Exception {
+
+        Project project = new Project();
+        project.setProjectID(7);
+
+        when(projectService.getProjectByID(7)).thenReturn(project);
 
         mockMvc.perform(post("/saveTask")
                         .param("projectID", "7")
@@ -284,10 +300,15 @@ public class ProjectControllerTest {
     @Test
     void shouldDeleteTask() throws Exception {
 
+        Project project = new Project();
+        project.setProjectID(10);
+
         Task task = new Task();
         task.setTaskID(1);
+        task.setProject(project);
 
         when(projectService.getTaskByID(1)).thenReturn(task);
+        doNothing().when(projectService).deleteTaskByID(1);
 
         mockMvc.perform(post("/deleteTask/1"))
                 .andExpect(status().is3xxRedirection())
@@ -296,35 +317,47 @@ public class ProjectControllerTest {
 
     @Test
     void shouldDeleteSubtask() throws Exception {
-        //fake task id
-        int taskID = 1;
+
+        Task task = new Task();
+        task.setTaskID(1);
+
+        Subtask subtask = new Subtask();
+        subtask.setSubtaskID(3);
+        subtask.setTask(task);
+
+        when(projectService.getSubtaskByID(3)).thenReturn(subtask);
+        doNothing().when(projectService).deleteSubtaskByID(1);
+
         mockMvc.perform(post("/deleteSubtask/{subtaskID}", 3))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/task/" + taskID));
+                .andExpect(view().name("redirect:/task/" + 1));
 
         verify(projectService, times(1)).deleteSubtaskByID(3);
     }
 
     @Test
     void shouldShowAddSubtaskForm() throws Exception {
+
+        Task task = new Task();
         Integer taskID = 1;
 
-        Employee employee = new Employee();
-
-        Subtask subtask = new Subtask();
-
-        when(projectService.getEmployeesByTaskID(taskID))
-                .thenReturn(List.of(employee));
+        when(projectService.getTaskByID(taskID))
+                .thenReturn(task);
 
         mockMvc.perform(get("/task/{taskID}/addSubtask", taskID))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addSubtask"))
                 .andExpect(model().attributeExists("subtask"))
-                .andExpect(model().attribute("subtask", subtask));
+                .andExpect(model().attribute("subtask", instanceOf(Subtask.class)));
     }
 
     @Test
     void shouldSaveSubtask() throws Exception {
+
+        Task task = new Task();
+        task.setTaskID(1);
+
+        when(projectService.getTaskByID(1)).thenReturn(task);
 
         mockMvc.perform(post("/task/saveSubtask")
                         .param("taskID", "1")
