@@ -194,6 +194,7 @@ public class ProjectController {
     @GetMapping("/editProject/{projectID}")
     public String editProject (@PathVariable Integer projectID, Model model){
 
+        //Henter det projekt, der skal redigeres
         Project project = projectService.getProjectByID(projectID);
 
         model.addAttribute("project", project);

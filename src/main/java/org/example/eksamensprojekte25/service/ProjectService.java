@@ -148,13 +148,14 @@ public class ProjectService {
 
     public void editProject(Project project, List<Integer> assignedEmployeeIDs) {
 
+        //Henter ID på det projekt, der skal opdateres
         Integer projectID = project.getProjectID();
 
-        //Henter det nuværende projekt og timeslot
+        //Henter det nuværende projekt, udelukkende så vi kan få timeslotID
         Project currentProject = projectRepository.getProjectByID(projectID);
         Integer timeslotID = currentProject.getTimeslot().getTimeslotID();
 
-
+        //Laver ny beregning på plannedDays, baseret på de nye planned start date og planned finish date
         int plannedDays = calculatePlannedDays(project.getTimeslot().getPlannedStartDate(),
                 project.getTimeslot().getPlannedFinishDate());
 
@@ -163,10 +164,13 @@ public class ProjectService {
                 project.getTimeslot().getPlannedFinishDate());
 
         //Opdaterer navn, beskrivelse og timeslot
+        //Gøres ved at oprette et nyt projekt, som kun tager de felter vi må redigere i
         Project newProject = new Project();
         newProject.setProjectName(project.getProjectName());
         newProject.setProjectDescription(project.getProjectDescription());
         newProject.setTimeslot(projectRepository.getTimeslotByID(timeslotID));
+
+        //Opdaterer projekt-tabellen i databasen
         projectRepository.editProject(newProject, projectID);
 
         //Henter listen med alle nuværende employees
@@ -186,7 +190,8 @@ public class ProjectService {
             }
         }
 
-        //Tjekker om der er nogen nye employees, der skal tilføjes og tilføjer dem
+        //Tilføjer kun nye employees til projektet, hvis der er nye at tilføje
+        //Undgår duplicates i databasen, ved brug af isEmpty()
         if (!employeesToAdd.isEmpty()) {
             projectRepository.assignEmployeesToProject(projectID, employeesToAdd);
         }

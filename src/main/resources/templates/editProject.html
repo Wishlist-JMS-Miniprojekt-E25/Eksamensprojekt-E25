@@ -28,6 +28,7 @@
         <label>
             <input type="checkbox" name="assignedEmployeeIDs" th:value="${employees.employeeID}"
             th:checked="${assignedEmployeeIDs.contains(employees.employeeID)}">
+            <!--Hvis employee allerede er assigned, så sørger th:checked for, at de allerede er checked-->
             <span th:text="${employees.employeeName}"></span>
         </label>
     </div>
