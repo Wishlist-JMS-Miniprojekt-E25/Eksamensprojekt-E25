@@ -7,6 +7,8 @@ import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -206,47 +208,54 @@ public class ProjectService {
         }
     }
 
-    //Udregner summen af total workhours for en liste a subtasks
-    public int sumSubtaskWorkhours(List<Subtask> subtasks){
-        int sum = 0;
-        for(Subtask st : subtasks){
-            sum += st.getTimeslot().getTotalWorkhours();
-        }
-        return sum;
+    public void calculateDifferenceInDays(Timeslot timeslot){
+       long differenceInDays = timeslot.getActualFinishDate().getTime() - timeslot.getPlannedFinishDate().getTime();
+
+       timeslot.setDifferenceInDays((int) (differenceInDays / (1000 * 60 * 60 * 24)));
     }
 
-    //Udregner summen af total workhours for en liste a tasks
-    public int sumTaskWorkhours(List<Task> tasks){
-        int sum = 0;
-        for(Task t : tasks){
-            sum += t.getTimeslot().getTotalWorkhours();
-        }
-        return sum;
+    public void calculateTaskWorkhours(Task task){
+
     }
 
-    //Filtrerer en stor liste af subtasks så man kun får udregnet summen af de subtasks,
-    // der hører til det aktuelle taskID
-    public int sumSubtaksWorkhoursFromTaskID(List<Subtask> allSubtasks, Integer taskID){
-        List<Subtask> tasksSubtasks = new ArrayList<>();
-        for(Subtask st : allSubtasks){
-            if(st.getTask().getTaskID().equals(taskID)){
-                tasksSubtasks.add(st);
+    //Lægger total workhours fra subtask til summen af total workhours på subtasks
+    public void calculateSubtaskWorkhours(Subtask subtask) {
+        Integer totalWorkhoursTask = subtask.getTask().getTimeslot().getTotalWorkhours();
 
-            }
-        }
-        return sumSubtaskWorkhours(tasksSubtasks);
+        Integer totalWorkhoursSubtask = subtask.getTimeslot().getTotalWorkhours();
+
+        subtask.getTask().getTimeslot().setTotalWorkhours(totalWorkhoursTask + totalWorkhoursSubtask);
+
+        subtask.getTask().getProject().getTimeslot().setTotalWorkhours(totalWorkhoursTask + totalWorkhoursSubtask);
+
+        projectRepository.updateTotalWorkhoursForTimeslot(subtask.getTask().getTimeslot(),
+                subtask.getTask().getTimeslot().getTimeslotID());
+
+        projectRepository.updateTotalWorkhoursForTimeslot(subtask.getTask().getProject().getTimeslot(),
+                subtask.getTask().getProject().getTimeslot().getTimeslotID());
     }
 
-    //Filtrerer en stor liste af tasks så man kun får udregnet summen af de tasks,
-    // der hører til det aktuelle projectID
-    public int sumSubtaksWorkhoursFromProjectID(List<Task> allTasks, Integer projectID){
-        List<Task> projectsTasks = new ArrayList<>();
-        for(Task t : allTasks){
-            if(t.getProject().getProjectID().equals(projectID)){
-                projectsTasks.add(t);
+    public void finalizeSubtask(Subtask subtask){
 
-            }
-        }
-        return sumTaskWorkhours(projectsTasks);
+        calculateSubtaskWorkhours(subtask);
+
+        subtask.getTimeslot().setActualFinishDate(Date.valueOf(LocalDate.now()));
+        calculateDifferenceInDays(subtask.getTimeslot());
+
+        subtask.getTimeslot().setDone(true);
+
+        projectRepository.archiveSubtask(subtask);
+
+        projectRepository.finalizeTimeslot(subtask.getTimeslot(), subtask.getTimeslot().getTimeslotID());
+
+        projectRepository.deleteSubtaskByID(subtask.getSubtaskID());
+    }
+
+    public void finalizeTask(Task task){
+
+    }
+
+    public void finalizeProject(Project project){
+
     }
 }

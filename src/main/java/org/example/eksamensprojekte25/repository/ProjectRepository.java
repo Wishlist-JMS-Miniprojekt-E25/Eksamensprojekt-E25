@@ -68,6 +68,10 @@ public class ProjectRepository {
         return timeslot;
     };
 
+//    private final RowMapper<Subtask> archivedSubtask = (rs, rowNum) -> {
+//        archiveSubtask
+//    };
+
     public ProjectRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -306,5 +310,64 @@ public class ProjectRepository {
                 WHERE projectID = ?
                 """;
         jdbcTemplate.update(sql, project.getProjectName(), project.getProjectDescription(), project.getTimeslot().getTimeslotID(), projectID);
+    }
+
+    public void finalizeTimeslot(Timeslot timeslot, Integer timeslotID){
+        String sql = """
+                UPDATE timeslot
+                SET isDone = ?,
+                totalWorkhours = ?,
+                actualFinishDate = ?,
+                differenceInDays = ?
+                WHERE timeslotID = ?
+                """;
+
+        jdbcTemplate.update(sql, timeslot.isDone(), timeslot.getTotalWorkhours(), timeslot.getActualFinishDate(), timeslot.getDifferenceInDays(), timeslotID);
+    }
+
+    public void updateTotalWorkhoursForTimeslot(Timeslot timeslot, Integer timeslotID){
+        String sql = "UPDATE timeslot SET totalWorkhours = ? WHERE timeslotID = ?";
+
+        jdbcTemplate.update(sql, timeslot.getTotalWorkhours(), timeslotID);
+    }
+
+    public void archiveSubtask (Subtask subtask){
+
+        Integer subtaskID = subtask.getSubtaskID();
+        String subtaskName = subtask.getSubtaskName();
+        String subtaskDescription = subtask.getSubtaskDescription();
+        Integer subtaskTimeslotID = subtask.getTimeslot().getTimeslotID();
+        Integer subtaskTaskID = subtask.getTask().getTaskID();
+        Integer subtaskEmployeeID = subtask.getAssignedEmployee().getEmployeeID();
+
+        String sql = """
+                INSERT INTO archivedSubtask
+                (subtaskID,
+                subtaskName,
+                subtaskDescription,
+                timeslotID,
+                taskID,
+                employeeID) VALUES (?, ?, ?, ?, ?, ?)
+                """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, subtaskID);
+            ps.setString(2, subtaskName);
+            ps.setString(3, subtaskDescription);
+            ps.setInt(4, subtaskTimeslotID);
+            ps.setInt(5, subtaskTaskID);
+            ps.setInt(6, subtaskEmployeeID);
+            return ps;
+        }, keyHolder);
+    }
+
+    public void archiveTask(Task task){
+
+    }
+
+    public void archiveProject(Project project){
+
     }
 }

@@ -22,6 +22,7 @@
         <th>Difference in days</th>
         <th>Total workhours</th>
         <th></th>
+        <th></th>
     </tr>
     <tr>
         <td th:text="${task.project.projectID}"></td>
@@ -103,6 +104,11 @@
         <td th:text="${subtask.timeslot.getActualFinishDate}"></td>
         <td th:text="${subtask.timeslot.getDifferenceInDays}"></td>
         <td th:text="${subtask.timeslot.totalWorkhours}"></td>
+        <td>
+            <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
+                <a th:href="@{/subtaskWorkhours/{subtaskID}(subtaskID=${subtask.subtaskID})}">Finalize</a>
+            </div>
+        </td>
         <td>
             <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
                 <form th:action="@{/deleteSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}"
