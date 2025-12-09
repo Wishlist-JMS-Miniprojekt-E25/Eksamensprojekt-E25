@@ -44,7 +44,7 @@ public class EmployeeController {
         if (loggedInEmployee != null) {
             // Gem login-info i session
             session.setAttribute("employeeID", loggedInEmployee.getEmployeeID());
-            return "redirect:/userProjects";
+            return "redirect:/userOptions";
         } else {
             model.addAttribute("error", true);
             return "loginPage"; // viser login igen med fejl
@@ -94,6 +94,8 @@ public class EmployeeController {
         }
 
         // Hvis alt lykkes, sendes brugeren videre til forsiden.
-        return "redirect:/userProjects";
+        return "redirect:/userOptions";
     }
+
+
 }
