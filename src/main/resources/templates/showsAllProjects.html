@@ -50,16 +50,19 @@
         <td th:text="${project.timeslot.getActualFinishDate}"></td>
         <td th:text="${project.timeslot.getDifferenceInDays}"></td>
         <td th:text="${project.timeslot.totalWorkhours}"></td>
-
+        <td>
+            <form th:action="@{/finalizeProject/{projectID}(projectID=${project.projectID})}" method="post"
+                  onsubmit="return confirm('Are you sure you want to finalize this project? This action can not be undone.');">
+                <button type="submit">Finalize</button>
+            </form>
+        </td>
         <td>
             <a th:href="@{/editProject/{projectID}(projectID=${project.projectID})}">Edit</a>
         </td>
-
         <td>
             <form th:action="@{/deleteProject/{projectID}(projectID=${project.projectID})}" method="post"
                   onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
                 <button type="submit">Delete</button>
-
             </form>
         </td>
     </tr>

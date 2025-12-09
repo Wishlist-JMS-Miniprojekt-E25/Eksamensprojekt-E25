@@ -7,7 +7,6 @@ import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,27 +19,6 @@ public class ProjectService {
     public ProjectService(ProjectRepository projectRepository, EmployeeRepository employeeRepository) {
         this.projectRepository = projectRepository;
         this.employeeRepository = employeeRepository;
-    }
-
-    public int calculatePlannedDays(Date plannedStartDate, Date plannedFinishDate) {
-        long differenceInMilliseconds = plannedFinishDate.getTime() - plannedStartDate.getTime();
-        return (int) (differenceInMilliseconds / (1000 * 60 * 60 * 24));
-        // *Skal* være 1000 milisekunder = 1 sekund
-        // 60 sekunder = 1 minut
-        // 60 minutter = 1 time
-        // 24 timer = 1 dag
-        // Det er sådan Date fungerer
-        //metoden returnerer forskellen i dage
-    }
-
-    //henter de employees, som er på samme projekt
-    public List<Employee> getEmployeesByProjectID(Integer projectID) {
-        return projectRepository.getEmployeesByProjectID(projectID);
-    }
-
-    //henter de employees, som er på samme task
-    public List<Employee> getEmployeesByTaskID(Integer taskID) {
-        return projectRepository.getEmployeesByTaskID(taskID);
     }
 
     //henter et projekt baseret på projekt id, fylder assignedemployees, task og subtask lister op
@@ -208,17 +186,34 @@ public class ProjectService {
         }
     }
 
-    public void calculateDifferenceInDays(Timeslot timeslot){
-       long differenceInDays = timeslot.getActualFinishDate().getTime() - timeslot.getPlannedFinishDate().getTime();
-
-       timeslot.setDifferenceInDays((int) (differenceInDays / (1000 * 60 * 60 * 24)));
+    public int calculatePlannedDays(Date plannedStartDate, Date plannedFinishDate) {
+        long differenceInMilliseconds = plannedFinishDate.getTime() - plannedStartDate.getTime();
+        return (int) (differenceInMilliseconds / (1000 * 60 * 60 * 24));
+        // *Skal* være 1000 milisekunder = 1 sekund
+        // 60 sekunder = 1 minut
+        // 60 minutter = 1 time
+        // 24 timer = 1 dag
+        // Det er sådan Date fungerer
+        //metoden returnerer forskellen i dage
     }
 
-//    public void calculateTaskWorkhours(Task task){
-//
-//  }
+    public void calculateDifferenceInDays(Timeslot timeslot) {
+        long differenceInDays = timeslot.getActualFinishDate().getTime() - timeslot.getPlannedFinishDate().getTime();
 
-    //Lægger total workhours fra subtask til summen af total workhours på subtasks
+        timeslot.setDifferenceInDays((int) (differenceInDays / (1000 * 60 * 60 * 24)));
+    }
+
+    public void calculateTaskWorkhours(Task task) {
+        Integer totalWorkhoursProject = task.getProject().getTimeslot().getTotalWorkhours();
+        Integer totalWorkhoursTask = task.getTimeslot().getTotalWorkhours();
+
+        task.getProject().getTimeslot().setTotalWorkhours(totalWorkhoursProject + totalWorkhoursTask);
+
+        projectRepository.updateTotalWorkhoursForTimeslot(task.getProject().getTimeslot(),
+                task.getProject().getTimeslot().getTimeslotID());
+    }
+
+    //Lægger total workhours fra subtask til total workhours på en task og et projekt
     public void calculateSubtaskWorkhours(Subtask subtask) {
         Integer totalWorkhoursTask = subtask.getTask().getTimeslot().getTotalWorkhours();
         Integer totalWorkhoursSubtask = subtask.getTimeslot().getTotalWorkhours();
@@ -233,35 +228,38 @@ public class ProjectService {
                 subtask.getTask().getProject().getTimeslot().getTimeslotID());
     }
 
-    public void finalizeTaskTimeslot(Task task) {
-        projectRepository.finalizeTimeslot(task.getTimeslot(), task.getTimeslot().getTimeslotID());
-    }
-
-    public void finalizeProjectTimeslot(Project project) {
-        projectRepository.finalizeTimeslot(project.getTimeslot(), project.getTimeslot().getTimeslotID());
-    }
-
-    public void finalizeSubtaskTimeslot(Subtask subtask){
-        projectRepository.finalizeTimeslot(subtask.getTimeslot(), subtask.getTimeslot().getTimeslotID());
-    }
-
-    public void finalizeSubtask(Subtask subtask){
+    public void finalizeSubtask(Subtask subtask) {
         //timeslot beregning og opdatering af timeslot
         calculateSubtaskWorkhours(subtask);
         subtask.getTimeslot().setActualFinishDate(Date.valueOf(LocalDate.now()));
         calculateDifferenceInDays(subtask.getTimeslot());
         subtask.getTimeslot().setDone(true);
-        finalizeSubtaskTimeslot(subtask);
-
+        projectRepository.finalizeTimeslot(subtask.getTimeslot(), subtask.getTimeslot().getTimeslotID());
+        //arkivering af subtask
         projectRepository.archiveSubtask(subtask);
         projectRepository.deleteSubtaskByID(subtask.getSubtaskID());
     }
-//
-//    public void finalizeTask(Task task){
-//
-//    }
-//
-//    public void finalizeProject(Project project){
-//
-//    }
+
+    public void finalizeTask(Task task) {
+        //timeslot beregning og opdatering af timeslot
+        calculateTaskWorkhours(task);
+        task.getTimeslot().setActualFinishDate(Date.valueOf(LocalDate.now()));
+        calculateDifferenceInDays(task.getTimeslot());
+        task.getTimeslot().setDone(true);
+        projectRepository.finalizeTimeslot(task.getTimeslot(), task.getTimeslot().getTimeslotID());
+        //arkivering af task
+        projectRepository.archiveTask(task);
+        projectRepository.deleteTaskByID(task.getTaskID());
+    }
+
+    public void finalizeProject(Project project) {
+        //timeslot beregning og opdatering af timeslot
+        project.getTimeslot().setActualFinishDate(Date.valueOf(LocalDate.now()));
+        calculateDifferenceInDays(project.getTimeslot());
+        project.getTimeslot().setDone(true);
+        projectRepository.finalizeTimeslot(project.getTimeslot(), project.getTimeslot().getTimeslotID());
+        //arkivering af projekt
+        projectRepository.archiveProject(project);
+        projectRepository.deleteProjectByID(project.getProjectID());
+    }
 }

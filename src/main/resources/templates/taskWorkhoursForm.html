@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Work hours for subtask</title>
+</head>
+<body>
+
+<form th:action="@{/finalizeTask/{taskID}(taskID=${task.taskID})}" th:object="${task}"
+      th:method="post">
+
+    <label>Write total workhours on task</label>
+    <input type="number" name="totalWorkhours" required>
+
+    <div>
+        <button type="submit">Save</button>
+        <a th:href="@{/project/{projectID}(projectID=${task.project.projectID})}">Cancel</a>
+    </div>
+</form>
+</body>
+</html>

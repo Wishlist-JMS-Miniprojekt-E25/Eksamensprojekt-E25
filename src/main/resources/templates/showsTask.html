@@ -105,7 +105,7 @@
         <td th:text="${subtask.timeslot.getDifferenceInDays}"></td>
         <td th:text="${subtask.timeslot.totalWorkhours}"></td>
         <td>
-            <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
+            <div>
                 <a th:href="@{/subtaskWorkhours/{subtaskID}(subtaskID=${subtask.subtaskID})}">Finalize</a>
             </div>
         </td>

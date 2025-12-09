@@ -411,7 +411,7 @@ public class ProjectRepository {
                 projectManagerID,
                 projectName,
                 projectDescription,
-                timeslotID VALUES (?, ?, ?, ?, ?)
+                timeslotID) VALUES (?, ?, ?, ?, ?)
                 """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
 

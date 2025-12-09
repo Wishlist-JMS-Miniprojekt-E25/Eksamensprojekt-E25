@@ -6,7 +6,9 @@
 </head>
 <body>
 
-<form th:action="@{/finalizeSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}" th:object="${subtask}" th:method="post">
+<form th:action="@{/finalizeSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}" th:object="${subtask}"
+      th:method="post">
+
     <label>Write total workhours on subtask</label>
     <input type="number" name="totalWorkhours" required>
 
@@ -15,6 +17,5 @@
         <a th:href="@{/task/{taskID}(taskID=${subtask.task.taskID})}">Cancel</a>
     </div>
 </form>
-
 </body>
 </html>

@@ -47,8 +47,6 @@ public class ProjectController {
         return "showsAllProjects";
     }
 
-
-
     //view for ét enkelt projekt
     @GetMapping("/project/{projectID}")
     public String showsProject(@PathVariable int projectID, HttpSession session, Model model) {
@@ -178,7 +176,6 @@ public class ProjectController {
         return "redirect:/task/" + task.getTaskID();
     }
 
-
     @PostMapping("/deleteSubtask/{subtaskID}")
     public String deleteSubtask(@PathVariable Integer subtaskID) {
         Subtask subtask = projectService.getSubtaskByID(subtaskID);
@@ -188,7 +185,7 @@ public class ProjectController {
     }
 
     @GetMapping("/editProject/{projectID}")
-    public String editProject (@PathVariable Integer projectID, Model model){
+    public String editProject(@PathVariable Integer projectID, Model model) {
 
         //Henter det projekt, der skal redigeres
         Project project = projectService.getProjectByID(projectID);
@@ -201,7 +198,7 @@ public class ProjectController {
 
         //Opretter listen med de allerede assigned employees, så de kan være checked
         List<Integer> assignedIDs = new ArrayList<>();
-        for (Employee e : project.getAssignedEmployees()){
+        for (Employee e : project.getAssignedEmployees()) {
             assignedIDs.add(e.getEmployeeID());
         }
 
@@ -211,7 +208,7 @@ public class ProjectController {
     }
 
     @PostMapping("/updateProject")
-    public String updateProject (@ModelAttribute Project project, @RequestParam List<Integer> assignedEmployeeIDs){
+    public String updateProject(@ModelAttribute Project project, @RequestParam List<Integer> assignedEmployeeIDs) {
 
 
         projectService.editProject(project, assignedEmployeeIDs);
@@ -220,18 +217,18 @@ public class ProjectController {
     }
 
     @GetMapping("/subtaskWorkhours/{subtaskID}")
-    public String subtaskWorkhours (@PathVariable Integer subtaskID, Model model){
+    public String subtaskWorkhours(@PathVariable Integer subtaskID, Model model) {
 
         Subtask subtask = projectService.getSubtaskByID(subtaskID);
 
 
         model.addAttribute("subtask", subtask);
 
-        return "workhoursForm";
+        return "subtaskWorkhoursForm";
     }
-    
+
     @PostMapping("/finalizeSubtask/{subtaskID}")
-    public String finalizeSubtask(@PathVariable Integer subtaskID, @RequestParam Integer totalWorkhours){
+    public String finalizeSubtask(@PathVariable Integer subtaskID, @RequestParam Integer totalWorkhours) {
 
         Subtask subtask = projectService.getSubtaskByID(subtaskID);
 
@@ -242,21 +239,32 @@ public class ProjectController {
         return "redirect:/task/" + subtask.getTask().getTaskID();
     }
 
-//    @GetMapping("/taskWorkhours/{taskID}")
-//    public String taskWorkhours(@PathVariable Integer taskID, Model model){
-//
-//    }
-//
-//    @PostMapping("/finalizeTask/{taskID}")
-//    public String finalizeTask(@PathVariable Integer taskID, @RequestParam Integer totalWorkhours){
-//
-//    }
-//
-//    @PostMapping("/finalizeProject/{ProjectID}")
-//    public String finalizeTask(@PathVariable Integer projectID){
-//
-//    }
-//
+    @GetMapping("/taskWorkhours/{taskID}")
+    public String taskWorkhours(@PathVariable Integer taskID, Model model) {
+        Task task = projectService.getTaskByID(taskID);
+        if (task.getTimeslot().getTotalWorkhours() > 0) {
+            projectService.finalizeTask(task);
+            return "redirect:/project/" + task.getProject().getProjectID();
+        }
+        model.addAttribute("task", task);
+        return "taskWorkhoursForm";
+    }
+
+    @PostMapping("/finalizeTask/{taskID}")
+    public String finalizeTask(@PathVariable Integer taskID, @RequestParam Integer totalWorkhours) {
+        Task task = projectService.getTaskByID(taskID);
+        task.getTimeslot().setTotalWorkhours(totalWorkhours);
+        projectService.finalizeTask(task);
+        return "redirect:/project/" + task.getProject().getProjectID();
+    }
+
+    @PostMapping("/finalizeProject/{projectID}")
+    public String finalizeProject(@PathVariable Integer projectID) {
+        Project project = projectService.getProjectByID(projectID);
+        projectService.finalizeProject(project);
+        return "redirect:/userOptions";
+    }
+
 //    @GetMapping("/archivedProjects")
 //    public String showAllArchivedProjects(HttpSession session, Model model){
 //
