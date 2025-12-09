@@ -33,7 +33,7 @@ public class EmployeeService {
     public Employee getEmployeeByID(Integer employeeID) {
         Employee employee = employeeRepository.getEmployeeByID(employeeID);
         populateListOfManagedProjectsOfEmployee(employee);
-        for(Project project : employee.getManagedProjects()) {
+        for (Project project : employee.getManagedProjects()) {
             populateListOfAssignedEmployeesOfProject(project);
         }
         return employee;

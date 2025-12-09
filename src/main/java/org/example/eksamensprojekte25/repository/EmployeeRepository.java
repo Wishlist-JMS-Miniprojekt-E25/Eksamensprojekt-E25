@@ -30,7 +30,7 @@ public class EmployeeRepository {
     private final RowMapper<Project> projectRowMapper = (rs, rowNum) -> {
         Project project = new Project();
         project.setProjectID(rs.getInt("projectID"));
-        project.setProjectManagerID(rs.getInt("projectManagerID"));
+        project.setProjectManager(getEmployeeByID(rs.getInt("projectManagerID")));
         project.setProjectName(rs.getString("projectName"));
         project.setProjectDescription(rs.getString("projectDescription"));
         project.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));

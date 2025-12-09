@@ -31,7 +31,7 @@
                  th:text="${assignedEmployees.employeeName}"></div>
             <br> <br>
         </td>
-        <td th:text="${manager.employeeName}"></td>
+        <td th:text="${project.projectManager.employeeName}"></td>
         <td th:text="${project.timeslot.getPlannedDays}"></td>
         <td th:text="${project.timeslot.plannedStartDate}"></td>
         <td th:text="${project.timeslot.getPlannedFinishDate}"></td>
@@ -41,7 +41,7 @@
     </tr>
 </table>
 <br> <br> <br> <br> <br> <br>
-<div th:if="${project.projectManagerID == loggedInEmployee}">
+<div th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}">
     <a th:href="@{/addTask/{projectID}(projectID=${project.projectID})}">+ Add task</a>
 </div>
 <!-- tabellen, der viser alle tasks -->
@@ -82,7 +82,7 @@
         <td th:text="${task.timeslot.getDifferenceInDays}"></td>
         <td th:text="${task.timeslot.totalWorkhours}"></td>
         <td>
-            <div th:if="${project.projectManagerID == loggedInEmployee}">
+            <div th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}">
                 <form th:action="@{/deleteTask/{taskID}(taskID=${task.taskID})}"
                       method="post"
                       onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">

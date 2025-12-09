@@ -7,41 +7,40 @@
 <body>
 
 <main>
-   <div>
-       <h2>Add Project</h2>
+    <div>
+        <h2>Add Project</h2>
 
-       <form th:action="@{/saveProject}" th:object="${project}" method="post">
-          <input type="hidden" th:field="*{projectManagerID}">
+        <form th:action="@{/saveProject}" th:object="${project}" method="post">
 
-           <label>Name</label>
-           <input type="text" th:field="*{projectName}" required>
+            <label>Name</label>
+            <input type="text" th:field="*{projectName}" required>
 
-           <label>Description</label>
-           <input type="text" th:field="*{projectDescription}">
+            <label>Description</label>
+            <input type="text" th:field="*{projectDescription}">
 
-           <label>Planned Start Date</label>
-           <input type="date" name="plannedStartDate" required>
+            <label>Planned Start Date</label>
+            <input type="date" name="plannedStartDate" required>
 
-           <label>Planned Finish Date</label>
-           <input type="date" name="plannedFinishDate" required>
+            <label>Planned Finish Date</label>
+            <input type="date" name="plannedFinishDate" required>
 
-           <p>Assing employees</p>
-           <div th:each="employee : ${allEmployees}">
-               <label>
-                   <input type="checkbox"
-                          th:name="assignedEmployeeIDs"
-                          th:value="${employee.employeeID}">
-                   <span th:text="${employee.employeeName}">
+            <p>Assign employees</p>
+            <div th:each="employee : ${allEmployees}">
+                <label>
+                    <input type="checkbox"
+                           th:name="assignedEmployeeIDs"
+                           th:value="${employee.employeeID}">
+                    <span th:text="${employee.employeeName}">
                    </span>
-               </label>
-           </div>
+                </label>
+            </div>
 
-           <div>
-               <button type="submit">Save</button>
-               <a th:href="@{/userProjects}">Cancel</a>
-           </div>
-       </form>
-   </div>
+            <div>
+                <button type="submit">Save</button>
+                <a th:href="@{/userProjects}">Cancel</a>
+            </div>
+        </form>
+    </div>
 </main>
 
 </body>
