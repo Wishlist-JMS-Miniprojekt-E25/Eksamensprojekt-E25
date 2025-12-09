@@ -24,7 +24,10 @@
     <label>Password</label>
     <input type="password" name="userPassword" th:value="${userPassword}" required>
 
+    <div>
     <button type="submit">Save</button>
+        <a th:href="@{/userOptions}">Cancel</a>
+    </div>
 
 </form>
 
