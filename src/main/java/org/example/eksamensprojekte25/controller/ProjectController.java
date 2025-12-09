@@ -242,33 +242,33 @@ public class ProjectController {
         return "redirect:/task/" + subtask.getTask().getTaskID();
     }
 
-    @GetMapping("/taskWorkhours/{taskID}")
-    public String taskWorkhours(@PathVariable Integer taskID, Model model){
-
-    }
-
-    @PostMapping("/finalizeTask/{taskID}")
-    public String finalizeTask(@PathVariable Integer taskID, @RequestParam Integer totalWorkhours){
-
-    }
-
-    @PostMapping("/finalizeProject/{ProjectID}")
-    public String finalizeTask(@PathVariable Integer projectID){
-
-    }
-
-    @GetMapping("/archivedProjects")
-    public String showAllArchivedProjects(HttpSession session, Model model){
-
-    }
-
-    @GetMapping("/archivedProject/{projectID}")
-    public String showArchivedProject(@PathVariable Integer projectID, HttpSession session, Model model){
-
-    }
-
-    @GetMapping("/archivedTask/{taskID}")
-    public String showArchivedTask(@PathVariable Integer taskID, HttpSession session, Model model){
-
-    }
+//    @GetMapping("/taskWorkhours/{taskID}")
+//    public String taskWorkhours(@PathVariable Integer taskID, Model model){
+//
+//    }
+//
+//    @PostMapping("/finalizeTask/{taskID}")
+//    public String finalizeTask(@PathVariable Integer taskID, @RequestParam Integer totalWorkhours){
+//
+//    }
+//
+//    @PostMapping("/finalizeProject/{ProjectID}")
+//    public String finalizeTask(@PathVariable Integer projectID){
+//
+//    }
+//
+//    @GetMapping("/archivedProjects")
+//    public String showAllArchivedProjects(HttpSession session, Model model){
+//
+//    }
+//
+//    @GetMapping("/archivedProject/{projectID}")
+//    public String showArchivedProject(@PathVariable Integer projectID, HttpSession session, Model model){
+//
+//    }
+//
+//    @GetMapping("/archivedTask/{taskID}")
+//    public String showArchivedTask(@PathVariable Integer taskID, HttpSession session, Model model){
+//
+//    }
 }

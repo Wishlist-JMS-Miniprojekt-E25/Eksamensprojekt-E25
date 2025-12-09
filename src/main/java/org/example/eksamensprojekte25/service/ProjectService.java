@@ -250,12 +250,12 @@ public class ProjectService {
 
         projectRepository.deleteSubtaskByID(subtask.getSubtaskID());
     }
-
-    public void finalizeTask(Task task){
-
-    }
-
-    public void finalizeProject(Project project){
-
-    }
+//
+//    public void finalizeTask(Task task){
+//
+//    }
+//
+//    public void finalizeProject(Project project){
+//
+//    }
 }

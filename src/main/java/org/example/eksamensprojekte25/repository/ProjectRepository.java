@@ -67,10 +67,37 @@ public class ProjectRepository {
         timeslot.setDone(rs.getBoolean("isDone"));
         return timeslot;
     };
+    private final RowMapper<Project> archivedProjectRowMapper = (rs, rowNum) -> {
+        Project archivedproject = new Project();
+        archivedproject.setProjectID(rs.getInt("projectID"));
+        archivedproject.setProjectManager(getEmployeeByID(rs.getInt("projectManagerID")));
+        archivedproject.setProjectName(rs.getString("projectName"));
+        archivedproject.setProjectDescription(rs.getString("projectDescription"));
+        archivedproject.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
 
-//    private final RowMapper<Subtask> archivedSubtask = (rs, rowNum) -> {
-//        archiveSubtask
-//    };
+        return archivedproject;
+    };
+    private final RowMapper<Task> archivedTaskRowMapper = (rs, rowNum) -> {
+        Task archivedtask = new Task();
+        archivedtask.setTaskID(rs.getInt("taskID"));
+        archivedtask.setTaskName(rs.getString("taskName"));
+        archivedtask.setTaskDescription(rs.getString("taskDescription"));
+        archivedtask.setProject(getProjectByID(rs.getInt("projectID")));
+        archivedtask.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
+
+        return archivedtask;
+    };
+    private final RowMapper<Subtask> archivedSubtaskRowMapper = (rs, rowNum) -> {
+        Subtask archivedsubtask = new Subtask();
+        archivedsubtask.setSubtaskID(rs.getInt("subtaskID"));
+        archivedsubtask.setSubtaskName(rs.getString("subtaskName"));
+        archivedsubtask.setSubtaskDescription(rs.getString("subtaskDescription"));
+        archivedsubtask.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
+        archivedsubtask.setTask(getTaskByID(rs.getInt("taskID")));
+        archivedsubtask.setAssignedEmployee(getEmployeeByID(rs.getInt("employeeID")));
+
+        return archivedsubtask;
+    };
 
     public ProjectRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -363,11 +390,11 @@ public class ProjectRepository {
         }, keyHolder);
     }
 
-    public void archiveTask(Task task){
-
-    }
-
-    public void archiveProject(Project project){
-
-    }
+//    public void archiveTask(Task task){
+//
+//    }
+//
+//    public void archiveProject(Project project){
+//
+//    }
 }
