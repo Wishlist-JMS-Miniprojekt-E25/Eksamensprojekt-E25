@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("")
@@ -184,5 +185,37 @@ public class ProjectController {
         projectService.deleteSubtaskByID(subtaskID);
 
         return "redirect:/task/" + subtask.getTask().getTaskID();
+    }
+
+    @GetMapping("/editProject/{projectID}")
+    public String editProject (@PathVariable Integer projectID, Model model){
+
+        //Henter det projekt, der skal redigeres
+        Project project = projectService.getProjectByID(projectID);
+
+        model.addAttribute("project", project);
+
+        //Henter alle employees til checklisten
+        List<Employee> allEmployees = employeeService.getAllEmployees();
+        model.addAttribute("allEmployees", allEmployees);
+
+        //Opretter listen med de allerede assigned employees, så de kan være checked
+        List<Integer> assignedIDs = new ArrayList<>();
+        for (Employee e : project.getAssignedEmployees()){
+            assignedIDs.add(e.getEmployeeID());
+        }
+
+        model.addAttribute("assignedEmployeeIDs", assignedIDs);
+
+        return "editProject";
+    }
+
+    @PostMapping("/updateProject")
+    public String updateProject (@ModelAttribute Project project, @RequestParam List<Integer> assignedEmployeeIDs){
+
+
+        projectService.editProject(project, assignedEmployeeIDs);
+
+        return "redirect:/userOptions";
     }
 }

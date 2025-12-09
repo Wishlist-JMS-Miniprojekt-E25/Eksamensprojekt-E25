@@ -7,6 +7,7 @@ import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -140,5 +141,68 @@ public class ProjectService {
     public void populateListOfAssignedEmployeesOfTask(Task task) {
         List<Employee> employees = projectRepository.getEmployeesByTaskID(task.getTaskID());
         task.setAssignedEmployees(employees);
+    }
+
+    public void editProject(Project project, List<Integer> assignedEmployeeIDs) {
+
+        //Henter ID på det projekt, der skal opdateres
+        Integer projectID = project.getProjectID();
+
+        //Henter det nuværende projekt, udelukkende så vi kan få timeslotID
+        Project currentProject = projectRepository.getProjectByID(projectID);
+        Integer timeslotID = currentProject.getTimeslot().getTimeslotID();
+
+        //Laver ny beregning på plannedDays, baseret på de nye planned start date og planned finish date
+        int plannedDays = calculatePlannedDays(project.getTimeslot().getPlannedStartDate(),
+                project.getTimeslot().getPlannedFinishDate());
+
+        //Opdaterer timeslotID
+        projectRepository.editTimeslot(timeslotID, plannedDays, project.getTimeslot().getPlannedStartDate(),
+                project.getTimeslot().getPlannedFinishDate());
+
+        //Opdaterer navn, beskrivelse og timeslot
+        //Gøres ved at oprette et nyt projekt, som kun tager de felter vi må redigere i
+        Project newProject = new Project();
+        newProject.setProjectName(project.getProjectName());
+        newProject.setProjectDescription(project.getProjectDescription());
+        newProject.setTimeslot(projectRepository.getTimeslotByID(timeslotID));
+
+        //Opdaterer projekt-tabellen i databasen
+        projectRepository.editProject(newProject, projectID);
+
+        //Henter listen med alle nuværende employees
+        List<Employee> currentEmployees = projectRepository.getEmployeesByProjectID(projectID);
+
+        //konverterer listen til ID'er frem for objekter
+        List<Integer> currentEmployeeIDs = new ArrayList<>();
+        for (Employee e : currentEmployees) {
+            currentEmployeeIDs.add(e.getEmployeeID());
+        }
+
+        //tilføjer kun nye employees, når de vælges på checklisten
+        List<Integer> employeesToAdd = new ArrayList<>();
+        for (Integer eID : assignedEmployeeIDs) {
+            if (!currentEmployeeIDs.contains(eID)) {
+                employeesToAdd.add(eID);
+            }
+        }
+
+        //Tilføjer kun nye employees til projektet, hvis der er nye at tilføje
+        //Undgår duplicates i databasen, ved brug af isEmpty()
+        if (!employeesToAdd.isEmpty()) {
+            projectRepository.assignEmployeesToProject(projectID, employeesToAdd);
+        }
+
+        //Fjerner kun de assigned employees, som er fravalgt i checklisten
+        List<Integer> employeesToRemove = new ArrayList<>();
+        for (Integer eID : currentEmployeeIDs) {
+            if (!assignedEmployeeIDs.contains(eID)) {
+                employeesToRemove.add(eID);
+            }
+        }
+
+        for (Integer removeID : employeesToRemove) {
+            projectRepository.removeEmployeeFromProject(projectID, removeID);
+        }
     }
 }

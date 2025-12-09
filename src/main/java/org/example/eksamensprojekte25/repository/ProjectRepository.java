@@ -276,4 +276,35 @@ public class ProjectRepository {
         jdbcTemplate.update(sql, subtaskID);
     }
 
+
+    //Fjerner en employee fra projekt under editProject, hvis man vælger at un-check en employee
+    public void removeEmployeeFromProject (Integer projectID, Integer employeeID){
+        String sql = "DELETE FROM projectEmployee WHERE projectID = ? AND employeeID = ?";
+
+        jdbcTemplate.update(sql, projectID, employeeID);
+    }
+
+    //Opdaterer planned start date og planned finish date for et projekt, hvis man vælger at ændre det i editProject
+    public void editTimeslot (Integer timeslotID, Integer plannedDays, Date plannedStartDate, Date plannedFinishDate){
+        String sql = """
+                UPDATE timeslot
+                SET plannedDays = ?,
+                plannedStartDate = ?,
+                plannedFinishDate = ?
+                WHERE timeslotID = ?
+                """;
+        jdbcTemplate.update(sql, plannedDays, plannedStartDate, plannedFinishDate, timeslotID);
+    }
+
+    //Opdaterer navn, beskrivelse og timeslot
+    public void editProject (Project project, Integer projectID){
+        String sql = """
+                UPDATE project
+                SET projectName = ?,
+                projectDescription = ?,
+                timeslotID = ?
+                WHERE projectID = ?
+                """;
+        jdbcTemplate.update(sql, project.getProjectName(), project.getProjectDescription(), project.getTimeslot().getTimeslotID(), projectID);
+    }
 }
