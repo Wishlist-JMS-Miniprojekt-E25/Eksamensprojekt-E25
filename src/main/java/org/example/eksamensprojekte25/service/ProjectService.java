@@ -206,6 +206,7 @@ public class ProjectService {
         }
     }
 
+    //Udregner summen af total workhours for en liste a subtasks
     public int sumSubtaskWorkhours(List<Subtask> subtasks){
         int sum = 0;
         for(Subtask st : subtasks){
@@ -214,11 +215,38 @@ public class ProjectService {
         return sum;
     }
 
+    //Udregner summen af total workhours for en liste a tasks
     public int sumTaskWorkhours(List<Task> tasks){
         int sum = 0;
         for(Task t : tasks){
             sum += t.getTimeslot().getTotalWorkhours();
         }
         return sum;
+    }
+
+    //Filtrerer en stor liste af subtasks så man kun får udregnet summen af de subtasks,
+    // der hører til det aktuelle taskID
+    public int sumSubtaksWorkhoursFromTaskID(List<Subtask> allSubtasks, Integer taskID){
+        List<Subtask> tasksSubtasks = new ArrayList<>();
+        for(Subtask st : allSubtasks){
+            if(st.getTask().getTaskID().equals(taskID)){
+                tasksSubtasks.add(st);
+
+            }
+        }
+        return sumSubtaskWorkhours(tasksSubtasks);
+    }
+
+    //Filtrerer en stor liste af tasks så man kun får udregnet summen af de tasks,
+    // der hører til det aktuelle projectID
+    public int sumSubtaksWorkhoursFromProjectID(List<Task> allTasks, Integer projectID){
+        List<Task> projectsTasks = new ArrayList<>();
+        for(Task t : allTasks){
+            if(t.getProject().getProjectID().equals(projectID)){
+                projectsTasks.add(t);
+
+            }
+        }
+        return sumTaskWorkhours(projectsTasks);
     }
 }
