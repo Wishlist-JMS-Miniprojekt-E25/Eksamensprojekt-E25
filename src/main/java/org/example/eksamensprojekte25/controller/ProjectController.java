@@ -216,6 +216,6 @@ public class ProjectController {
 
         projectService.editProject(project, assignedEmployeeIDs);
 
-        return "redirect:/userProjects";
+        return "redirect:/userOptions";
     }
 }
