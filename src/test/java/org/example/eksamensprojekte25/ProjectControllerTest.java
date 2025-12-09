@@ -16,12 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,7 +65,7 @@ public class ProjectControllerTest {
 
         //Tester at controller metoden gør hvad den skal, at den returnere html siden,
         //hvilke model-atributter der eksisterer og at den sender de rigtige værdier over
-        mockMvc.perform(get("/userProjects").sessionAttr("employeeID", employeeID))
+        mockMvc.perform(get("/userOptions").sessionAttr("employeeID", employeeID))
                 .andExpect(status().isOk())
                 .andExpect(view().name("showsAllProjects"))
                 //eksisterende attributter(nøglerne), som vi sender over til html siden fra controller metoden

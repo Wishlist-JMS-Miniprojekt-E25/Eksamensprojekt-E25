@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("")
@@ -31,15 +29,25 @@ public class ProjectController {
     }
 
     //view for bruger forsiden
-    @GetMapping("/userProjects")
+    @GetMapping("/userOptions")
     public String showsAllProjects(HttpSession session, Model model) {
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
         Employee loggedInEmployee = employeeService.getEmployeeByID(loggedInEmployeeID);
+
+        // ➜ Hvis HR er logget ind → vis HR-siden i stedet
+        if (loggedInEmployee.getUserName().equalsIgnoreCase("HR")) {
+
+            model.addAttribute("employees", employeeService.getAllEmployees());
+            return "HRPage"; // <-- ny HTML-side kun for HR
+        }
+
         List<Project> assignedToProjects = employeeService.getProjectsByEmployeeID(loggedInEmployeeID);
         model.addAttribute("loggedInEmployee", loggedInEmployee);
         model.addAttribute("assignedToProjects", assignedToProjects);
         return "showsAllProjects";
     }
+
+
 
     //view for ét enkelt projekt
     @GetMapping("/project/{projectID}")
@@ -88,7 +96,7 @@ public class ProjectController {
         Date plannedFinishDateForProject = Date.valueOf(plannedFinishDate);
 
         projectService.addProject(loggedInEmployeeID, project.getProjectName(), project.getProjectDescription(), plannedStartDateForProject, plannedFinishDateForProject, assignedEmployeeIDs);
-        return "redirect:/userProjects";
+        return "redirect:/userOptions";
     }
 
     //giver et projekt id videre til repo'et, der fjerner selve projektet i databasen
@@ -97,7 +105,7 @@ public class ProjectController {
 
         projectService.deleteProjectByID(projectID);
 
-        return "redirect:/userProjects"; //skal reelt set redirecte til view 3 i vore UX
+        return "redirect:/userOptions"; //skal reelt set redirecte til view 3 i vore UX
     }
 
     @GetMapping("/addTask/{projectID}")

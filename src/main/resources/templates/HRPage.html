@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HR – Employee Overview</title>
+</head>
+<body>
+
+<h1>Employee overview</h1>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Log out</button>
+</form>
+
+<br>
+<a href="/createEmployee">+ Create employee</a>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th></th>
+    </tr>
+
+    <tr th:each="emp : ${employees}">
+        <td th:text="${emp.employeeID}"></td>
+        <td th:text="${emp.employeeName}"></td>
+        <td th:text="${emp.userName}"></td>
+
+        <td>
+            <form th:action="@{/deleteEmployee/{id}(id=${emp.employeeID})}" method="post"
+                  onsubmit="return confirm('Delete this employee?');">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
