@@ -205,4 +205,20 @@ public class ProjectService {
             projectRepository.removeEmployeeFromProject(projectID, removeID);
         }
     }
+
+    public int sumSubtaskWorkhours(List<Subtask> subtasks){
+        int sum = 0;
+        for(Subtask st : subtasks){
+            sum += st.getTimeslot().getTotalWorkhours();
+        }
+        return sum;
+    }
+
+    public int sumTaskWorkhours(List<Task> tasks){
+        int sum = 0;
+        for(Task t : tasks){
+            sum += t.getTimeslot().getTotalWorkhours();
+        }
+        return sum;
+    }
 }
