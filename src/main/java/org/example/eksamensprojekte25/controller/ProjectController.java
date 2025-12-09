@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -197,8 +198,17 @@ public class ProjectController {
 
         model.addAttribute("project", project);
 
+        //Henter alle employees til checklisten
         List<Employee> allEmployees = employeeService.getAllEmployees();
         model.addAttribute("allEmployees", allEmployees);
+
+        //Opretter listen med de allerede assigned employees, så de kan være checked
+        List<Integer> assignedIDs = new ArrayList<>();
+        for (Employee e : project.getAssignedEmployees()){
+            assignedIDs.add(e.getEmployeeID());
+        }
+
+        model.addAttribute("assignedEmployeeIDs", assignedIDs);
 
         return "editProject";
     }

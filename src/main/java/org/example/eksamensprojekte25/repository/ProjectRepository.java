@@ -277,12 +277,6 @@ public class ProjectRepository {
         jdbcTemplate.update(sql, subtaskID);
     }
 
-    public void addEmployeeToProject (Integer projectID, Integer employeeID){
-        String sql = "INSERT INTO projectEmployee (projectID, employeeID) VALUES (?, ?)";
-
-        jdbcTemplate.update(sql, projectID, employeeID);
-    }
-
     public void removeEmployeeFromProject (Integer projectID, Integer employeeID){
         String sql = "DELETE FROM projectEmployee WHERE projectID = ? AND employeeID = ?";
 

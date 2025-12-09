@@ -146,25 +146,26 @@ public class ProjectService {
         task.setAssignedEmployees(employees);
     }
 
-    public void editProject (Project project, List<Integer> assignedEmployeeIDs){
+    public void editProject(Project project, List<Integer> assignedEmployeeIDs) {
 
         Integer projectID = project.getProjectID();
-        String newName = project.getProjectName();
-        String newDescription = project.getProjectDescription();
 
-        Date newPlannedStartDate = project.getTimeslot().getPlannedStartDate();
-        Date newPlannedFinishDate = project.getTimeslot().getPlannedFinishDate();
-
-        int plannedDays = calculatePlannedDays(newPlannedStartDate, newPlannedFinishDate);
-
+        //Henter det nuværende projekt og timeslot
         Project currentProject = projectRepository.getProjectByID(projectID);
-
         Integer timeslotID = currentProject.getTimeslot().getTimeslotID();
-        projectRepository.editTimeslot(timeslotID, plannedDays, newPlannedStartDate, newPlannedFinishDate);
 
+
+        int plannedDays = calculatePlannedDays(project.getTimeslot().getPlannedStartDate(),
+                project.getTimeslot().getPlannedFinishDate());
+
+        //Opdaterer timeslotID
+        projectRepository.editTimeslot(timeslotID, plannedDays, project.getTimeslot().getPlannedStartDate(),
+                project.getTimeslot().getPlannedFinishDate());
+
+        //Opdaterer navn, beskrivelse og timeslot
         Project newProject = new Project();
-        newProject.setProjectName(newName);
-        newProject.setProjectDescription(newDescription);
+        newProject.setProjectName(project.getProjectName());
+        newProject.setProjectDescription(project.getProjectDescription());
         newProject.setTimeslot(projectRepository.getTimeslotByID(timeslotID));
         projectRepository.editProject(newProject, projectID);
 
@@ -173,31 +174,31 @@ public class ProjectService {
 
         //konverterer listen til ID'er frem for objekter
         List<Integer> currentEmployeeIDs = new ArrayList<>();
-        for(Employee e : currentEmployees){
+        for (Employee e : currentEmployees) {
             currentEmployeeIDs.add(e.getEmployeeID());
         }
 
         //tilføjer kun nye employees, når de vælges på checklisten
-        List<Integer> employeeToAdd = new ArrayList<>();
-        for (Integer eID : assignedEmployeeIDs){
-            if(!currentEmployeeIDs.contains(eID)){
-                employeeToAdd.add(eID);
+        List<Integer> employeesToAdd = new ArrayList<>();
+        for (Integer eID : assignedEmployeeIDs) {
+            if (!currentEmployeeIDs.contains(eID)) {
+                employeesToAdd.add(eID);
             }
         }
 
-        for (Integer addID : employeeToAdd) {
-            projectRepository.addEmployeeToProject(projectID, addID);
+        for (Integer addID : employeesToAdd) {
+            projectRepository.assignEmployeesToProject(projectID, employeesToAdd);
         }
 
         //Fjerner kun de assigned employees, som er fravalgt i checklisten
-        List<Integer> employeeToRemove = new ArrayList<>();
-        for (Integer eID : currentEmployeeIDs){
-            if (!assignedEmployeeIDs.contains(eID)){
-                employeeToRemove.add(eID);
+        List<Integer> employeesToRemove = new ArrayList<>();
+        for (Integer eID : currentEmployeeIDs) {
+            if (!assignedEmployeeIDs.contains(eID)) {
+                employeesToRemove.add(eID);
             }
         }
 
-        for (Integer removeID : employeeToRemove){
+        for (Integer removeID : employeesToRemove) {
             projectRepository.removeEmployeeFromProject(projectID, removeID);
         }
     }
