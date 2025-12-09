@@ -186,7 +186,8 @@ public class ProjectService {
             }
         }
 
-        for (Integer addID : employeesToAdd) {
+        //Tjekker om der er nogen nye employees, der skal tilføjes og tilføjer dem
+        if (!employeesToAdd.isEmpty()) {
             projectRepository.assignEmployeesToProject(projectID, employeesToAdd);
         }
 
