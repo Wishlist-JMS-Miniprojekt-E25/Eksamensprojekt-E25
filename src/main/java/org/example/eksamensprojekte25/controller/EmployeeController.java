@@ -72,6 +72,7 @@ public class EmployeeController {
                                HttpSession session) {
 
         try {
+            // Forsøger at oprette employee. Kaster IllegalArgumentException hvis username allerede findes.
             employeeService.addEmployee(
                     employee.getEmployeeName(),
                     employee.getUserName(),
@@ -80,18 +81,19 @@ public class EmployeeController {
 
         } catch (IllegalArgumentException e) {
 
-            // GEM KUN DE RENE STRING-VÆRDIER
+            // addFlashAttribute gemmer data KUN til næste request efter redirect.
+            // Det bruges her fordi redirect laver en NY HTTP-request, og almindelige model-attributter ellers ville gå tabt.
+            // FlashAttributes sikrer at fejlbesked + de indtastede værdier kan vises igen på createEmployee-siden.
             redirectAttributes.addFlashAttribute("errorMessage", "Brugernavnet findes allerede – prøv et andet.");
             redirectAttributes.addFlashAttribute("employeeName", employee.getEmployeeName());
             redirectAttributes.addFlashAttribute("userName", employee.getUserName());
             redirectAttributes.addFlashAttribute("userPassword", employee.getUserPassword());
 
+            // Sender brugeren tilbage til formularen, nu med fejlbesked og deres tidligere input bevaret.
             return "redirect:/createEmployee";
         }
 
+        // Hvis alt lykkes, sendes brugeren videre til forsiden.
         return "redirect:/userProjects";
     }
-
-
-
 }

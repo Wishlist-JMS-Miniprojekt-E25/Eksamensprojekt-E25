@@ -16,19 +16,13 @@
 <form th:action="@{/saveEmployee}" method="post">
 
     <label>Full name</label>
-    <input type="text" name="employeeName"
-           th:value="${employeeName}"
-           required>
+    <input type="text" name="employeeName" th:value="${employeeName}" required>
 
     <label>Username</label>
-    <input type="text" name="userName"
-           th:value="${userName}"
-           required>
+    <input type="text" name="userName"th:value="${userName}" required>
 
     <label>Password</label>
-    <input type="password" name="userPassword"
-           th:value="${userPassword}"
-           required>
+    <input type="password" name="userPassword" th:value="${userPassword}" required>
 
     <button type="submit">Save</button>
 
