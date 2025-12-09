@@ -7,8 +7,12 @@ import org.example.eksamensprojekte25.model.Project;
 import org.example.eksamensprojekte25.model.Timeslot;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -26,7 +30,7 @@ public class EmployeeRepository {
     private final RowMapper<Project> projectRowMapper = (rs, rowNum) -> {
         Project project = new Project();
         project.setProjectID(rs.getInt("projectID"));
-        project.setProjectManagerID(rs.getInt("projectManagerID"));
+        project.setProjectManager(getEmployeeByID(rs.getInt("projectManagerID")));
         project.setProjectName(rs.getString("projectName"));
         project.setProjectDescription(rs.getString("projectDescription"));
         project.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
@@ -105,4 +109,29 @@ public class EmployeeRepository {
         List<Employee> employees = jdbcTemplate.query(sql, employeeRowMapper, userName, userPassword);
         return employees.isEmpty() ? null : employees.get(0);
     }
+
+    //tilføjer en employee til databasen
+    public Employee addEmployee(String employeeName, String userName, String userPassword) {
+        String sql = "INSERT INTO employee (employeeName, userName, userPassword) VALUES (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, employeeName);
+            ps.setString(2, userName);
+            ps.setString(3, userPassword);
+            return ps;
+        }, keyHolder);
+
+        int generatedEmployeeID = keyHolder.getKey().intValue();
+
+        return new Employee(generatedEmployeeID, employeeName, userName, userPassword);
+    }
+    //checker om brugernavnet allerede findes
+    public boolean usernameExists(String userName) {
+        String sql = "SELECT COUNT(*) FROM employee WHERE userName = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userName);
+        return count != null && count > 0;
+    }
+
 }

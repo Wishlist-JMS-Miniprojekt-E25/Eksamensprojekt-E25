@@ -54,12 +54,6 @@ public class ProjectService {
         return project;
     }
 
-    public Project getProjectByTaskID(Integer taskID) {
-        Project project = projectRepository.getProjectByTaskID(taskID);
-        populateListOfAssignedEmployeesOfProject(project);
-        return project;
-    }
-
     public Project addProject(Integer projectManagerID,
                               String projectName,
                               String projectDescription,
@@ -84,9 +78,8 @@ public class ProjectService {
         List<Employee> employees = projectRepository.getEmployeesByTaskID(taskID);
         task.setAssignedEmployees(employees);
         populateListOfSubtasksForTask(task);
-        /*for (Subtask subtask : task.getSubtasks()) {
-            subtask.setAssignedEmployee()
-        } */
+        Project project = task.getProject();
+        populateListOfAssignedEmployeesOfProject(project);
         return task;
     }
 
@@ -109,6 +102,10 @@ public class ProjectService {
 
     public void deleteTaskByID(Integer taskID) {
         projectRepository.deleteTaskByID(taskID);
+    }
+
+    public Subtask getSubtaskByID(Integer subtaskID) {
+        return projectRepository.getSubtaskByID(subtaskID);
     }
 
     public Subtask addSubtask(String subtaskName,

@@ -6,10 +6,8 @@ import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -32,7 +30,7 @@ public class EmployeeController {
     //viser login siden
     @GetMapping("/login")
     public String getLogin() {
-        return "login";
+        return "loginPage";
     }
 
     //går til bruger forsiden fra login siden hvis succefuldt login, ellers bliver du på login siden og må prøve igen
@@ -49,7 +47,7 @@ public class EmployeeController {
             return "redirect:/userProjects";
         } else {
             model.addAttribute("error", true);
-            return "login"; // viser login igen med fejl
+            return "loginPage"; // viser login igen med fejl
         }
     }
 
@@ -58,5 +56,44 @@ public class EmployeeController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
+    }
+
+    @GetMapping("/createEmployee")
+    public String createEmployee(HttpSession session, Model model) {
+        Integer currentEmployeeID = (Integer) session.getAttribute("employeeID");
+
+        model.addAttribute("employee", new Employee());
+        return "createEmployee";
+    }
+
+    @PostMapping("/saveEmployee")
+    public String saveEmployee(@ModelAttribute Employee employee,
+                               RedirectAttributes redirectAttributes,
+                               HttpSession session) {
+
+        try {
+            // Forsøger at oprette employee. Kaster IllegalArgumentException hvis username allerede findes.
+            employeeService.addEmployee(
+                    employee.getEmployeeName(),
+                    employee.getUserName(),
+                    employee.getUserPassword()
+            );
+
+        } catch (IllegalArgumentException e) {
+
+            // addFlashAttribute gemmer data KUN til næste request efter redirect.
+            // Det bruges her fordi redirect laver en NY HTTP-request, og almindelige model-attributter ellers ville gå tabt.
+            // FlashAttributes sikrer at fejlbesked + de indtastede værdier kan vises igen på createEmployee-siden.
+            redirectAttributes.addFlashAttribute("errorMessage", "Brugernavnet findes allerede – prøv et andet.");
+            redirectAttributes.addFlashAttribute("employeeName", employee.getEmployeeName());
+            redirectAttributes.addFlashAttribute("userName", employee.getUserName());
+            redirectAttributes.addFlashAttribute("userPassword", employee.getUserPassword());
+
+            // Sender brugeren tilbage til formularen, nu med fejlbesked og deres tidligere input bevaret.
+            return "redirect:/createEmployee";
+        }
+
+        // Hvis alt lykkes, sendes brugeren videre til forsiden.
+        return "redirect:/userProjects";
     }
 }

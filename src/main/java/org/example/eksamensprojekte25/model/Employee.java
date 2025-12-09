@@ -3,7 +3,6 @@ package org.example.eksamensprojekte25.model;
 import java.util.List;
 
 public class Employee {
-
     private Integer employeeID;
     private String employeeName;
     private String userName;

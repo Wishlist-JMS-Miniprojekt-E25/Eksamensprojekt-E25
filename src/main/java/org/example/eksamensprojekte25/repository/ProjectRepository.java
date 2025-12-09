@@ -19,7 +19,7 @@ public class ProjectRepository {
     private final RowMapper<Project> projectRowMapper = (rs, rowNum) -> {
         Project project = new Project();
         project.setProjectID(rs.getInt("projectID"));
-        project.setProjectManagerID(rs.getInt("projectManagerID"));
+        project.setProjectManager(getEmployeeByID(rs.getInt("projectManagerID")));
         project.setProjectName(rs.getString("projectName"));
         project.setProjectDescription(rs.getString("projectDescription"));
         project.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
@@ -31,7 +31,7 @@ public class ProjectRepository {
         task.setTaskID(rs.getInt("taskID"));
         task.setTaskName(rs.getString("taskName"));
         task.setTaskDescription(rs.getString("taskDescription"));
-        task.setProjectID(rs.getInt("projectID"));
+        task.setProject(getProjectByID(rs.getInt("projectID")));
         task.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
 
         return task;
@@ -42,7 +42,7 @@ public class ProjectRepository {
         subtask.setSubtaskName(rs.getString("subtaskName"));
         subtask.setSubtaskDescription(rs.getString("subtaskDescription"));
         subtask.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
-        subtask.setTaskID(rs.getInt("taskID"));
+        subtask.setTask(getTaskByID(rs.getInt("taskID")));
         subtask.setAssignedEmployee(getEmployeeByID(rs.getInt("employeeID")));
 
         return subtask;
@@ -160,16 +160,6 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(sql, projectRowMapper, projectID);
     }
 
-    //henter et projekt baseret på task id
-    public Project getProjectByTaskID(Integer taskID) {
-        String sql = """
-                SELECT * FROM project p
-                JOIN task t ON p.projectID = t.projectID
-                WHERE taskID = ?
-                """;
-        return jdbcTemplate.queryForObject(sql, projectRowMapper, taskID);
-    }
-
     //tilføjet et projekt til databasen
     public Project addProject(Integer projectManagerID, String projectName, String projectDescription, Integer timeslotID) {
         String sql = "INSERT INTO project (projectManagerID, projectName, projectDescription, timeslotID) VALUES (?, ?, ?, ?)";
@@ -185,7 +175,7 @@ public class ProjectRepository {
         }, keyHolder);
 
         int projectID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
-        return new Project(projectID, projectManagerID, projectName, projectDescription, null);
+        return new Project(projectID, null, projectName, projectDescription, null);
     }
 
     //fjerner et projekt fra databasen
@@ -233,13 +223,22 @@ public class ProjectRepository {
 
         int taskID = keyHolder.getKey().intValue();
 
-        return new Task(taskID, taskName, taskDescription, null, null, projectID);
+        return new Task(taskID, taskName, taskDescription, null, null, null);
     }
 
     //fjerner en task fra databasen
     public void deleteTaskByID(Integer taskID) {
         String sql = "DELETE FROM task WHERE taskID = ?";
         jdbcTemplate.update(sql, taskID);
+    }
+
+    //henter en subtask baseret på subtask id
+    public Subtask getSubtaskByID(Integer subtaskID) {
+        String sql = """
+                SELECT * FROM subtask
+                WHERE subtaskID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, subtaskRowMapper, subtaskID);
     }
 
     //henter alle subtasks baseret på et task id
@@ -268,7 +267,7 @@ public class ProjectRepository {
 
         int subtaskID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
 
-        return new Subtask(subtaskID, subtaskName, subtaskDescription, null, taskID, null);
+        return new Subtask(subtaskID, subtaskName, subtaskDescription, null, null,null);
     }
 
     //fjerner en subtask fra databasen
@@ -276,6 +275,7 @@ public class ProjectRepository {
         String sql = "DELETE FROM subtask WHERE subtaskID = ?";
         jdbcTemplate.update(sql, subtaskID);
     }
+
 
     //Fjerner en employee fra projekt under editProject, hvis man vælger at un-check en employee
     public void removeEmployeeFromProject (Integer projectID, Integer employeeID){

@@ -12,7 +12,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -96,4 +96,24 @@ public class EmployeeControllerTest {
         //session skal være invald her, så fake session is invalid bliver sat til true
         assertTrue(session.isInvalid());
     }
+
+    //tester saveEmployee metoden
+    @Test
+    void shouldSaveEmployeeSuccessfully() throws Exception {
+
+        // Når service bliver kaldt → gør ingenting (ingen exception)
+        when(employeeService.addEmployee("Simon", "sim123", "pass")).thenReturn(new Employee());
+
+        mockMvc.perform(post("/saveEmployee")
+                        .param("employeeName", "Simon")
+                        .param("userName", "sim123")
+                        .param("userPassword", "pass"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/userProjects"));
+
+        // Verificér at service rent faktisk blev kaldt
+        verify(employeeService, times(1)).addEmployee("Simon", "sim123", "pass");
+    }
+
+
 }

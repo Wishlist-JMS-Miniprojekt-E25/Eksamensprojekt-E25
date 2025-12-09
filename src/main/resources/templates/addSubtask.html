@@ -10,8 +10,9 @@
     <div>
         <h2>Add Subtask</h2>
 
-        <form th:action="@{/task/{taskID}/saveSubtask(taskID=${subtask.taskID})}" th:object="${subtask}" method="post">
-            <input type="hidden" th:field="*{taskID}">
+        <form th:action="@{/task/saveSubtask}" th:object="${subtask}" method="post">
+
+            <input type="hidden" name="taskID" th:value="${subtask.task.taskID}">
 
             <label>Name</label>
             <input type="text" th:field="*{subtaskName}" required>
@@ -26,16 +27,15 @@
             <input type="date" name="plannedFinishDate" required>
 
             <p>Assign employee</p>
-            <div th:each="employee : ${taskEmployees}">
+            <div th:each="employee : ${subtask.task.assignedEmployees}">
                 <label>
                     <input type="radio"
-                           th:field="*{employeeID}"
+                           name="assignedEmployeeID"
                            th:value="${employee.employeeID}">
                     <span th:text="${employee.employeeName}">
                    </span>
                 </label>
             </div>
-
             <div>
                 <button type="submit">Save</button>
                 <a th:href="@{/task/{taskID}(taskID=${taskID})}">Cancel</a>
@@ -43,6 +43,5 @@
         </form>
     </div>
 </main>
-
 </body>
 </html>
