@@ -298,7 +298,7 @@ public class ProjectRepository {
 
         int subtaskID = keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
 
-        return new Subtask(subtaskID, subtaskName, subtaskDescription, null, null,null);
+        return new Subtask(subtaskID, subtaskName, subtaskDescription, null, null, null);
     }
 
     //fjerner en subtask fra databasen
@@ -307,16 +307,15 @@ public class ProjectRepository {
         jdbcTemplate.update(sql, subtaskID);
     }
 
-
     //Fjerner en employee fra projekt under editProject, hvis man vælger at un-check en employee
-    public void removeEmployeeFromProject (Integer projectID, Integer employeeID){
+    public void removeEmployeeFromProject(Integer projectID, Integer employeeID) {
         String sql = "DELETE FROM projectEmployee WHERE projectID = ? AND employeeID = ?";
 
         jdbcTemplate.update(sql, projectID, employeeID);
     }
 
     //Opdaterer planned start date og planned finish date for et projekt, hvis man vælger at ændre det i editProject
-    public void editTimeslot (Integer timeslotID, Integer plannedDays, Date plannedStartDate, Date plannedFinishDate){
+    public void editTimeslot(Integer timeslotID, Integer plannedDays, Date plannedStartDate, Date plannedFinishDate) {
         String sql = """
                 UPDATE timeslot
                 SET plannedDays = ?,
@@ -328,7 +327,7 @@ public class ProjectRepository {
     }
 
     //Opdaterer navn, beskrivelse og timeslot
-    public void editProject (Project project, Integer projectID){
+    public void editProject(Project project, Integer projectID) {
         String sql = """
                 UPDATE project
                 SET projectName = ?,
@@ -339,7 +338,7 @@ public class ProjectRepository {
         jdbcTemplate.update(sql, project.getProjectName(), project.getProjectDescription(), project.getTimeslot().getTimeslotID(), projectID);
     }
 
-    public void finalizeTimeslot(Timeslot timeslot, Integer timeslotID){
+    public void finalizeTimeslot(Timeslot timeslot, Integer timeslotID) {
         String sql = """
                 UPDATE timeslot
                 SET isDone = ?,
@@ -352,20 +351,13 @@ public class ProjectRepository {
         jdbcTemplate.update(sql, timeslot.isDone(), timeslot.getTotalWorkhours(), timeslot.getActualFinishDate(), timeslot.getDifferenceInDays(), timeslotID);
     }
 
-    public void updateTotalWorkhoursForTimeslot(Timeslot timeslot, Integer timeslotID){
+    public void updateTotalWorkhoursForTimeslot(Timeslot timeslot, Integer timeslotID) {
         String sql = "UPDATE timeslot SET totalWorkhours = ? WHERE timeslotID = ?";
 
         jdbcTemplate.update(sql, timeslot.getTotalWorkhours(), timeslotID);
     }
 
-    public void archiveSubtask (Subtask subtask){
-
-        Integer subtaskID = subtask.getSubtaskID();
-        String subtaskName = subtask.getSubtaskName();
-        String subtaskDescription = subtask.getSubtaskDescription();
-        Integer subtaskTimeslotID = subtask.getTimeslot().getTimeslotID();
-        Integer subtaskTaskID = subtask.getTask().getTaskID();
-        Integer subtaskEmployeeID = subtask.getAssignedEmployee().getEmployeeID();
+    public void archiveSubtask(Subtask subtask) {
 
         String sql = """
                 INSERT INTO archivedSubtask
@@ -380,21 +372,57 @@ public class ProjectRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, subtaskID);
-            ps.setString(2, subtaskName);
-            ps.setString(3, subtaskDescription);
-            ps.setInt(4, subtaskTimeslotID);
-            ps.setInt(5, subtaskTaskID);
-            ps.setInt(6, subtaskEmployeeID);
+            ps.setInt(1, subtask.getSubtaskID());
+            ps.setString(2, subtask.getSubtaskName());
+            ps.setString(3, subtask.getSubtaskDescription());
+            ps.setInt(4, subtask.getTimeslot().getTimeslotID());
+            ps.setInt(5, subtask.getTask().getTaskID());
+            ps.setInt(6, subtask.getAssignedEmployee().getEmployeeID());
             return ps;
         }, keyHolder);
     }
 
-//    public void archiveTask(Task task){
-//
-//    }
-//
-//    public void archiveProject(Project project){
-//
-//    }
+    public void archiveTask(Task task) {
+        String sql = """
+                INSERT INTO archivedTask
+                (taskID,
+                taskName,
+                taskDescription,
+                timeslotID,
+                projectID) VALUES (?, ?, ?, ?, ?)
+                """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, task.getTaskID());
+            ps.setString(2, task.getTaskName());
+            ps.setString(3, task.getTaskDescription());
+            ps.setInt(4, task.getTimeslot().getTimeslotID());
+            ps.setInt(5, task.getProject().getProjectID());
+            return ps;
+        }, keyHolder);
+    }
+
+    public void archiveProject(Project project) {
+        String sql = """
+                INSERT INTO archivedProject
+                (projectID,
+                projectManagerID,
+                projectName,
+                projectDescription,
+                timeslotID VALUES (?, ?, ?, ?, ?)
+                """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, project.getProjectID());
+            ps.setInt(2, project.getProjectManager().getEmployeeID());
+            ps.setString(3, project.getProjectName());
+            ps.setString(4, project.getProjectDescription());
+            ps.setInt(5, project.getTimeslot().getTimeslotID());
+            return ps;
+        }, keyHolder);
+    }
 }

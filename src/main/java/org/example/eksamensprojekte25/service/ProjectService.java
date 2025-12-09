@@ -214,18 +214,16 @@ public class ProjectService {
        timeslot.setDifferenceInDays((int) (differenceInDays / (1000 * 60 * 60 * 24)));
     }
 
-    public void calculateTaskWorkhours(Task task){
-
-    }
+//    public void calculateTaskWorkhours(Task task){
+//
+//  }
 
     //Lægger total workhours fra subtask til summen af total workhours på subtasks
     public void calculateSubtaskWorkhours(Subtask subtask) {
         Integer totalWorkhoursTask = subtask.getTask().getTimeslot().getTotalWorkhours();
-
         Integer totalWorkhoursSubtask = subtask.getTimeslot().getTotalWorkhours();
 
         subtask.getTask().getTimeslot().setTotalWorkhours(totalWorkhoursTask + totalWorkhoursSubtask);
-
         subtask.getTask().getProject().getTimeslot().setTotalWorkhours(totalWorkhoursTask + totalWorkhoursSubtask);
 
         projectRepository.updateTotalWorkhoursForTimeslot(subtask.getTask().getTimeslot(),
@@ -235,19 +233,27 @@ public class ProjectService {
                 subtask.getTask().getProject().getTimeslot().getTimeslotID());
     }
 
+    public void finalizeTaskTimeslot(Task task) {
+        projectRepository.finalizeTimeslot(task.getTimeslot(), task.getTimeslot().getTimeslotID());
+    }
+
+    public void finalizeProjectTimeslot(Project project) {
+        projectRepository.finalizeTimeslot(project.getTimeslot(), project.getTimeslot().getTimeslotID());
+    }
+
+    public void finalizeSubtaskTimeslot(Subtask subtask){
+        projectRepository.finalizeTimeslot(subtask.getTimeslot(), subtask.getTimeslot().getTimeslotID());
+    }
+
     public void finalizeSubtask(Subtask subtask){
-
+        //timeslot beregning og opdatering af timeslot
         calculateSubtaskWorkhours(subtask);
-
         subtask.getTimeslot().setActualFinishDate(Date.valueOf(LocalDate.now()));
         calculateDifferenceInDays(subtask.getTimeslot());
-
         subtask.getTimeslot().setDone(true);
+        finalizeSubtaskTimeslot(subtask);
 
         projectRepository.archiveSubtask(subtask);
-
-        projectRepository.finalizeTimeslot(subtask.getTimeslot(), subtask.getTimeslot().getTimeslotID());
-
         projectRepository.deleteSubtaskByID(subtask.getSubtaskID());
     }
 //
