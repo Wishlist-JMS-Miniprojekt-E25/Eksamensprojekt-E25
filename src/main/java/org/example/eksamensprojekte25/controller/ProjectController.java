@@ -89,15 +89,20 @@ public class ProjectController {
                               @RequestParam("plannedFinishDate") String plannedFinishDate,
                               HttpSession session, Model model) {
 
+        //Konverterer datoer fra string til Date, så vi kan bruge det i if-statement
         Date plannedStartDateForProject = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForProject = Date.valueOf(plannedFinishDate);
 
+        //Tjekker om slutdatoen er før startdatoen
         if(plannedFinishDateForProject.before(plannedStartDateForProject)){
+            //Laver en fejlbesked, der sendes til formen
             model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            //Sender det indtastede projektdata over
             model.addAttribute("project", project);
+            //Sender alle employees, til checklisten
             model.addAttribute("allEmployees", employeeService.getAllEmployees());
-            model.addAttribute("assignedEmployeeIDs", assignedEmployeeIDs);
 
+            //Gemmer ikke de ændringer der blev lavet (pga fejl) og sender i stedet add-formen igen
             return "addProject";
         }
 
@@ -247,14 +252,19 @@ public class ProjectController {
     public String updateProject(@ModelAttribute Project project,
                                 @RequestParam List<Integer> assignedEmployeeIDs, Model model) {
 
+        //Konverterer datoer fra string til Date, så vi kan bruge det i if-statement
         Date plannedStart = project.getTimeslot().getPlannedStartDate();
         Date plannedFinish = project.getTimeslot().getPlannedFinishDate();
 
+        //Tjekker om slutdatoen er før startdatoen
         if(plannedFinish.before(plannedStart)){
-
+            //Laver en fejlbesked, der sendes til formen
             model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            //Sender det indtastede projektdata over
             model.addAttribute("project", project);
+            //Sender alle employees, til checklisten
             model.addAttribute("allEmployees", employeeService.getAllEmployees());
+            //Sørger for at de valgte employees stadig er checked
             model.addAttribute("assignedEmployeeIDs", assignedEmployeeIDs);
 
             return "editProject";
