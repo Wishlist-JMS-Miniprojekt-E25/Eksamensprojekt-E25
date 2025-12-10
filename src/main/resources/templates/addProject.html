@@ -10,6 +10,11 @@
     <div>
         <h2>Add Project</h2>
 
+<!--        Viser en fejlbesked, hvis der sker en fejl-->
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
         <form th:action="@{/saveProject}" th:object="${project}" method="post">
 
             <label>Name</label>

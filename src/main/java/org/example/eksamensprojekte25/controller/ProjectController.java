@@ -87,12 +87,36 @@ public class ProjectController {
                               @RequestParam(value = "assignedEmployeeIDs", required = false) List<Integer> assignedEmployeeIDs,
                               @RequestParam("plannedStartDate") String plannedStartDate,
                               @RequestParam("plannedFinishDate") String plannedFinishDate,
-                              HttpSession session) {
-        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
+                              HttpSession session, Model model) {
 
+        //Konverterer datoer fra string til Date, så vi kan bruge det i if-statement
         Date plannedStartDateForProject = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForProject = Date.valueOf(plannedFinishDate);
 
+        //Tjekker om slutdatoen er før startdatoen
+        if(plannedFinishDateForProject.before(plannedStartDateForProject)){
+            //Laver en fejlbesked, der sendes til formen
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            //Sender det indtastede projektdata over
+            model.addAttribute("project", project);
+            //Sender alle employees, til checklisten
+            model.addAttribute("allEmployees", employeeService.getAllEmployees());
+
+            //Gemmer ikke de ændringer der blev lavet (pga fejl) og sender i stedet add-formen igen
+            return "addProject";
+        }
+
+        //Tjekker om mindst 1 employee er assigned
+        if(assignedEmployeeIDs == null || assignedEmployeeIDs.isEmpty()){
+            //Sender en fejlbesked, hvis der ikke er blevet assigned mindst 1 (i stedet for at man får whitelabel)
+            model.addAttribute("errorMessage", "You must assign at least one employee to the project");
+            model.addAttribute("project", project);
+            model.addAttribute("allEmployees", employeeService.getAllEmployees());
+
+            return "addProject";
+        }
+
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
         projectService.addProject(loggedInEmployeeID, project.getProjectName(), project.getProjectDescription(), plannedStartDateForProject, plannedFinishDateForProject, assignedEmployeeIDs);
         return "redirect:/userOptions";
     }
@@ -123,12 +147,45 @@ public class ProjectController {
                            @RequestParam("plannedStartDate") String plannedStartDate,
                            @RequestParam("plannedFinishDate") String plannedFinishDate,
                            @RequestParam(required = false) List<Integer> assignedEmployeeIDs,
-                           @RequestParam Integer projectID) {
-
+                           @RequestParam Integer projectID, Model model) {
+        //Konverterer datoer fra string til Date, så vi kan bruge det i if-statement
         Date plannedStartDateForTask = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForTask = Date.valueOf(plannedFinishDate);
 
+        //Henter projektet som tasken skal tilknyttes
         Project project = projectService.getProjectByID(projectID);
+
+        // Tjekker om slutdato er før startdato
+        if(plannedFinishDateForTask.before(plannedStartDateForTask)){
+
+            //Sender employees til checklisten
+            project.setAssignedEmployees(projectService.getEmployeesByProjectID(projectID));
+            task.setProject(project);
+
+            // Sender fejlbesked + data
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("task", task);
+            model.addAttribute("projectID", projectID);
+            model.addAttribute("plannedStartDate", plannedStartDate);
+            model.addAttribute("plannedFinishDate", plannedFinishDate);
+
+            return "addTask";
+        }
+        //Tjekker om mindst 1 employee er assigned
+        if(assignedEmployeeIDs == null || assignedEmployeeIDs.isEmpty()){
+
+            project.setAssignedEmployees(projectService.getEmployeesByProjectID(projectID));
+            task.setProject(project);
+
+            //Sender en fejlbesked, hvis der ikke er blevet assigned mindst 1 (i stedet for at man får whitelabel)
+            model.addAttribute("errorMessage", "You must assign at least one employee to the task");
+            model.addAttribute("task", task);
+            model.addAttribute("projectID", projectID);
+            model.addAttribute("plannedStartDate", plannedStartDate);
+            model.addAttribute("plannedFinishDate", plannedFinishDate);
+
+            return "addTask";
+        }
 
         projectService.addTask(taskName, taskDescription,
                 plannedStartDateForTask, plannedFinishDateForTask,
@@ -162,12 +219,48 @@ public class ProjectController {
                               @RequestParam("plannedStartDate") String plannedStartDate,
                               @RequestParam("plannedFinishDate") String plannedFinishDate,
                               @RequestParam(required = false) Integer assignedEmployeeID,
-                              @RequestParam Integer taskID) {
+                              @RequestParam Integer taskID, Model model) {
 
+        //Konverterer datoerne fra String til Date-objekter
         Date plannedStartDateForSubtask = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForSubtask = Date.valueOf(plannedFinishDate);
 
+        //Henter tasken subtasken skal tilknyttes
         Task task = projectService.getTaskByID(taskID);
+
+        // Tjekker om slutdato ligger før startdato
+        if(plannedFinishDateForSubtask.before(plannedStartDateForSubtask)){
+
+            //Henter employees til checklisten
+            task.setAssignedEmployees(projectService.getEmployeesByTaskID(taskID));
+            subtask.setTask(task);
+
+            // Sender fejlbesked og inputdata tilbage til formen
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("subtask", subtask);
+            model.addAttribute("taskID", taskID);
+            model.addAttribute("plannedStartDate", plannedStartDate);
+            model.addAttribute("plannedFinishDate", plannedFinishDate);
+
+            return "addSubtask";
+        }
+
+        //Tjekker om der er valgt en employee (en subtask kan kun have én)
+        if(assignedEmployeeID == null){
+
+            //Henter employees til radio-listen/(checklisten)
+            task.setAssignedEmployees(projectService.getEmployeesByTaskID(taskID));
+            subtask.setTask(task);
+
+            // Fejlbesked hvis ingen employee er valgt
+            model.addAttribute("errorMessage", "You must assign one employee to the subtask");
+            model.addAttribute("subtask", subtask);
+            model.addAttribute("taskID", taskID);
+            model.addAttribute("plannedStartDate", plannedStartDate);
+            model.addAttribute("plannedFinishDate", plannedFinishDate);
+
+            return "addSubtask";
+        }
 
         projectService.addSubtask(subtask.getSubtaskName(), subtask.getSubtaskDescription(), task.getTaskID(),
                 assignedEmployeeID, plannedStartDateForSubtask,
@@ -208,12 +301,103 @@ public class ProjectController {
     }
 
     @PostMapping("/updateProject")
-    public String updateProject(@ModelAttribute Project project, @RequestParam List<Integer> assignedEmployeeIDs) {
+    public String updateProject(@ModelAttribute Project project,
+                                @RequestParam List<Integer> assignedEmployeeIDs, Model model) {
 
+        //Konverterer datoer fra string til Date, så vi kan bruge det i if-statement
+        Date plannedStart = project.getTimeslot().getPlannedStartDate();
+        Date plannedFinish = project.getTimeslot().getPlannedFinishDate();
+
+        //Tjekker om slutdatoen er før startdatoen
+        if(plannedFinish.before(plannedStart)){
+            //Laver en fejlbesked, der sendes til formen
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            //Sender det indtastede projektdata over
+            model.addAttribute("project", project);
+            //Sender alle employees, til checklisten
+            model.addAttribute("allEmployees", employeeService.getAllEmployees());
+            //Sørger for at de valgte employees stadig er checked
+            model.addAttribute("assignedEmployeeIDs", assignedEmployeeIDs);
+
+            return "editProject";
+
+        }
 
         projectService.editProject(project, assignedEmployeeIDs);
 
         return "redirect:/userOptions";
+    }
+
+    @GetMapping("/editSubtask/{subtaskID}")
+    public String editSubtask(@PathVariable Integer subtaskID, Model model) {
+        Subtask subtask = projectService.getSubtaskByID(subtaskID);
+        model.addAttribute("subtask", subtask);
+        return "editSubtask";
+    }
+
+    @PostMapping("/updateSubtask")
+    public String updateSubtask(@ModelAttribute Subtask subtask, Model model) {
+
+        Date plannedStart = subtask.getTimeslot().getPlannedStartDate();
+        Date plannedFinish = subtask.getTimeslot().getPlannedFinishDate();
+
+        if(plannedFinish.before(plannedStart)){
+
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("subtask", subtask);
+
+            subtask.getTask().setAssignedEmployees(projectService.getEmployeesByTaskID(subtask.getTask().getTaskID()));
+
+            return "editSubtask";
+        }
+
+        projectService.editSubtask(subtask);
+        return "redirect:/task/" + subtask.getTask().getTaskID();
+    }
+
+    @GetMapping("/editTask/{taskID}")
+    public String editTask(@PathVariable Integer taskID, Model model) {
+
+        //Henter det projekt, der skal redigeres
+        Task task = projectService.getTaskByID(taskID);
+
+        model.addAttribute("task", task);
+
+        Integer projectID = task.getProject().getProjectID();
+        List<Employee> employeesAssignedToProject = projectService.getEmployeesByProjectID(projectID);
+
+        model.addAttribute("employeesAssignedToProject", employeesAssignedToProject);
+
+        //Opretter listen med de allerede assigned employees, så de kan være checked
+        List<Integer> assignedIDs = new ArrayList<>();
+        for (Employee e : task.getAssignedEmployees()) {
+            assignedIDs.add(e.getEmployeeID());
+        }
+
+        model.addAttribute("assignedEmployeeIDs", assignedIDs);
+
+        return "editTask";
+    }
+
+    @PostMapping("/updateTask")
+    public String updateTask(@ModelAttribute Task task, @RequestParam List<Integer> assignedEmployeeIDs, Model model) {
+
+        Date plannedStart = task.getTimeslot().getPlannedStartDate();
+        Date plannedFinish = task.getTimeslot().getPlannedFinishDate();
+
+        if(plannedFinish.before(plannedStart)){
+
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("task", task);
+            model.addAttribute("employeesAssignedToProject", projectService.getEmployeesByProjectID(task.getProject().getProjectID()));
+            model.addAttribute("assignedEmployeeIDs", assignedEmployeeIDs);
+
+            return "editTask";
+        }
+
+        projectService.editTask(task, assignedEmployeeIDs);
+
+        return "redirect:/project/" + task.getProject().getProjectID();
     }
 
     @GetMapping("/subtaskWorkhours/{subtaskID}")
@@ -255,6 +439,9 @@ public class ProjectController {
         Task task = projectService.getTaskByID(taskID);
         task.getTimeslot().setTotalWorkhours(totalWorkhours);
         projectService.finalizeTask(task);
+        for (Subtask subtask : task.getSubtasks()) {
+            projectService.deleteSubtaskByID(subtask.getSubtaskID());
+        }
         return "redirect:/project/" + task.getProject().getProjectID();
     }
 
@@ -262,6 +449,12 @@ public class ProjectController {
     public String finalizeProject(@PathVariable Integer projectID) {
         Project project = projectService.getProjectByID(projectID);
         projectService.finalizeProject(project);
+        for (Task task : project.getTasks()) {
+            projectService.deleteTaskByID(task.getTaskID());
+            for (Subtask subtask : task.getSubtasks()) {
+                projectService.deleteSubtaskByID(subtask.getSubtaskID());
+            }
+        }
         return "redirect:/userOptions";
     }
 
@@ -294,7 +487,7 @@ public class ProjectController {
         model.addAttribute("loggedInEmployee", loggedInEmployee);
 
         Task archivedTask = projectService.getArchivedTaskByID(taskID);
-        model.addAttribute("archivedTask",archivedTask);
+        model.addAttribute("archivedTask", archivedTask);
         return "archivedTask";
     }
 }

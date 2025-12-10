@@ -40,9 +40,7 @@
         <td th:text="${task.project.timeslot.totalWorkhours}"></td>
     </tr>
 </table>
-<br> <br> <br> <br> <br> <br>
-
-
+<br>
 <!-- tabellen, der viser den enkelte task -->
 <h3>Tasks</h3>
 <table>
@@ -71,7 +69,7 @@
         <td th:text="${task.timeslot.totalWorkhours}"></td>
     </tr>
 </table>
-<br> <br> <br> <br> <br> <br>
+<br> <br> <br>
 <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
     <a th:href="@{/task/{taskID}/addSubtask(taskID=${task.taskID})}">+ Add subtask</a>
 </div>
@@ -101,6 +99,9 @@
             <div>
                 <a th:href="@{/subtaskWorkhours/{subtaskID}(subtaskID=${subtask.subtaskID})}">Finalize</a>
             </div>
+        </td>
+        <td>
+            <a th:href="@{/editSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}">Edit</a>
         </td>
         <td>
             <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">

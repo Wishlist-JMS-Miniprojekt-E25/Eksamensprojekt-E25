@@ -9,6 +9,10 @@
 <main>
     <div>
         <h2>Add Task</h2>
+        <!--        Viser en fejlbesked, hvis der sker en fejl-->
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
 
         <form th:action="@{/saveTask}" th:object="${task}" method="post">
 

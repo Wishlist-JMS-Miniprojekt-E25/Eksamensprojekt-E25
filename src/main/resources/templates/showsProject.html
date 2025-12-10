@@ -37,7 +37,7 @@
         <td th:text="${project.timeslot.totalWorkhours}"></td>
     </tr>
 </table>
-<br> <br> <br> <br> <br> <br>
+<br> <br> <br>
 <div th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}">
     <a th:href="@{/addTask/{projectID}(projectID=${project.projectID})}">+ Add task</a>
 </div>
@@ -79,6 +79,9 @@
             <div>
                 <a th:href="@{/taskWorkhours/{taskID}(taskID=${task.taskID})}">Finalize</a>
             </div>
+        </td>
+        <td>
+            <a th:href="@{/editTask/{taskID}(taskID=${task.taskID})}">Edit</a>
         </td>
         <td>
             <div th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}">

@@ -2,24 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Project</title>
+    <title>Edit Task</title>
 </head>
 <body>
 
-    <h2>Edit Project</h2>
+    <h2>Edit Task</h2>
     <!--        Viser en fejlbesked, hvis der sker en fejl-->
 <div th:if="${errorMessage}">
     <p th:text="${errorMessage}"></p>
 </div>
 
-<form th:action="@{/updateProject}" th:object="${project}" method="post">
-    <input type="hidden" th:field="*{projectID}">
+<form th:action="@{/updateTask}" th:object="${task}" method="post">
+    <input type="hidden" th:field="*{taskID}">
+    <input type="hidden" th:field="*{project.projectID}" />
 
     <label>Name</label>
-    <input type="text" th:field="*{projectName}">
+    <input type="text" th:field="*{taskName}">
 
     <label>Description</label>
-    <input type="text" th:field="*{projectDescription}">
+    <input type="text" th:field="*{taskDescription}">
 
     <label>Planned Start Date</label>
     <input type="date" th:field="*{timeslot.plannedStartDate}">
@@ -27,20 +28,19 @@
     <label>Planned Finish Date</label>
     <input type="date" th:field="*{timeslot.plannedFinishDate}">
 
-    <input type="hidden" name="assignedEmployeeIDs" value="">
-
     <p>Assign employees</p>
-    <div th:each="employees : ${allEmployees}">
+    <div th:each="employees : ${employeesAssignedToProject}">
         <label>
             <input type="checkbox" name="assignedEmployeeIDs" th:value="${employees.employeeID}"
-            th:checked="${assignedEmployeeIDs.contains(employees.employeeID)}">
+                   th:checked="${assignedEmployeeIDs.contains(employees.employeeID)}">
             <!--Hvis employee allerede er assigned, så sørger th:checked for, at de allerede er checked-->
             <span th:text="${employees.employeeName}"></span>
         </label>
     </div>
 
+
     <button type="submit">Save</button>
-    <a th:href="@{/userOptions}">Cancel</a>
+    <a th:href="@{/project/{projectID}(projectID=${task.project.projectID})}">Cancel</a>
 </form>
 
 </body>
