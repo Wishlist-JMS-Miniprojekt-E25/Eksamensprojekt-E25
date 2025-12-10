@@ -354,6 +354,12 @@ public class ProjectRepository {
         jdbcTemplate.update(sql, projectID, employeeID);
     }
 
+    public void removeEmployeeFromTask(Integer taskID, Integer employeeID){
+        String sql = "DELETE FROM taskEmployee WHERE taskID = ? AND employeeID = ?";
+
+        jdbcTemplate.update(sql, taskID, employeeID);
+    }
+
     //Opdaterer planned start date og planned finish date for et projekt, hvis man vælger at ændre det i editProject
     public void editTimeslot(Integer timeslotID, Integer plannedDays, Date plannedStartDate, Date plannedFinishDate) {
         String sql = """
@@ -376,6 +382,18 @@ public class ProjectRepository {
                 WHERE projectID = ?
                 """;
         jdbcTemplate.update(sql, project.getProjectName(), project.getProjectDescription(), project.getTimeslot().getTimeslotID(), projectID);
+    }
+
+    public void editTask(Task task, Integer taskID){
+        String sql = """
+                UPDATE task
+                SET taskName = ?,
+                taskDescription = ?,
+                timeslotID = ?
+                WHERE taskID = ?
+                """;
+
+        jdbcTemplate.update(sql, task.getTaskName(), task.getTaskDescription(), task.getTimeslot().getTimeslotID(), taskID);
     }
 
     public void finalizeTimeslot(Timeslot timeslot, Integer timeslotID) {
