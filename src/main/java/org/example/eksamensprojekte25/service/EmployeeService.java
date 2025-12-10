@@ -8,6 +8,7 @@ import org.example.eksamensprojekte25.repository.EmployeeRepository;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,7 +23,13 @@ public class EmployeeService {
 
     //henter en employee baseret på employee userName og userPassword
     public List<Employee> getAllEmployees() {
-        return employeeRepository.getAllEmployees();
+        List<Employee> assignableEmployees = new ArrayList<>();
+        for (Employee e : employeeRepository.getAllEmployees()){
+            if(!e.getUserName().equalsIgnoreCase("HR")){
+                assignableEmployees.add(e);
+            }
+        }
+        return assignableEmployees;
     }
 
     public Employee findEmployeeByCredentials(String userName, String userPassword) {
