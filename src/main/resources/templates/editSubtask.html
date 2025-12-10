@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Subtask</title>
+</head>
+<body>
+
+<form th:action="@{/updateSubtask}" th:object="${subtask}" method="post">
+    <input type="hidden" th:field="*{subtaskID}">
+    <input type="hidden" th:field="*{timeslot.timeslotID}">
+    <input type="hidden" th:field="*{task.taskID}">
+
+    <label>Name</label>
+    <input type="text" th:field="*{subtaskName}">
+
+    <label>Description</label>
+    <input type="text" th:field="*{subtaskDescription}">
+
+    <label>Planned Start Date</label>
+    <input type="date" th:field="*{timeslot.plannedStartDate}">
+
+    <label>Planned Finish Date</label>
+    <input type="date" th:field="*{timeslot.plannedFinishDate}">
+
+    <p>Assign employee</p>
+    <div th:each="employee : ${subtask.task.assignedEmployees}">
+        <label>
+            <input type="radio"
+                   th:field="*{assignedEmployee.employeeID}"
+                   th:value="${employee.employeeID}"
+                   th:checked="${subtask.assignedEmployee.employeeID == employee.employeeID}">
+            <span th:text="${employee.employeeName}">
+                   </span>
+        </label>
+    </div>
+    <div>
+        <button type="submit">Save</button>
+        <a th:href="@{/task/{taskID}(taskID=${subtask.task.taskID})}">Cancel</a>
+    </div>
+</form>
+</body>
+</html>
