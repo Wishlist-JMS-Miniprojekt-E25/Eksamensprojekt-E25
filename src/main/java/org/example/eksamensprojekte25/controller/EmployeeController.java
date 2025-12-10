@@ -2,6 +2,7 @@ package org.example.eksamensprojekte25.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.eksamensprojekte25.model.Employee;
+import org.example.eksamensprojekte25.model.Task;
 import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 import org.springframework.stereotype.Controller;
@@ -97,5 +98,12 @@ public class EmployeeController {
         return "redirect:/userOptions";
     }
 
+    @PostMapping("/deleteEmployee/{employeeID}")
+    public String deleteEmployee(@PathVariable Integer employeeID,RedirectAttributes redirectAttributes) {
 
+        employeeService.deleteEmployeeByID(employeeID);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Employee deleted.");
+        return "redirect:/userOptions";
+    }
 }

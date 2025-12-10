@@ -67,4 +67,8 @@ public class EmployeeService {
         return employeeRepository.addEmployee(employeeName, userName, userPassword);
     }
 
+    public void deleteEmployeeByID(Integer employeeID) {
+        employeeRepository.deleteEmployeeByID(employeeID);
+    }
+
 }

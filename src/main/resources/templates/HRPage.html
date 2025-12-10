@@ -29,10 +29,12 @@
         <td th:text="${emp.userName}"></td>
 
         <td>
-            <form th:action="@{/deleteEmployee/{id}(id=${emp.employeeID})}" method="post"
+            <form th:action="@{/deleteEmployee/{employeeID}(employeeID=${emp.employeeID})}"
+                  method="post"
                   onsubmit="return confirm('Delete this employee?');">
                 <button type="submit">Delete</button>
             </form>
+
         </td>
     </tr>
 </table>

@@ -127,11 +127,18 @@ public class EmployeeRepository {
 
         return new Employee(generatedEmployeeID, employeeName, userName, userPassword);
     }
+
     //checker om brugernavnet allerede findes
     public boolean usernameExists(String userName) {
         String sql = "SELECT COUNT(*) FROM employee WHERE userName = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userName);
         return count != null && count > 0;
+    }
+
+    //fjerner en employee fra databasen
+    public void deleteEmployeeByID(Integer employeeID) {
+        String sql = "DELETE FROM employee WHERE employeeID = ?";
+        jdbcTemplate.update(sql, employeeID);
     }
 
 }
