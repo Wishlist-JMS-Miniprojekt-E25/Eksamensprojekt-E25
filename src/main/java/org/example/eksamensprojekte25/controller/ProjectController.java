@@ -243,7 +243,7 @@ public class ProjectController {
     public String taskWorkhours(@PathVariable Integer taskID, Model model) {
         Task task = projectService.getTaskByID(taskID);
         if (task.getTimeslot().getTotalWorkhours() > 0) {
-            projectService.finalizeTask(task);
+            projectService.finalizeTaskWithoutTotalWorkhours(task);
             return "redirect:/project/" + task.getProject().getProjectID();
         }
         model.addAttribute("task", task);

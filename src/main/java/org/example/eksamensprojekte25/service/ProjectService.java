@@ -239,6 +239,16 @@ public class ProjectService {
                 task.getProject().getTimeslot().getTimeslotID());
     }
 
+    public void calculateTask(Task task) {
+        task.getTimeslot().setActualFinishDate(Date.valueOf(LocalDate.now()));
+        calculateDifferenceInDays(task.getTimeslot());
+        task.getTimeslot().setDone(true);
+        projectRepository.finalizeTimeslot(task.getTimeslot(), task.getTimeslot().getTimeslotID());
+        //arkivering af task
+        projectRepository.archiveTask(task);
+        projectRepository.deleteTaskByID(task.getTaskID());
+    }
+
     //Lægger total workhours fra subtask til total workhours på en task og et projekt
     public void calculateSubtaskWorkhours(Subtask subtask) {
         Integer totalWorkhoursProject = subtask.getTask().getProject().getTimeslot().getTotalWorkhours();
@@ -270,13 +280,11 @@ public class ProjectService {
     public void finalizeTask(Task task) {
         //timeslot beregning og opdatering af timeslot
         calculateTaskWorkhours(task);
-        task.getTimeslot().setActualFinishDate(Date.valueOf(LocalDate.now()));
-        calculateDifferenceInDays(task.getTimeslot());
-        task.getTimeslot().setDone(true);
-        projectRepository.finalizeTimeslot(task.getTimeslot(), task.getTimeslot().getTimeslotID());
-        //arkivering af task
-        projectRepository.archiveTask(task);
-        projectRepository.deleteTaskByID(task.getTaskID());
+        calculateTask(task);
+    }
+
+    public void finalizeTaskWithoutTotalWorkhours(Task task) {
+        calculateTask(task);
     }
 
     public void finalizeProject(Project project) {
