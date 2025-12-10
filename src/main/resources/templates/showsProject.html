@@ -19,8 +19,6 @@
         <th>Planned Days</th>
         <th>Planned Start Date</th>
         <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
         <th>Total workhours</th>
     </tr>
     <tr>
@@ -36,8 +34,6 @@
         <td th:text="${project.timeslot.getPlannedDays}"></td>
         <td th:text="${project.timeslot.plannedStartDate}"></td>
         <td th:text="${project.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${project.timeslot.getActualFinishDate}"></td>
-        <td th:text="${project.timeslot.getDifferenceInDays}"></td>
         <td th:text="${project.timeslot.totalWorkhours}"></td>
     </tr>
 </table>
@@ -58,8 +54,6 @@
         <th>Planned Days</th>
         <th>Planned Start Date</th>
         <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
         <th>Total workhours</th>
         <th></th>
         <th></th>
@@ -80,8 +74,6 @@
         <td th:text="${task.timeslot.getPlannedDays}"></td>
         <td th:text="${task.timeslot.plannedStartDate}"></td>
         <td th:text="${task.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${task.timeslot.getActualFinishDate}"></td>
-        <td th:text="${task.timeslot.getDifferenceInDays}"></td>
         <td th:text="${task.timeslot.totalWorkhours}"></td>
         <td>
             <div>
