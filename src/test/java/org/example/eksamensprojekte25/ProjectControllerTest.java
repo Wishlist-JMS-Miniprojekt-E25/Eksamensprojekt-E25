@@ -50,6 +50,7 @@ public class ProjectControllerTest {
         //fake employee
         Employee manager = new Employee();
         manager.setEmployeeName("Manager Name");
+        manager.setUserName("managerUser");
 
         //fake projekt
         Project assignedToProject = new Project();
@@ -199,7 +200,7 @@ public class ProjectControllerTest {
                         .param("plannedFinishDate", "2025-12-01")
                         .param("assignedEmployeeIDs", "2", "3"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/userProjects"));
+                .andExpect(view().name("redirect:/userOptions"));
 
         ArgumentCaptor<Integer> managerCaptor = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
@@ -229,7 +230,7 @@ public class ProjectControllerTest {
     void shouldDeleteProject() throws Exception {
         mockMvc.perform(post("/deleteProject/{projectID}", 3))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/userProjects"));
+                .andExpect(view().name("redirect:/userOptions"));
 
         verify(projectService, times(1)).deleteProjectByID(3);
     }
@@ -391,7 +392,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void shouldShowEditProject() throws Exception{
+    void shouldShowEditProject() throws Exception {
 
         //Fake projekt, med 2 assigned employees
         Employee hans = new Employee(2, "Hans", "hans", "kodeord");
@@ -417,7 +418,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    void shouldUpdateProject() throws Exception{
+    void shouldUpdateProject() throws Exception {
 
         //Laver fake projekt
         Project project = new Project();
@@ -425,10 +426,10 @@ public class ProjectControllerTest {
         project.setProjectName("Nyt projekt navn");
 
         mockMvc.perform(post("/updateProject")
-                .flashAttr("project", project) //FlashAttr = @ModelAttribute
-                .param("assignedEmployeeIDs", "2", "3"))
+                        .flashAttr("project", project) //FlashAttr = @ModelAttribute
+                        .param("assignedEmployeeIDs", "2", "3"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/userProjects"));
+                .andExpect(view().name("redirect:/userOptions"));
 
         //Fanger argumenterne, som controlleren sender videre til service-laget
         ArgumentCaptor<List<Integer>> listCaptor = ArgumentCaptor.forClass(List.class);
@@ -439,6 +440,69 @@ public class ProjectControllerTest {
 
         //Tjekker om det rigtige projekt og de rigtige valgte employee IDs bliver sendt
         assertEquals(7, projectCaptor.getValue().getProjectID());
+        assertEquals(List.of(2, 3), listCaptor.getValue());
+    }
+
+    @Test
+    void shouldShowEditTask() throws Exception {
+
+        Task task = new Task();
+        task.setTaskID(13);
+
+        Employee charlotte = new Employee(2, "Charlotte", "charlotte", "kodeord");
+        Employee yvonne = new Employee(3, "Yvonne", "yvonne", "1234");
+
+        task.setAssignedEmployees(List.of(charlotte, yvonne));
+
+        Project project = new Project();
+        project.setProjectID(7);
+        task.setProject(project);
+
+        when(projectService.getTaskByID(13)).thenReturn(task);
+
+        mockMvc.perform((get("/editTask/{taskID}", 13)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("editTask"))
+                .andExpect(model().attributeExists("task", "employeesAssignedToProject", "assignedEmployeeIDs"))
+                .andExpect(model().attribute("task", task))
+                .andExpect(model().attribute("assignedEmployeeIDs", List.of(2, 3)));
+    }
+
+    @Test
+    void shouldUpdateTask() throws Exception {
+
+        //Laver fake task
+        Task task = new Task();
+        task.setTaskID(13);
+        task.setTaskName("Nyt task navn");
+        task.setTaskDescription("ny beskrivelse");
+
+        Project project = new Project();
+        project.setProjectID(7);
+        task.setProject(project);
+
+        Employee charlotte = new Employee(2, "Charlotte", "charlotte", "kodeord");
+        Employee yvonne = new Employee(3, "Yvonne", "yvonne", "1234");
+
+        task.setAssignedEmployees(List.of(charlotte, yvonne));
+
+        mockMvc.perform(post("/updateTask")
+                        .flashAttr("task", task) //FlashAttr = @ModelAttribute
+                        .param("assignedEmployeeIDs", "2", "3"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/project/7"));
+
+        //Fanger argumenterne, som controlleren sender videre til service-laget
+        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+        ArgumentCaptor<List> listCaptor = ArgumentCaptor.forClass(List.class);
+
+        //Tjekker om service-laget bliver kaldt som forventet
+        verify(projectService).editTask(taskCaptor.capture(), listCaptor.capture());
+
+
+        //Tjekker om det rigtige projekt og de rigtige valgte employee IDs bliver sendt
+        assertEquals(13, taskCaptor.getValue().getTaskID());
+        assertEquals(7, taskCaptor.getValue().getProject().getProjectID());
         assertEquals(List.of(2, 3), listCaptor.getValue());
     }
 }
