@@ -191,6 +191,14 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(sql, projectRowMapper, projectID);
     }
 
+    public List<Project> getArchivedProjects(Integer managerID) {
+        String sql = """
+                SELECT * FROM archivedProject
+                WHERE projectManagerID = ?
+                """;
+        return jdbcTemplate.query(sql,archivedProjectRowMapper, managerID);
+    }
+
     //tilføjet et projekt til databasen
     public Project addProject(Integer projectManagerID, String projectName, String projectDescription, Integer timeslotID) {
         String sql = "INSERT INTO project (projectManagerID, projectName, projectDescription, timeslotID) VALUES (?, ?, ?, ?)";

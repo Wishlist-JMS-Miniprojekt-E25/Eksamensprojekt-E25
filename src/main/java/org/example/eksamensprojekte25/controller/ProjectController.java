@@ -265,11 +265,17 @@ public class ProjectController {
         return "redirect:/userOptions";
     }
 
-//    @GetMapping("/archivedProjects")
-//    public String showAllArchivedProjects(HttpSession session, Model model){
-//
-//    }
-//
+    @GetMapping("/archivedProjects")
+    public String showAllArchivedProjects(HttpSession session, Model model) {
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
+        Employee loggedInEmployee = employeeService.getEmployeeByID(loggedInEmployeeID);
+
+        List<Project> archivedProjects = projectService.getArchivedProjects(loggedInEmployeeID);
+        model.addAttribute("loggedInEmployee", loggedInEmployee);
+        model.addAttribute("archivedProjects", archivedProjects);
+        return "archivedProjects";
+    }
+
 //    @GetMapping("/archivedProject/{projectID}")
 //    public String showArchivedProject(@PathVariable Integer projectID, HttpSession session, Model model){
 //

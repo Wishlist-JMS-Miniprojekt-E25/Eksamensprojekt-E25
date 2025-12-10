@@ -34,6 +34,10 @@ public class ProjectService {
         return project;
     }
 
+    public List<Project> getArchivedProjects(Integer managerID) {
+        return projectRepository.getArchivedProjects(managerID);
+    }
+
     public Project addProject(Integer projectManagerID,
                               String projectName,
                               String projectDescription,
