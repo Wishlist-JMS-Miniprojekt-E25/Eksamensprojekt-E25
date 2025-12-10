@@ -8,7 +8,7 @@
 <h1 th:text="${loggedInEmployee.employeeName} + 's project and tasks'"></h1>
 <a th:href="@{/userOptions}">← Go back</a>
 <br> <br>
-<!-- tabellen, der viser det enkelte projekt -->
+<h3>Project</h3>
 <table>
     <tr>
         <th>ID</th>
@@ -41,7 +41,7 @@
 <div th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}">
     <a th:href="@{/addTask/{projectID}(projectID=${project.projectID})}">+ Add task</a>
 </div>
-<!-- tabellen, der viser alle tasks -->
+<h3>Task</h3>
 <table>
     <tr th:if="${project.tasks == null or project.tasks.isEmpty()}">There are no tasks for this project</tr>
     <tr th:if="${project.tasks != null and !project.tasks.isEmpty()}">

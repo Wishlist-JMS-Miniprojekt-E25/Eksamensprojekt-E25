@@ -9,6 +9,7 @@
 <a th:href="@{/project/{projectID}(projectID=${task.project.projectID})}">← Go back</a>
 <br> <br>
 <!-- tabellen, der viser det enkelte projekt -->
+<h3>Project</h3>
 <table>
     <tr>
         <th>ID</th>
@@ -40,7 +41,10 @@
     </tr>
 </table>
 <br> <br> <br> <br> <br> <br>
+
+
 <!-- tabellen, der viser den enkelte task -->
+<h3>Tasks</h3>
 <table>
     <tr>
         <th>ID</th>
@@ -71,7 +75,7 @@
 <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
     <a th:href="@{/task/{taskID}/addSubtask(taskID=${task.taskID})}">+ Add subtask</a>
 </div>
-<!-- tabellen, der viser alle subtasks -->
+<h3>Subtasks</h3>
 <table>
     <tr th:if="${task.subtasks == null or task.subtasks.isEmpty()}">There are no subtasks for this task</tr>
     <tr th:if="${task.subtasks != null and !task.subtasks.isEmpty()}">

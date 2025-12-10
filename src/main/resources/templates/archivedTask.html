@@ -7,7 +7,7 @@
 <body>
 <h1 th:text="${loggedInEmployee.employeeName} + 's archived task and subtasks'"></h1>
 <a th:href="@{/archivedProject/{projectID}(projectID=${archivedTask.project.projectID})}">← Go back</a>
-<h1>Task</h1>
+<h3>Project</h3>
 <table>
     <tr>
         <th>ID</th>
@@ -35,6 +35,7 @@
     </tr>
 </table>
 <br><br><br><br><br><br>
+<h3>Tasks</h3>
 <table>
     <tr>
         <th>ID</th>
@@ -62,6 +63,7 @@
     </tr>
 </table>
 <br><br><br><br><br><br>
+<h3>Subtasks</h3>
 <table>
     <tr th:if="${archivedTask.subtasks.isEmpty()}">You have no
         archived subtasks for this task
