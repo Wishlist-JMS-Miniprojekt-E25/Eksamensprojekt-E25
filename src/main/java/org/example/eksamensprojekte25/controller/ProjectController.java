@@ -148,17 +148,21 @@ public class ProjectController {
                            @RequestParam("plannedFinishDate") String plannedFinishDate,
                            @RequestParam(required = false) List<Integer> assignedEmployeeIDs,
                            @RequestParam Integer projectID, Model model) {
-
+        //Konverterer datoer fra string til Date, så vi kan bruge det i if-statement
         Date plannedStartDateForTask = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForTask = Date.valueOf(plannedFinishDate);
 
+        //Henter projektet som tasken skal tilknyttes
         Project project = projectService.getProjectByID(projectID);
 
+        // Tjekker om slutdato er før startdato
         if(plannedFinishDateForTask.before(plannedStartDateForTask)){
 
+            //Sender employees til checklisten
             project.setAssignedEmployees(projectService.getEmployeesByProjectID(projectID));
             task.setProject(project);
 
+            // Sender fejlbesked + data
             model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
             model.addAttribute("task", task);
             model.addAttribute("projectID", projectID);
@@ -217,15 +221,21 @@ public class ProjectController {
                               @RequestParam(required = false) Integer assignedEmployeeID,
                               @RequestParam Integer taskID, Model model) {
 
+        //Konverterer datoerne fra String til Date-objekter
         Date plannedStartDateForSubtask = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForSubtask = Date.valueOf(plannedFinishDate);
 
+        //Henter tasken subtasken skal tilknyttes
         Task task = projectService.getTaskByID(taskID);
 
+        // Tjekker om slutdato ligger før startdato
         if(plannedFinishDateForSubtask.before(plannedStartDateForSubtask)){
+
+            //Henter employees til checklisten
             task.setAssignedEmployees(projectService.getEmployeesByTaskID(taskID));
             subtask.setTask(task);
 
+            // Sender fejlbesked og inputdata tilbage til formen
             model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
             model.addAttribute("subtask", subtask);
             model.addAttribute("taskID", taskID);
@@ -235,10 +245,14 @@ public class ProjectController {
             return "addSubtask";
         }
 
+        //Tjekker om der er valgt en employee (en subtask kan kun have én)
         if(assignedEmployeeID == null){
+
+            //Henter employees til radio-listen/(checklisten)
             task.setAssignedEmployees(projectService.getEmployeesByTaskID(taskID));
             subtask.setTask(task);
 
+            // Fejlbesked hvis ingen employee er valgt
             model.addAttribute("errorMessage", "You must assign one employee to the subtask");
             model.addAttribute("subtask", subtask);
             model.addAttribute("taskID", taskID);

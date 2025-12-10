@@ -22,6 +22,7 @@ public class EmployeeService {
     }
 
     //henter en employee baseret på employee userName og userPassword
+    //Fjerner HR fra listen af employees man kan assign
     public List<Employee> getAllEmployees() {
         List<Employee> assignableEmployees = new ArrayList<>();
         for (Employee e : employeeRepository.getAllEmployees()){
