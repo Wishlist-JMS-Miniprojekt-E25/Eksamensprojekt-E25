@@ -274,7 +274,21 @@ public class ProjectController {
     }
 
     @PostMapping("/updateSubtask")
-    public String updateSubtask(@ModelAttribute Subtask subtask) {
+    public String updateSubtask(@ModelAttribute Subtask subtask, Model model) {
+
+        Date plannedStart = subtask.getTimeslot().getPlannedStartDate();
+        Date plannedFinish = subtask.getTimeslot().getPlannedFinishDate();
+
+        if(plannedFinish.before(plannedStart)){
+
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("subtask", subtask);
+
+            subtask.getTask().setAssignedEmployees(projectService.getEmployeesByTaskID(subtask.getTask().getTaskID()));
+
+            return "editSubtask";
+        }
+
         projectService.editSubtask(subtask);
         return "redirect:/task/" + subtask.getTask().getTaskID();
     }

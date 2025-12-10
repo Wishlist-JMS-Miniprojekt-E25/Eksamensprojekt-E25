@@ -6,6 +6,12 @@
 </head>
 <body>
 
+    <h2>Edit Subtask</h2>
+
+<div th:if="${errorMessage}">
+    <p th:text="${errorMessage}"></p>
+</div>
+
 <form th:action="@{/updateSubtask}" th:object="${subtask}" method="post">
     <input type="hidden" th:field="*{subtaskID}">
     <input type="hidden" th:field="*{timeslot.timeslotID}">
