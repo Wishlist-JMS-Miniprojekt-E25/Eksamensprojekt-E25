@@ -73,7 +73,7 @@ public class ProjectRepository {
         archivedproject.setProjectManager(getEmployeeByID(rs.getInt("projectManagerID")));
         archivedproject.setProjectName(rs.getString("projectName"));
         archivedproject.setProjectDescription(rs.getString("projectDescription"));
-        archivedproject.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
+        archivedproject.setTimeslot(getTimeslotByID(rs.getInt("timeslotID")));
 
         return archivedproject;
     };
@@ -82,8 +82,8 @@ public class ProjectRepository {
         archivedtask.setTaskID(rs.getInt("taskID"));
         archivedtask.setTaskName(rs.getString("taskName"));
         archivedtask.setTaskDescription(rs.getString("taskDescription"));
-        archivedtask.setProject(getProjectByID(rs.getInt("projectID")));
-        archivedtask.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
+        archivedtask.setProject(getArchivedProjectByID(rs.getInt("projectID")));
+        archivedtask.setTimeslot(getTimeslotByID(rs.getInt("timeslotID")));
 
         return archivedtask;
     };
@@ -92,8 +92,8 @@ public class ProjectRepository {
         archivedsubtask.setSubtaskID(rs.getInt("subtaskID"));
         archivedsubtask.setSubtaskName(rs.getString("subtaskName"));
         archivedsubtask.setSubtaskDescription(rs.getString("subtaskDescription"));
-        archivedsubtask.setTimeslot(getTimeslotByID(rs.getInt("timeSlotID")));
-        archivedsubtask.setTask(getTaskByID(rs.getInt("taskID")));
+        archivedsubtask.setTimeslot(getTimeslotByID(rs.getInt("timeslotID")));
+        archivedsubtask.setTask(getArchivedTaskByID(rs.getInt("taskID")));
         archivedsubtask.setAssignedEmployee(getEmployeeByID(rs.getInt("employeeID")));
 
         return archivedsubtask;
@@ -191,6 +191,14 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(sql, projectRowMapper, projectID);
     }
 
+    public Project getArchivedProjectByID(Integer projectID) {
+        String sql = """
+                SELECT * FROM archivedProject
+                WHERE projectID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, archivedProjectRowMapper, projectID);
+    }
+
     public List<Project> getArchivedProjects(Integer managerID) {
         String sql = """
                 SELECT * FROM archivedProject
@@ -232,6 +240,14 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(sql, taskRowMapper, taskID);
     }
 
+    public Task getArchivedTaskByID(Integer taskID) {
+        String sql = """
+                SELECT * FROM archivedTask
+                WHERE taskID = ?
+                """;
+        return jdbcTemplate.queryForObject(sql,archivedTaskRowMapper, taskID);
+    }
+
     //henter alle tasks baseret på et projekt id
     public List<Task> getTasksByProjectID(Integer projectID) {
         String sql = """
@@ -239,6 +255,14 @@ public class ProjectRepository {
                 WHERE projectID = ?
                 """;
         return jdbcTemplate.query(sql, taskRowMapper, projectID);
+    }
+
+    public List<Task> getArchivedTasksByProjectID(Integer projectID) {
+        String sql = """
+                SELECT * FROM archivedTask
+                WHERE projectID = ?
+                """;
+        return jdbcTemplate.query(sql,archivedTaskRowMapper,projectID);
     }
 
     //tilføjer en task til databasen
@@ -287,6 +311,14 @@ public class ProjectRepository {
                 WHERE taskID = ?
                 """;
         return jdbcTemplate.query(sql, subtaskRowMapper, taskID);
+    }
+
+    public List<Subtask> getArchivedSubtasksByTaskID(Integer taskID) {
+        String sql = """
+                SELECT * FROM archivedSubtask
+                WHERE taskID = ?
+                """;
+        return jdbcTemplate.query(sql, archivedSubtaskRowMapper,taskID);
     }
 
     //tilføjer en subtask til databasen

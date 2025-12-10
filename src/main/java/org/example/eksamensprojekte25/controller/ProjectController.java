@@ -273,16 +273,20 @@ public class ProjectController {
         List<Project> archivedProjects = projectService.getArchivedProjects(loggedInEmployeeID);
         model.addAttribute("loggedInEmployee", loggedInEmployee);
         model.addAttribute("archivedProjects", archivedProjects);
-        return "archivedProjects";
+        return "allArchivedProjects";
     }
 
-//    @GetMapping("/archivedProject/{projectID}")
-//    public String showArchivedProject(@PathVariable Integer projectID, HttpSession session, Model model){
-//
-//    }
-//
-//    @GetMapping("/archivedTask/{taskID}")
-//    public String showArchivedTask(@PathVariable Integer taskID, HttpSession session, Model model){
-//
-//    }
+    @GetMapping("/archivedProject/{projectID}")
+    public String showArchivedProject(@PathVariable Integer projectID, Model model) {
+        Project archivedProject = projectService.getArchivedProjectByID(projectID);
+        model.addAttribute("archivedProject", archivedProject);
+        return "archivedProject";
+    }
+
+    @GetMapping("/archivedTask/{taskID}")
+    public String showArchivedTask(@PathVariable Integer taskID, Model model) {
+        Task archivedTask = projectService.getArchivedTaskByID(taskID);
+        model.addAttribute("archivedTask",archivedTask);
+        return "archivedTask";
+    }
 }

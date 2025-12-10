@@ -34,6 +34,12 @@ public class ProjectService {
         return project;
     }
 
+    public Project getArchivedProjectByID(Integer projectID) {
+        Project project = projectRepository.getArchivedProjectByID(projectID);
+        populateListOfArchivedTasksForProject(project);
+        return project;
+    }
+
     public List<Project> getArchivedProjects(Integer managerID) {
         return projectRepository.getArchivedProjects(managerID);
     }
@@ -64,6 +70,12 @@ public class ProjectService {
         populateListOfSubtasksForTask(task);
         Project project = task.getProject();
         populateListOfAssignedEmployeesOfProject(project);
+        return task;
+    }
+
+    public Task getArchivedTaskByID(Integer taskID) {
+        Task task = projectRepository.getArchivedTaskByID(taskID);
+        populateListOfArchivedSubtasksForTask(task);
         return task;
     }
 
@@ -112,9 +124,19 @@ public class ProjectService {
         project.setTasks(tasks);
     }
 
+    public void populateListOfArchivedTasksForProject(Project project) {
+        List<Task> archivedTasks = projectRepository.getArchivedTasksByProjectID(project.getProjectID());
+        project.setTasks(archivedTasks);
+    }
+
     public void populateListOfSubtasksForTask(Task task) {
         List<Subtask> subtasks = projectRepository.getSubtasksByTaskID(task.getTaskID());
         task.setSubtasks(subtasks);
+    }
+
+    public void populateListOfArchivedSubtasksForTask(Task task) {
+        List<Subtask> archivedSubtasks = projectRepository.getArchivedSubtasksByTaskID(task.getTaskID());
+        task.setSubtasks(archivedSubtasks);
     }
 
     public void populateListOfAssignedEmployeesOfProject(Project project) {
@@ -219,11 +241,12 @@ public class ProjectService {
 
     //Lægger total workhours fra subtask til total workhours på en task og et projekt
     public void calculateSubtaskWorkhours(Subtask subtask) {
+        Integer totalWorkhoursProject = subtask.getTask().getProject().getTimeslot().getTotalWorkhours();
         Integer totalWorkhoursTask = subtask.getTask().getTimeslot().getTotalWorkhours();
         Integer totalWorkhoursSubtask = subtask.getTimeslot().getTotalWorkhours();
 
         subtask.getTask().getTimeslot().setTotalWorkhours(totalWorkhoursTask + totalWorkhoursSubtask);
-        subtask.getTask().getProject().getTimeslot().setTotalWorkhours(totalWorkhoursTask + totalWorkhoursSubtask);
+        subtask.getTask().getProject().getTimeslot().setTotalWorkhours(totalWorkhoursProject + totalWorkhoursSubtask);
 
         projectRepository.updateTotalWorkhoursForTimeslot(subtask.getTask().getTimeslot(),
                 subtask.getTask().getTimeslot().getTimeslotID());

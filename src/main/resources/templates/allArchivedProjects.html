@@ -12,7 +12,7 @@
     <tr th:if="${archivedProjects.isEmpty()}">You have no
         archived projects
     </tr>
-    <tr>
+    <tr th:unless="${archivedProjects.isEmpty()}">
         <th></th>
         <th>ID</th>
         <th>Name</th>
@@ -27,7 +27,7 @@
     </tr>
     <tr th:each="archivedProject: ${archivedProjects}">
         <td>
-            <a th:href="@{/archivedProject/{projectID}(projectID=${archivedProject.projectID})}">View project →</a>
+            <a th:href="@{/archivedProject/{archivedProjectID}(archivedProjectID=${archivedProject.projectID})}">View project →</a>
         </td>
         <td th:text="${archivedProject.projectID}"></td>
         <td th:text="${archivedProject.projectName}"></td>
