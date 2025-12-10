@@ -34,7 +34,7 @@
         <td th:text="${archivedTask.project.timeslot.isDone}"></td>
     </tr>
 </table>
-<br><br><br><br><br><br>
+<br><br><br>
 <h3>Tasks</h3>
 <table>
     <tr>
@@ -62,7 +62,7 @@
         <td th:text="${archivedTask.timeslot.isDone}"></td>
     </tr>
 </table>
-<br><br><br><br><br><br>
+<br><br><br>
 <h3>Subtasks</h3>
 <table>
     <tr th:if="${archivedTask.subtasks.isEmpty()}">You have no
