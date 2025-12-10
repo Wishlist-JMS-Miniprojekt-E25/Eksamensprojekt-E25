@@ -229,6 +229,39 @@ public class ProjectController {
         return "redirect:/task/" + subtask.getTask().getTaskID();
     }
 
+    @GetMapping("/editTask/{taskID}")
+    public String editTask(@PathVariable Integer taskID, Model model) {
+
+        //Henter det projekt, der skal redigeres
+        Task task = projectService.getTaskByID(taskID);
+
+        model.addAttribute("task", task);
+
+        Integer projectID = task.getProject().getProjectID();
+        List<Employee> employeesAssignedToProject = projectService.getEmployeesByProjectID(projectID);
+
+        model.addAttribute("employeesAssignedToProject", employeesAssignedToProject);
+
+        //Opretter listen med de allerede assigned employees, så de kan være checked
+        List<Integer> assignedIDs = new ArrayList<>();
+        for (Employee e : task.getAssignedEmployees()) {
+            assignedIDs.add(e.getEmployeeID());
+        }
+
+        model.addAttribute("assignedEmployeeIDs", assignedIDs);
+
+        return "editTask";
+    }
+
+    @PostMapping("/updateTask")
+    public String updateTask(@ModelAttribute Task task, @RequestParam List<Integer> assignedEmployeeIDs) {
+
+
+        projectService.editTask(task, assignedEmployeeIDs);
+
+        return "redirect:/project/" + task.getProject().getProjectID();
+    }
+
     @GetMapping("/subtaskWorkhours/{subtaskID}")
     public String subtaskWorkhours(@PathVariable Integer subtaskID, Model model) {
 
