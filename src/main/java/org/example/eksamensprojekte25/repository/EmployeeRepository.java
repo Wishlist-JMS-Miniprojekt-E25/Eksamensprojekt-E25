@@ -141,4 +141,19 @@ public class EmployeeRepository {
         jdbcTemplate.update(sql, employeeID);
     }
 
+    //opdaterer navn, username og password
+    public void editEmployee(Employee employee, Integer employeeID){
+        String sql = """
+                UPDATE employee
+                set employeeName = ?,
+                userName = ?,
+                userPassword = ?
+                WHERE employeeID = ?
+                """;
+
+        jdbcTemplate.update(sql, employee.getEmployeeName(),employee.getUserName(),employee.getUserPassword(),employeeID);
+    }
+
+
+
 }

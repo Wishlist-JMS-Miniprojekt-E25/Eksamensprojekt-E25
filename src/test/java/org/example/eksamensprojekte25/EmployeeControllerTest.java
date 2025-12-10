@@ -5,12 +5,14 @@ import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.service.EmployeeService;
 import org.example.eksamensprojekte25.service.ProjectService;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,7 +41,7 @@ public class EmployeeControllerTest {
     void shouldShowLoginPage() throws Exception {
         mockMvc.perform(get("/login"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("login"));
+                .andExpect(view().name("loginPage"));
     }
 
     //tester login metoden hvis brugeren findes
@@ -60,7 +62,7 @@ public class EmployeeControllerTest {
                         .param("userName", "legenden")
                         .param("userPassword", "123"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/userProjects"))
+                .andExpect(redirectedUrl("/userOptions"))
                 //setter session id til vores fake
                 .andExpect(request().sessionAttribute("employeeID", 69));
     }
@@ -78,7 +80,7 @@ public class EmployeeControllerTest {
                         .param("userName", "legenden")
                         .param("userPassword", "wrongPassword"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("login"))
+                .andExpect(view().name("loginPage"))
                 .andExpect(model().attributeExists("error"))
                 .andExpect(model().attribute("error", true));
     }
@@ -109,11 +111,58 @@ public class EmployeeControllerTest {
                         .param("userName", "sim123")
                         .param("userPassword", "pass"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/userProjects"));
+                .andExpect(redirectedUrl("/userOptions"));
 
         // Verificér at service rent faktisk blev kaldt
         verify(employeeService, times(1)).addEmployee("Simon", "sim123", "pass");
     }
+
+    @Test
+    void shouldDeleteEmployee() throws Exception {
+
+        // Kald endpointet
+        mockMvc.perform(post("/deleteEmployee/{employeeID}", 5))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/userOptions"))
+                .andExpect(flash().attributeExists("successMessage"));
+
+        // Verificér at servicen blev kaldt korrekt
+        verify(employeeService, times(1)).deleteEmployeeByID(5);
+    }
+
+    @Test
+    void shouldUpdateEmployeeSuccessfully() throws Exception {
+
+        mockMvc.perform(post("/updateEmployee/{employeeID}", 3)
+                        .param("employeeName", "New Name")
+                        .param("userName", "newUser")
+                        .param("userPassword", "newPW"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/userOptions"))
+                .andExpect(flash().attributeExists("successMessage"));
+
+        // Capture Employee-objektet, så vi kan tjekke værdierne
+        ArgumentCaptor<Employee> employeeCaptor = ArgumentCaptor.forClass(Employee.class);
+
+        verify(employeeService).editEmployee(employeeCaptor.capture(), eq(3));
+
+        Employee edited = employeeCaptor.getValue();
+        assertEquals("New Name", edited.getEmployeeName());
+        assertEquals("newUser", edited.getUserName());
+        assertEquals("newPW", edited.getUserPassword());
+    }
+
+    @Test
+    void shouldRedirectBackToEditForm() throws Exception {
+
+        mockMvc.perform(post("/updateEmployee/{employeeID}", 3)
+                        .param("employeeName", "New Name")
+                        .param("userName", "existingUser")
+                        .param("userPassword", "pw123"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/userOptions"));
+    }
+
 
 
 }

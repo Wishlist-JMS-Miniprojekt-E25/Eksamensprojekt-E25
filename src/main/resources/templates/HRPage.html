@@ -12,6 +12,11 @@
     <button type="submit">Log out</button>
 </form>
 
+<div th:if="${successMessage}"
+     style="color: green; font-weight: bold; margin-bottom: 10px;">
+    <p th:text="${successMessage}"></p>
+</div>
+
 <br>
 <a href="/createEmployee">+ Create employee</a>
 
@@ -29,12 +34,17 @@
         <td th:text="${emp.userName}"></td>
 
         <td>
+            <!-- EDIT -->
+            <a th:href="@{/editEmployee/{id}(id=${emp.employeeID})}">Edit</a>
+        </td>
+
+        <td>
+            <!-- DELETE -->
             <form th:action="@{/deleteEmployee/{employeeID}(employeeID=${emp.employeeID})}"
                   method="post"
                   onsubmit="return confirm('Delete this employee?');">
                 <button type="submit">Delete</button>
             </form>
-
         </td>
     </tr>
 </table>

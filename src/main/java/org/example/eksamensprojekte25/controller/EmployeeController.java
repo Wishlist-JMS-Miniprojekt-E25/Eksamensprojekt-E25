@@ -83,8 +83,9 @@ public class EmployeeController {
         } catch (IllegalArgumentException e) {
 
             // addFlashAttribute gemmer data KUN til næste request efter redirect.
-            // Det bruges her fordi redirect laver en NY HTTP-request, og almindelige model-attributter ellers ville gå tabt.
+            // Det bruges vi istedet fher fordi redirect laver en NY HTTP-request, og model-attributterne ellers ville gå tabt.
             // FlashAttributes sikrer at fejlbesked + de indtastede værdier kan vises igen på createEmployee-siden.
+            //Vi kan bruge dette istedet for model-attributerne i tilfælde af sådan bruger oprettelse og ændring
             redirectAttributes.addFlashAttribute("errorMessage", "Brugernavnet findes allerede – prøv et andet.");
             redirectAttributes.addFlashAttribute("employeeName", employee.getEmployeeName());
             redirectAttributes.addFlashAttribute("userName", employee.getUserName());
@@ -105,5 +106,47 @@ public class EmployeeController {
 
         redirectAttributes.addFlashAttribute("successMessage", "Employee deleted.");
         return "redirect:/userOptions";
+
     }
+    @GetMapping("/editEmployee/{employeeID}")
+    public String editEmployeeForm(@PathVariable Integer employeeID, HttpSession session, Model model) {
+        // Henter den der er logget ind
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
+        Employee loggedInEmployee = employeeService.getEmployeeByID(loggedInEmployeeID);
+        model.addAttribute("loggedInEmployee", loggedInEmployee);
+
+        // Henter medarbejderen der skal redigeres
+        Employee employee = employeeService.getEmployeeByID(employeeID);
+        model.addAttribute("employee", employee);   // <-- DENNE MANGLEDE
+
+        return "editEmployee";
+    }
+
+
+    @PostMapping("/updateEmployee/{employeeID}")
+    public String updateEmployee(@PathVariable Integer employeeID,
+                                 @ModelAttribute Employee employee,
+                                 RedirectAttributes redirectAttributes) {
+
+        try {
+            employeeService.editEmployee(employee, employeeID);
+
+
+        } catch (IllegalArgumentException e) {
+
+            redirectAttributes.addFlashAttribute("errorMessage", "Username already exists.");
+            redirectAttributes.addFlashAttribute("employeeName", employee.getEmployeeName());
+            redirectAttributes.addFlashAttribute("userName", employee.getUserName());
+            redirectAttributes.addFlashAttribute("userPassword", employee.getUserPassword());
+
+            return "redirect:/editEmployee/" + employeeID;
+        }
+
+        redirectAttributes.addFlashAttribute("successMessage", "Employee updated.");
+        return "redirect:/userOptions";
+    }
+
+
+
+
 }

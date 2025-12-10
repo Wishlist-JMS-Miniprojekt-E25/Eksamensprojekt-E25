@@ -3,7 +3,6 @@ package org.example.eksamensprojekte25.service;
 
 import org.example.eksamensprojekte25.model.Employee;
 import org.example.eksamensprojekte25.model.Project;
-import org.example.eksamensprojekte25.model.Timeslot;
 import org.example.eksamensprojekte25.repository.EmployeeRepository;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
@@ -78,5 +77,21 @@ public class EmployeeService {
     public void deleteEmployeeByID(Integer employeeID) {
         employeeRepository.deleteEmployeeByID(employeeID);
     }
+
+    public void editEmployee(Employee employee, Integer employeeID) {
+
+        // find eksisterende employee
+        Employee existing = employeeRepository.getEmployeeByID(employeeID);
+
+        // Hvis username ændres → tjek om det findes
+        if (!existing.getUserName().equals(employee.getUserName())) {
+            if (employeeRepository.usernameExists(employee.getUserName())) {
+                throw new IllegalArgumentException("Username already exists");
+            }
+        }
+
+        employeeRepository.editEmployee(employee, employeeID);
+    }
+
 
 }
