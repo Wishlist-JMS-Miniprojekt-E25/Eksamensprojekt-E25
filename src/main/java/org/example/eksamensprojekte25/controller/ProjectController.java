@@ -277,14 +277,22 @@ public class ProjectController {
     }
 
     @GetMapping("/archivedProject/{projectID}")
-    public String showArchivedProject(@PathVariable Integer projectID, Model model) {
+    public String showArchivedProject(@PathVariable Integer projectID, HttpSession session, Model model) {
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
+        Employee loggedInEmployee = employeeService.getEmployeeByID(loggedInEmployeeID);
+
         Project archivedProject = projectService.getArchivedProjectByID(projectID);
+        model.addAttribute("loggedInEmployee", loggedInEmployee);
         model.addAttribute("archivedProject", archivedProject);
         return "archivedProject";
     }
 
     @GetMapping("/archivedTask/{taskID}")
-    public String showArchivedTask(@PathVariable Integer taskID, Model model) {
+    public String showArchivedTask(@PathVariable Integer taskID, HttpSession session, Model model) {
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
+        Employee loggedInEmployee = employeeService.getEmployeeByID(loggedInEmployeeID);
+        model.addAttribute("loggedInEmployee", loggedInEmployee);
+
         Task archivedTask = projectService.getArchivedTaskByID(taskID);
         model.addAttribute("archivedTask",archivedTask);
         return "archivedTask";

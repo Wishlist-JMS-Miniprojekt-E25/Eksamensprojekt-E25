@@ -5,6 +5,7 @@
     <title>Task/Subtasks</title>
 </head>
 <body>
+<h1 th:text="${loggedInEmployee.employeeName} + 's task and subtasks'"></h1>
 <a th:href="@{/project/{projectID}(projectID=${task.project.projectID})}">← Go back</a>
 <br> <br>
 <!-- tabellen, der viser det enkelte projekt -->

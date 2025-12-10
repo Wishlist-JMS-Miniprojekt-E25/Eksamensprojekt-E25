@@ -5,6 +5,7 @@
     <title>Project</title>
 </head>
 <body>
+<h1 th:text="${loggedInEmployee.employeeName} + 's project and tasks'"></h1>
 <a th:href="@{/userOptions}">← Go back</a>
 <br> <br>
 <!-- tabellen, der viser det enkelte projekt -->

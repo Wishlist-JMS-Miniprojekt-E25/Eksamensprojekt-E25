@@ -5,6 +5,7 @@
     <title>Archived task</title>
 </head>
 <body>
+<h1 th:text="${loggedInEmployee.employeeName} + 's archived task and subtasks'"></h1>
 <a th:href="@{/archivedProject/{projectID}(projectID=${archivedTask.project.projectID})}">← Go back</a>
 <table>
     <tr>
