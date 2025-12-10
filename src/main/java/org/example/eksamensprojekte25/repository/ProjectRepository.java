@@ -384,6 +384,18 @@ public class ProjectRepository {
         jdbcTemplate.update(sql, project.getProjectName(), project.getProjectDescription(), project.getTimeslot().getTimeslotID(), projectID);
     }
 
+    public void editSubtask(Subtask subtask, Integer subtaskID) {
+        String sql = """
+                UPDATE subtask
+                SET subtaskName = ?,
+                subtaskDescription = ?,
+                timeslotID = ?,
+                employeeID = ?
+                WHERE subtaskID = ?
+                """;
+        jdbcTemplate.update(sql,subtask.getSubtaskName(), subtask.getSubtaskDescription(), subtask.getTimeslot().getTimeslotID(),subtask.getAssignedEmployee().getEmployeeID(), subtaskID);
+    }
+
     public void editTask(Task task, Integer taskID){
         String sql = """
                 UPDATE task

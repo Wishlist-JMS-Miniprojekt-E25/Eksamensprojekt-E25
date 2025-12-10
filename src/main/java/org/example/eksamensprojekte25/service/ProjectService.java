@@ -71,8 +71,7 @@ public class ProjectService {
     //henter et projekt baseret på task id, fylder assignedemployees liste og task lise op
     public Task getTaskByID(Integer taskID) {
         Task task = projectRepository.getTaskByID(taskID);
-        List<Employee> employees = projectRepository.getEmployeesByTaskID(taskID);
-        task.setAssignedEmployees(employees);
+        populateListOfAssignedEmployeesOfTask(task);
         populateListOfSubtasksForTask(task);
         Project project = task.getProject();
         populateListOfAssignedEmployeesOfProject(project);
@@ -107,7 +106,9 @@ public class ProjectService {
     }
 
     public Subtask getSubtaskByID(Integer subtaskID) {
-        return projectRepository.getSubtaskByID(subtaskID);
+        Subtask subtask = projectRepository.getSubtaskByID(subtaskID);
+        populateListOfAssignedEmployeesOfTask(subtask.getTask());
+        return subtask;
     }
 
     public Subtask addSubtask(String subtaskName,
@@ -216,6 +217,17 @@ public class ProjectService {
         for (Integer removeID : employeesToRemove) {
             projectRepository.removeEmployeeFromProject(projectID, removeID);
         }
+    }
+
+    public void editSubtask(Subtask subtask) {
+        int plannedDays = calculatePlannedDays(subtask.getTimeslot().getPlannedStartDate(), subtask.getTimeslot().getPlannedFinishDate());
+        projectRepository.editTimeslot(subtask.getTimeslot().getTimeslotID(), plannedDays, subtask.getTimeslot().getPlannedStartDate(), subtask.getTimeslot().getPlannedFinishDate());
+        Subtask newSubtask = new Subtask();
+        newSubtask.setSubtaskName(subtask.getSubtaskName());
+        newSubtask.setSubtaskDescription(subtask.getSubtaskDescription());
+        newSubtask.setTimeslot(projectRepository.getTimeslotByID(subtask.getTimeslot().getTimeslotID()));
+        newSubtask.setAssignedEmployee(subtask.getAssignedEmployee());
+        projectRepository.editSubtask(newSubtask, subtask.getSubtaskID());
     }
 
     public void editTask(Task task, List<Integer> assignedEmployeeIDs){

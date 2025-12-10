@@ -101,6 +101,9 @@
             </div>
         </td>
         <td>
+            <a th:href="@{/editSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}">Edit</a>
+        </td>
+        <td>
             <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
                 <form th:action="@{/deleteSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}"
                       method="post"

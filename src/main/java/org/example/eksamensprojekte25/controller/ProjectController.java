@@ -266,6 +266,19 @@ public class ProjectController {
         return "redirect:/userOptions";
     }
 
+    @GetMapping("/editSubtask/{subtaskID}")
+    public String editSubtask(@PathVariable Integer subtaskID, Model model) {
+        Subtask subtask = projectService.getSubtaskByID(subtaskID);
+        model.addAttribute("subtask", subtask);
+        return "editSubtask";
+    }
+
+    @PostMapping("/updateSubtask")
+    public String updateSubtask(@ModelAttribute Subtask subtask) {
+        projectService.editSubtask(subtask);
+        return "redirect:/task/" + subtask.getTask().getTaskID();
+    }
+
     @GetMapping("/editTask/{taskID}")
     public String editTask(@PathVariable Integer taskID, Model model) {
 
@@ -350,6 +363,9 @@ public class ProjectController {
         Task task = projectService.getTaskByID(taskID);
         task.getTimeslot().setTotalWorkhours(totalWorkhours);
         projectService.finalizeTask(task);
+        for (Subtask subtask : task.getSubtasks()) {
+            projectService.deleteSubtaskByID(subtask.getSubtaskID());
+        }
         return "redirect:/project/" + task.getProject().getProjectID();
     }
 
@@ -357,6 +373,12 @@ public class ProjectController {
     public String finalizeProject(@PathVariable Integer projectID) {
         Project project = projectService.getProjectByID(projectID);
         projectService.finalizeProject(project);
+        for (Task task : project.getTasks()) {
+            projectService.deleteTaskByID(task.getTaskID());
+            for (Subtask subtask : task.getSubtasks()) {
+                projectService.deleteSubtaskByID(subtask.getSubtaskID());
+            }
+        }
         return "redirect:/userOptions";
     }
 
@@ -389,7 +411,7 @@ public class ProjectController {
         model.addAttribute("loggedInEmployee", loggedInEmployee);
 
         Task archivedTask = projectService.getArchivedTaskByID(taskID);
-        model.addAttribute("archivedTask",archivedTask);
+        model.addAttribute("archivedTask", archivedTask);
         return "archivedTask";
     }
 }
