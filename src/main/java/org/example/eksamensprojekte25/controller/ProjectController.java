@@ -244,8 +244,22 @@ public class ProjectController {
     }
 
     @PostMapping("/updateProject")
-    public String updateProject(@ModelAttribute Project project, @RequestParam List<Integer> assignedEmployeeIDs) {
+    public String updateProject(@ModelAttribute Project project,
+                                @RequestParam List<Integer> assignedEmployeeIDs, Model model) {
 
+        Date plannedStart = project.getTimeslot().getPlannedStartDate();
+        Date plannedFinish = project.getTimeslot().getPlannedFinishDate();
+
+        if(plannedFinish.before(plannedStart)){
+
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("project", project);
+            model.addAttribute("allEmployees", employeeService.getAllEmployees());
+            model.addAttribute("assignedEmployeeIDs", assignedEmployeeIDs);
+
+            return "editProject";
+
+        }
 
         projectService.editProject(project, assignedEmployeeIDs);
 
@@ -277,8 +291,20 @@ public class ProjectController {
     }
 
     @PostMapping("/updateTask")
-    public String updateTask(@ModelAttribute Task task, @RequestParam List<Integer> assignedEmployeeIDs) {
+    public String updateTask(@ModelAttribute Task task, @RequestParam List<Integer> assignedEmployeeIDs, Model model) {
 
+        Date plannedStart = task.getTimeslot().getPlannedStartDate();
+        Date plannedFinish = task.getTimeslot().getPlannedFinishDate();
+
+        if(plannedFinish.before(plannedStart)){
+
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("task", task);
+            model.addAttribute("employeesAssignedToProject", projectService.getEmployeesByProjectID(task.getProject().getProjectID()));
+            model.addAttribute("assignedEmployeeIDs", assignedEmployeeIDs);
+
+            return "editTask";
+        }
 
         projectService.editTask(task, assignedEmployeeIDs);
 
