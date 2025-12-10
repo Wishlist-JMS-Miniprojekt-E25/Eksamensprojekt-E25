@@ -29,8 +29,6 @@
         <th>Planned Days</th>
         <th>Planned Start Date</th>
         <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
         <th>Total workhours</th>
         <th></th>
         <th></th>
@@ -50,8 +48,6 @@
         <td th:text="${project.timeslot.getPlannedDays}"></td>
         <td th:text="${project.timeslot.plannedStartDate}"></td>
         <td th:text="${project.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${project.timeslot.getActualFinishDate}"></td>
-        <td th:text="${project.timeslot.getDifferenceInDays}"></td>
         <td th:text="${project.timeslot.totalWorkhours}"></td>
         <td>
             <form th:action="@{/finalizeProject/{projectID}(projectID=${project.projectID})}" method="post"
@@ -92,8 +88,6 @@
             <th>Planned Days</th>
             <th>Planned Start Date</th>
             <th>Planned Finish Date</th>
-            <th>Actual Finish Date</th>
-            <th>Difference in days</th>
             <th>Total workhours</th>
         </tr>
 
@@ -113,8 +107,6 @@
             <td th:text="${project.timeslot.getPlannedDays}"></td>
             <td th:text="${project.timeslot.plannedStartDate}"></td>
             <td th:text="${project.timeslot.getPlannedFinishDate}"></td>
-            <td th:text="${project.timeslot.getActualFinishDate}"></td>
-            <td th:text="${project.timeslot.getDifferenceInDays}"></td>
             <td th:text="${project.timeslot.totalWorkhours}"></td>
         </tr>
     </table>

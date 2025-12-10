@@ -18,8 +18,6 @@
         <th>Planned Days</th>
         <th>Planned Start Date</th>
         <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
         <th>Total workhours</th>
         <th></th>
         <th></th>
@@ -37,8 +35,6 @@
         <td th:text="${task.project.timeslot.getPlannedDays}"></td>
         <td th:text="${task.project.timeslot.plannedStartDate}"></td>
         <td th:text="${task.project.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${task.project.timeslot.getActualFinishDate}"></td>
-        <td th:text="${task.project.timeslot.getDifferenceInDays}"></td>
         <td th:text="${task.project.timeslot.totalWorkhours}"></td>
     </tr>
 </table>
@@ -53,8 +49,6 @@
         <th>Planned Days</th>
         <th>Planned Start Date</th>
         <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
         <th>Total workhours</th>
     </tr>
     <tr>
@@ -69,8 +63,6 @@
         <td th:text="${task.timeslot.getPlannedDays}"></td>
         <td th:text="${task.timeslot.plannedStartDate}"></td>
         <td th:text="${task.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${task.timeslot.getActualFinishDate}"></td>
-        <td th:text="${task.timeslot.getDifferenceInDays}"></td>
         <td th:text="${task.timeslot.totalWorkhours}"></td>
     </tr>
 </table>
@@ -89,8 +81,6 @@
         <th>Planned Days</th>
         <th>Planned Start Date</th>
         <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
         <th>Total workhours</th>
     </tr>
     <tr th:each="subtask: ${task.subtasks}">
@@ -101,8 +91,6 @@
         <td th:text="${subtask.timeslot.getPlannedDays}"></td>
         <td th:text="${subtask.timeslot.plannedStartDate}"></td>
         <td th:text="${subtask.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${subtask.timeslot.getActualFinishDate}"></td>
-        <td th:text="${subtask.timeslot.getDifferenceInDays}"></td>
         <td th:text="${subtask.timeslot.totalWorkhours}"></td>
         <td>
             <div>

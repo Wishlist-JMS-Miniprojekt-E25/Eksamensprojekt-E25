@@ -6,6 +6,7 @@
 </head>
 <body>
 <a th:href="@{/archivedProjects}">← Go back</a>
+<h1>Project</h1>
 <table>
     <tr>
         <th>ID</th>
@@ -33,6 +34,8 @@
     </tr>
 </table>
 <br><br><br><br><br><br>
+
+<h1>Task</h1>
 <table>
     <tr th:if="${archivedProject.tasks.isEmpty()}">You have no
         archived tasks for this project
