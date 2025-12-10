@@ -10,6 +10,10 @@
     <div>
         <h2>Add Subtask</h2>
 
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
         <form th:action="@{/task/saveSubtask}" th:object="${subtask}" method="post">
 
             <input type="hidden" name="taskID" th:value="${subtask.task.taskID}">

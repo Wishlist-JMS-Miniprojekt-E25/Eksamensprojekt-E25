@@ -64,6 +64,9 @@ public class ProjectService {
     public List<Employee> getEmployeesByProjectID(Integer projectID){
         return projectRepository.getEmployeesByProjectID(projectID);
     }
+    public List<Employee> getEmployeesByTaskID(Integer taskID) {
+        return projectRepository.getEmployeesByTaskID(taskID);
+    }
 
     //henter et projekt baseret på task id, fylder assignedemployees liste og task lise op
     public Task getTaskByID(Integer taskID) {

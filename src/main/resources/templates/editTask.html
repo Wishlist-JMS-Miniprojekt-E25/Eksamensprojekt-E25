@@ -6,6 +6,10 @@
 </head>
 <body>
 
+<div th:if="${errorMessage}">
+    <p th:text="${errorMessage}"></p>
+</div>
+
 <form th:action="@{/updateTask}" th:object="${task}" method="post">
     <input type="hidden" th:field="*{taskID}">
     <input type="hidden" th:field="*{project.projectID}" />

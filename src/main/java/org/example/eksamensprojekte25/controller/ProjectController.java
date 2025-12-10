@@ -87,12 +87,21 @@ public class ProjectController {
                               @RequestParam(value = "assignedEmployeeIDs", required = false) List<Integer> assignedEmployeeIDs,
                               @RequestParam("plannedStartDate") String plannedStartDate,
                               @RequestParam("plannedFinishDate") String plannedFinishDate,
-                              HttpSession session) {
-        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
+                              HttpSession session, Model model) {
 
         Date plannedStartDateForProject = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForProject = Date.valueOf(plannedFinishDate);
 
+        if(plannedFinishDateForProject.before(plannedStartDateForProject)){
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("project", project);
+            model.addAttribute("allEmployees", employeeService.getAllEmployees());
+            model.addAttribute("assignedEmployeeIDs", assignedEmployeeIDs);
+
+            return "addProject";
+        }
+
+        Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
         projectService.addProject(loggedInEmployeeID, project.getProjectName(), project.getProjectDescription(), plannedStartDateForProject, plannedFinishDateForProject, assignedEmployeeIDs);
         return "redirect:/userOptions";
     }
@@ -123,12 +132,26 @@ public class ProjectController {
                            @RequestParam("plannedStartDate") String plannedStartDate,
                            @RequestParam("plannedFinishDate") String plannedFinishDate,
                            @RequestParam(required = false) List<Integer> assignedEmployeeIDs,
-                           @RequestParam Integer projectID) {
+                           @RequestParam Integer projectID, Model model) {
 
         Date plannedStartDateForTask = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForTask = Date.valueOf(plannedFinishDate);
 
         Project project = projectService.getProjectByID(projectID);
+
+        if(plannedFinishDateForTask.before(plannedStartDateForTask)){
+
+            project.setAssignedEmployees(projectService.getEmployeesByProjectID(projectID));
+            task.setProject(project);
+
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("task", task);
+            model.addAttribute("projectID", projectID);
+            model.addAttribute("plannedStartDate", plannedStartDate);
+            model.addAttribute("plannedFinishDate", plannedFinishDate);
+
+            return "addTask";
+        }
 
         projectService.addTask(taskName, taskDescription,
                 plannedStartDateForTask, plannedFinishDateForTask,
@@ -162,12 +185,25 @@ public class ProjectController {
                               @RequestParam("plannedStartDate") String plannedStartDate,
                               @RequestParam("plannedFinishDate") String plannedFinishDate,
                               @RequestParam(required = false) Integer assignedEmployeeID,
-                              @RequestParam Integer taskID) {
+                              @RequestParam Integer taskID, Model model) {
 
         Date plannedStartDateForSubtask = Date.valueOf(plannedStartDate);
         Date plannedFinishDateForSubtask = Date.valueOf(plannedFinishDate);
 
         Task task = projectService.getTaskByID(taskID);
+
+        if(plannedFinishDateForSubtask.before(plannedStartDateForSubtask)){
+            task.setAssignedEmployees(projectService.getEmployeesByTaskID(taskID));
+            subtask.setTask(task);
+
+            model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("subtask", subtask);
+            model.addAttribute("taskID", taskID);
+            model.addAttribute("plannedStartDate", plannedStartDate);
+            model.addAttribute("plannedFinishDate", plannedFinishDate);
+
+            return "addSubtask";
+        }
 
         projectService.addSubtask(subtask.getSubtaskName(), subtask.getSubtaskDescription(), task.getTaskID(),
                 assignedEmployeeID, plannedStartDateForSubtask,
