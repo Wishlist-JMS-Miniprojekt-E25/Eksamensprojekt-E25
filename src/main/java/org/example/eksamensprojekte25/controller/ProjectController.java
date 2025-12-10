@@ -106,6 +106,16 @@ public class ProjectController {
             return "addProject";
         }
 
+        //Tjekker om mindst 1 employee er assigned
+        if(assignedEmployeeIDs == null || assignedEmployeeIDs.isEmpty()){
+            //Sender en fejlbesked, hvis der ikke er blevet assigned mindst 1 (i stedet for at man får whitelabel)
+            model.addAttribute("errorMessage", "You must assign at least one employee to the project");
+            model.addAttribute("project", project);
+            model.addAttribute("allEmployees", employeeService.getAllEmployees());
+
+            return "addProject";
+        }
+
         Integer loggedInEmployeeID = (Integer) session.getAttribute("employeeID");
         projectService.addProject(loggedInEmployeeID, project.getProjectName(), project.getProjectDescription(), plannedStartDateForProject, plannedFinishDateForProject, assignedEmployeeIDs);
         return "redirect:/userOptions";
@@ -150,6 +160,21 @@ public class ProjectController {
             task.setProject(project);
 
             model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("task", task);
+            model.addAttribute("projectID", projectID);
+            model.addAttribute("plannedStartDate", plannedStartDate);
+            model.addAttribute("plannedFinishDate", plannedFinishDate);
+
+            return "addTask";
+        }
+        //Tjekker om mindst 1 employee er assigned
+        if(assignedEmployeeIDs == null || assignedEmployeeIDs.isEmpty()){
+
+            project.setAssignedEmployees(projectService.getEmployeesByProjectID(projectID));
+            task.setProject(project);
+
+            //Sender en fejlbesked, hvis der ikke er blevet assigned mindst 1 (i stedet for at man får whitelabel)
+            model.addAttribute("errorMessage", "You must assign at least one employee to the task");
             model.addAttribute("task", task);
             model.addAttribute("projectID", projectID);
             model.addAttribute("plannedStartDate", plannedStartDate);
@@ -202,6 +227,19 @@ public class ProjectController {
             subtask.setTask(task);
 
             model.addAttribute("errorMessage", "Planned finish date can not be before planned start date");
+            model.addAttribute("subtask", subtask);
+            model.addAttribute("taskID", taskID);
+            model.addAttribute("plannedStartDate", plannedStartDate);
+            model.addAttribute("plannedFinishDate", plannedFinishDate);
+
+            return "addSubtask";
+        }
+
+        if(assignedEmployeeID == null){
+            task.setAssignedEmployees(projectService.getEmployeesByTaskID(taskID));
+            subtask.setTask(task);
+
+            model.addAttribute("errorMessage", "You must assign one employee to the subtask");
             model.addAttribute("subtask", subtask);
             model.addAttribute("taskID", taskID);
             model.addAttribute("plannedStartDate", plannedStartDate);

@@ -10,8 +10,7 @@
     <div>
         <h2>Add Project</h2>
 
-<!--        Viser en fejlbesked, hvis den bliver kaldt via et if-statement
-            hvis der sker en fejl med finish date er før start date-->
+<!--        Viser en fejlbesked, hvis der sker en fejl-->
         <div th:if="${errorMessage}">
             <p th:text="${errorMessage}"></p>
         </div>
