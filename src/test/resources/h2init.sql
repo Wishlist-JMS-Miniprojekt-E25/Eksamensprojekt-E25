@@ -150,9 +150,7 @@ INSERT INTO employee
 VALUES
     ('Simon', 'Sim', '123'),
     ('Martin', 'Mar', '1234'),
-    ('Joshua', 'Josh', '12345'),
-    ('HR', 'HR', 'HR');
-
+    ('Joshua', 'Josh', '12345');
 
 INSERT INTO project
 (projectName, projectDescription, projectManagerID ,timeSlotID)
