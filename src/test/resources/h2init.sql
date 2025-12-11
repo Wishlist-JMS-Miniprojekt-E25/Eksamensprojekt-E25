@@ -136,12 +136,12 @@ INSERT INTO timeSlot
 (plannedDays, plannedStartDate, plannedFinishDate, actualFinishDate, differenceInDays, totalWorkhours, isDone)
 
 VALUES
-    (30, "2026-03-20", "2026-04-20", NULL, NULL, NULL, false),
-    (30, "2026-04-20", "2026-05-20", NULL, NULL, NULL, false),
-    (30, "2026-05-20", "2026-06-20", NULL, NULL, NULL, false),
-    (30, "2026-06-20", "2026-07-20", "2026-07-20", 0, 240, TRUE),
-    (30, "2026-07-20", "2026-08-20", "2026-08-30", 10, 320, TRUE),
-    (30, "2026-08-20", "2026-09-20", "2026-09-20", 0, 240, TRUE);
+    (30, '2026-03-20', '2026-04-20', NULL, NULL, NULL, false),
+    (30, '2026-04-20', '2026-05-20', NULL, NULL, NULL, false),
+    (30, '2026-05-20', '2026-06-20', NULL, NULL, NULL, false),
+    (30, '2026-06-20', '2026-07-20', '2026-07-20', 0, 240, TRUE),
+    (30, '2026-07-20', '2026-08-20', '2026-08-30', 10, 320, TRUE),
+    (30, '2026-08-20', '2026-09-20', '2026-09-20', 0, 240, TRUE);
 
 
 INSERT INTO employee

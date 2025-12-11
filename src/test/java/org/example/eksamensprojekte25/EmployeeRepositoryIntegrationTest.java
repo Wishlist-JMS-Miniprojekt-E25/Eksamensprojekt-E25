@@ -1,5 +1,6 @@
 package org.example.eksamensprojekte25;
 
+import org.example.eksamensprojekte25.repository.EmployeeRepository;
 import org.example.eksamensprojekte25.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,5 +14,5 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 @Sql(scripts = "classpath:h2init.sql", executionPhase = BEFORE_TEST_METHOD)
 public class EmployeeRepositoryIntegrationTest {
     @Autowired
-    private ProjectRepository projectRepository;
+    private EmployeeRepository employeeRepository;
 }
