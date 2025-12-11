@@ -1,7 +1,7 @@
 -- Brug databasen
 USE canwemakeit;
 
--- Drop eksisterende tabeller hvis de findes ()
+-- Drop eksisterende tabeller hvis de findes
 DROP TABLE IF EXISTS archivedProject;
 DROP TABLE IF EXISTS archivedTask;
 DROP TABLE IF EXISTS archivedSubtask;
@@ -129,5 +129,4 @@ CREATE TABLE subtask
     
     employeeID     		INT,
     FOREIGN KEY (employeeID) references employee (employeeID) ON DELETE CASCADE
-    
 );
