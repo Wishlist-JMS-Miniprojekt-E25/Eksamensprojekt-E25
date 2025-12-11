@@ -425,6 +425,11 @@ public class ProjectControllerTest {
         project.setProjectID(7);
         project.setProjectName("Nyt projekt navn");
 
+        Timeslot projectTimeslot = new Timeslot();
+        projectTimeslot.setPlannedStartDate(Date.valueOf("2025-11-01"));
+        projectTimeslot.setPlannedFinishDate(Date.valueOf("2025-12-01"));
+        project.setTimeslot(projectTimeslot);
+
         mockMvc.perform(post("/updateProject")
                         .flashAttr("project", project) //FlashAttr = @ModelAttribute
                         .param("assignedEmployeeIDs", "2", "3"))
@@ -476,6 +481,11 @@ public class ProjectControllerTest {
         task.setTaskID(13);
         task.setTaskName("Nyt task navn");
         task.setTaskDescription("ny beskrivelse");
+
+        Timeslot taskTimeslot = new Timeslot();
+        taskTimeslot.setPlannedStartDate(Date.valueOf("2025-02-01"));
+        taskTimeslot.setPlannedFinishDate(Date.valueOf("2025-02-20"));
+        task.setTimeslot(taskTimeslot);
 
         Project project = new Project();
         project.setProjectID(7);
