@@ -97,7 +97,7 @@
             <td th:text="${task.timeslot.getPlannedFinishDate}"></td>
             <td th:text="${task.timeslot.totalWorkhours}"></td>
             <td>
-                <form th:action="@{/taskWorkhours/{taskID}(taskID=${task.taskID})}"
+                <form th:href="@{/taskWorkhours/{taskID}(taskID=${task.taskID})}"
                       method="post"
                       onsubmit="return confirm('Are you sure you want to finalize this task?');">
                     <button type="submit" class="btn btn-primary">Finalize</button>
