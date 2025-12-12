@@ -70,7 +70,7 @@
         </tr>
         <tr th:each="archivedTask: ${archivedProject.tasks}">
             <td>
-                <a th:href="@{/archivedTask/{taskID}(taskID=${archivedTask.taskID})}">View task →</a>
+                <a class= "btn btn-primary" th:href="@{/archivedTask/{taskID}(taskID=${archivedTask.taskID})}">View task →</a>
             </td>
             <td th:text="${archivedTask.taskID}"></td>
             <td th:text="${archivedTask.taskName}"></td>

@@ -115,11 +115,11 @@
             <td th:text="${subtask.timeslot.getPlannedFinishDate}"></td>
             <td th:text="${subtask.timeslot.totalWorkhours}"></td>
             <td>
-                <form th:href="@{/subtaskWorkhours/{subtaskID}(subtaskID=${subtask.subtaskID})}"
-                      method="post"
-                      onsubmit="return confirm('Are you sure you want to finalize this subtask?');">
-                    <button type="submit" class="btn btn-primary">Finalize</button>
-                </form>
+                <a th:href="@{/subtaskWorkhours/{subtaskID}(subtaskID=${subtask.subtaskID})}"
+                   class="btn btn-primary"
+                   onclick="return confirm('Are you sure you want to finalize this subtask?');">
+                    Finalize
+                </a>
 
                 <a th:href="@{/editSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}"
                    class="btn btn-primary">
