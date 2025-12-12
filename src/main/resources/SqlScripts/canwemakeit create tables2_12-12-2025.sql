@@ -39,7 +39,7 @@ CREATE TABLE Employee
 CREATE TABLE project
 (
     projectID   		INT AUTO_INCREMENT PRIMARY KEY,
-    projectManagerID	INT, FOREIGN KEY(projectManagerID) references employee (employeeID) ON DELETE CASCADE, 
+    projectManagerID	INT, FOREIGN KEY(projectManagerID) references employee (employeeID), 
     projectName 		VARCHAR(100) NOT NULL,
     projectDescription 	VARCHAR(500),
     timeSlotID 			INT, FOREIGN KEY (timeSlotID) references timeSlot (timeSlotID) 
