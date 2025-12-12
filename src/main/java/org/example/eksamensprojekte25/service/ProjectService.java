@@ -61,9 +61,11 @@ public class ProjectService {
     public void deleteProjectByID(Integer projectID) {
         projectRepository.deleteProjectByID(projectID);
     }
+
     public List<Employee> getEmployeesByProjectID(Integer projectID){
         return projectRepository.getEmployeesByProjectID(projectID);
     }
+
     public List<Employee> getEmployeesByTaskID(Integer taskID) {
         return projectRepository.getEmployeesByTaskID(taskID);
     }

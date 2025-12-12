@@ -1,7 +1,7 @@
 -- Brug databasen
 USE canwemakeit;
 
--- Drop eksisterende tabeller hvis de findes
+-- Drop eksisterende tabeller hvis de findes ()
 DROP TABLE IF EXISTS archivedProject;
 DROP TABLE IF EXISTS archivedTask;
 DROP TABLE IF EXISTS archivedSubtask;
@@ -39,7 +39,7 @@ CREATE TABLE Employee
 CREATE TABLE project
 (
     projectID   		INT AUTO_INCREMENT PRIMARY KEY,
-    projectManagerID	INT, FOREIGN KEY(projectManagerID) references employee (employeeID),
+    projectManagerID	INT, FOREIGN KEY(projectManagerID) references employee (employeeID) ON DELETE CASCADE, 
     projectName 		VARCHAR(100) NOT NULL,
     projectDescription 	VARCHAR(500),
     timeSlotID 			INT, FOREIGN KEY (timeSlotID) references timeSlot (timeSlotID) 
@@ -129,4 +129,5 @@ CREATE TABLE subtask
     
     employeeID     		INT,
     FOREIGN KEY (employeeID) references employee (employeeID) ON DELETE CASCADE
+    
 );
