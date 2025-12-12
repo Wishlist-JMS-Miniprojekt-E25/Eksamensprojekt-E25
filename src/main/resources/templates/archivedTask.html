@@ -21,7 +21,7 @@
 <div class="page">
 
     <h1 th:text="${loggedInEmployee.employeeName} + 's archived task and subtasks'"></h1>
-    <a th:href="@{/archivedProject/{projectID}(projectID=${archivedTask.project.projectID})}">← Go back</a>
+    <a th:href="@{/archivedProject/{projectID}(projectID=${archivedTask.project.projectID})}" class="btn btn-primary">← Go back</a>
     <h3>Project</h3>
     <table>
         <tr>

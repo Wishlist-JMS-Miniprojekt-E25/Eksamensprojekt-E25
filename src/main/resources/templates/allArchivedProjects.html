@@ -21,9 +21,9 @@
 <div class="page">
 
     <h1 th:text="${loggedInEmployee.employeeName} + 's archived projects'"></h1>
-    <a th:href="@{/userOptions}">← Go back</a>
+    <a th:href="@{/userOptions}" class="btn btn-primary">← Go back</a>
     <h3>Your archived projects</h3>
-    <table>
+    <table class="project">
         <tr th:if="${archivedProjects.isEmpty()}">You have no
             archived projects
         </tr>
@@ -42,7 +42,7 @@
         </tr>
         <tr th:each="archivedProject: ${archivedProjects}">
             <td>
-                <a th:href="@{/archivedProject/{archivedProjectID}(archivedProjectID=${archivedProject.projectID})}">View
+                <a class="btn btn-primary" th:href="@{/archivedProject/{archivedProjectID}(archivedProjectID=${archivedProject.projectID})}">View
                     project →</a>
             </td>
             <td th:text="${archivedProject.projectID}"></td>

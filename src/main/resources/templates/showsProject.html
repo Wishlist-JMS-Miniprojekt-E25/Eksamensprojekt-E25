@@ -21,7 +21,7 @@
 <div class="page">
 
     <h1 th:text="${loggedInEmployee.employeeName} + 's project and tasks'"></h1>
-    <a th:href="@{/userOptions}" class="btn btn-secondary">Go back</a>
+    <a th:href="@{/userOptions}" class="btn btn-primary">Go back</a>
     <br> <br>
     <h3>Project</h3>
     <table class="project">
@@ -53,10 +53,16 @@
         </tr>
     </table>
     <br> <br> <br>
-    <div class ="section-header" th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}">
-        <a th:href="@{/addTask/{projectID}(projectID=${project.projectID})}">+ Add task</a>
+    <div class="task-header">
+        <h3>Task</h3>
+
+        <a th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}"
+           th:href="@{/addTask/{projectID}(projectID=${project.projectID})}"
+           class="btn btn-primary">
+            + Add task
+        </a>
     </div>
-    <h3>Task</h3>
+
     <table class="task">
         <tr th:if="${project.tasks == null or project.tasks.isEmpty()}">There are no tasks for this project</tr>
         <tr th:if="${project.tasks != null and !project.tasks.isEmpty()}">
@@ -70,12 +76,12 @@
             <th>Planned Start Date</th>
             <th>Planned Finish Date</th>
             <th>Total workhours</th>
-            <th></th>
-            <th></th>
+            <th>Actions</th>
+
         </tr>
         <tr th:each="task: ${project.tasks}">
             <td>
-                <a th:href="@{/task/{taskID}(taskID=${task.taskID})}">View task →</a>
+                <a th:href="@{/task/{taskID}(taskID=${task.taskID})}" class="btn btn-primary">View task →</a>
             </td>
             <td th:text="${task.taskID}"></td>
             <td th:text="${task.taskName}"></td>
@@ -91,21 +97,23 @@
             <td th:text="${task.timeslot.getPlannedFinishDate}"></td>
             <td th:text="${task.timeslot.totalWorkhours}"></td>
             <td>
-                <div>
-                    <a th:href="@{/taskWorkhours/{taskID}(taskID=${task.taskID})}">Finalize</a>
-                </div>
-            </td>
-            <td>
-                <a th:href="@{/editTask/{taskID}(taskID=${task.taskID})}">Edit</a>
-            </td>
-            <td>
-                <div th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}">
-                    <form th:action="@{/deleteTask/{taskID}(taskID=${task.taskID})}"
-                          method="post"
-                          onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
-                        <button type="submit">Delete</button>
-                    </form>
-                </div>
+                <form th:action="@{/taskWorkhours/{taskID}(taskID=${task.taskID})}"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to finalize this task?');">
+                    <button type="submit" class="btn btn-primary">Finalize</button>
+                </form>
+
+                <a th:href="@{/editTask/{taskID}(taskID=${task.taskID})}"
+                   class="btn btn-primary">
+                    Edit
+                </a>
+
+                <form th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}"
+                      th:action="@{/deleteTask/{taskID}(taskID=${task.taskID})}"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to delete this task?');">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
             </td>
         </tr>
     </table>

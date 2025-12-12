@@ -25,13 +25,6 @@
             <div th:if="${errorMessage}">
                 <p th:text="${errorMessage}"></p>
             </div>
-            <div class="section-header">
-                <h3>Tasks</h3>
-                <a th:href="@{/addTask/{projectID}(projectID=${project.projectID})}"
-                   class="btn btn-primary">
-                    + Add task
-                </a>
-            </div>
 
 
             <form th:action="@{/saveTask}" th:object="${task}" method="post">

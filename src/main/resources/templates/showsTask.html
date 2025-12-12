@@ -21,7 +21,7 @@
 
 <div class="page">
     <h1 th:text="${loggedInEmployee.employeeName} + 's task and subtasks'"></h1>
-    <a th:href="@{/project/{projectID}(projectID=${task.project.projectID})}" class="btn btn-secondary">← Go back</a>
+    <a th:href="@{/project/{projectID}(projectID=${task.project.projectID})}" class="btn btn-primary">← Go back</a>
     <br> <br>
     <!-- tabellen, der viser det enkelte projekt -->
     <h3>Project</h3>
@@ -36,8 +36,6 @@
             <th>Planned Start Date</th>
             <th>Planned Finish Date</th>
             <th>Total workhours</th>
-            <th></th>
-            <th></th>
         </tr>
         <tr>
             <td th:text="${task.project.projectID}"></td>
@@ -85,10 +83,15 @@
         </tr>
     </table>
     <br> <br> <br>
-    <div class="section-header" th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
-        <a th:href="@{/task/{taskID}/addSubtask(taskID=${task.taskID})}">+ Add subtask</a>
+    <div class="subtask-header"
+         th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
+        <h3>Subtasks</h3>
+
+        <a th:href="@{/task/{taskID}/addSubtask(taskID=${task.taskID})}"
+           class="btn btn-primary">
+            + Add subtask
+        </a>
     </div>
-    <h3>Subtasks</h3>
     <table class="subtask">
         <tr th:if="${task.subtasks == null or task.subtasks.isEmpty()}">There are no subtasks for this task</tr>
         <tr th:if="${task.subtasks != null and !task.subtasks.isEmpty()}">
@@ -100,6 +103,7 @@
             <th>Planned Start Date</th>
             <th>Planned Finish Date</th>
             <th>Total workhours</th>
+            <th class="actions">Actions</th>
         </tr>
         <tr th:each="subtask: ${task.subtasks}">
             <td th:text="${subtask.subtaskID}"></td>
@@ -111,22 +115,25 @@
             <td th:text="${subtask.timeslot.getPlannedFinishDate}"></td>
             <td th:text="${subtask.timeslot.totalWorkhours}"></td>
             <td>
-                <div>
-                    <a th:href="@{/subtaskWorkhours/{subtaskID}(subtaskID=${subtask.subtaskID})}">Finalize</a>
-                </div>
+                <form th:action="@{/subtaskWorkhours/{subtaskID}(subtaskID=${subtask.subtaskID})}"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to finalize this subtask?');">
+                    <button type="submit" class="btn btn-primary">Finalize</button>
+                </form>
+
+                <a th:href="@{/editSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}"
+                   class="btn btn-primary">
+                    Edit
+                </a>
+
+                <form th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}"
+                      th:action="@{/deleteSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to delete this subtask?');">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
             </td>
-            <td>
-                <a th:href="@{/editSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}">Edit</a>
-            </td>
-            <td>
-                <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
-                    <form th:action="@{/deleteSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}"
-                          method="post"
-                          onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
-                        <button type="submit">Delete</button>
-                    </form>
-                </div>
-            </td>
+
         </tr>
     </table>
 </div>

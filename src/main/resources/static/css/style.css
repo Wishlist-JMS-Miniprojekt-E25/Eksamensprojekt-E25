@@ -30,15 +30,16 @@ body {
     );
     display: flex;
     align-items: center;
+    justify-content: flex-end; /* 👈 flytter alt til højre */
     padding: 0 24px;
     z-index: 1000;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .header-left {
     display: flex;
     gap: 12px;
 }
+
 
 /* =========================
    PAGE CONTAINER
@@ -185,4 +186,78 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+/* =========================
+   TABLE HEADER (Task + Add)
+   ========================= */
+
+.table-header {
+    display: grid;
+    grid-template-columns: 1fr 200px; /* matcher Actions-kolonnen */
+    margin: 32px 0 12px;
+}
+
+.table-header h3 {
+    margin: 0;
+}
+
+.table-header .btn {
+    justify-self: stretch;
+    text-align: center;
+    width: 100%;
+}
+
+
+/* Actions column width */
+td.actions {
+    width: 200px;
+}
+
+/* =========================
+   TASK TABLE HEADER ALIGNMENT
+   ========================= */
+
+.task-header {
+    display: grid;
+    grid-template-columns:
+        120px  /* View task */
+        60px   /* ID */
+        160px  /* Name */
+        200px  /* Description */
+        160px  /* Assignees */
+        220px  /* Amount of subtasks */
+        140px  /* Planned Days */
+        180px  /* Start */
+        180px  /* Finish */
+        160px  /* Total */
+        200px; /* Actions */
+
+    align-items: center;
+    margin: 32px 0 12px;
+}
+
+.task-header h3 {
+    grid-column: 1 / span 10; /* Task-tekst over alle kolonner før Actions */
+    margin: 0;
+}
+
+.task-header .btn {
+    grid-column: 11; /* præcis over Actions */
+    width: 100%;
+}
+.subtask-header {
+    display: grid;
+    grid-template-columns: 1fr 200px; /* 200px matcher Actions */
+    align-items: center;
+    margin: 32px 0 12px;
+}
+
+.subtask-header h3 {
+    margin: 0;
+}
+
+.subtask-header .btn {
+    justify-self: stretch;
+    text-align: center;
 }

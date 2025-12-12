@@ -24,9 +24,11 @@
     <h1 th:text="${loggedInEmployee.employeeName} + 's projects'"></h1>
     <h3>Projects you manage</h3>
 
-    <div>
+    <div class="table-header">
+        <div></div>
         <a href="/addProject" class="btn btn-primary">+ Add project</a>
     </div>
+
     <table class="project">
         <tr th:if="${loggedInEmployee.managedProjects == null or loggedInEmployee.managedProjects.isEmpty()}">You are
             not
@@ -42,7 +44,7 @@
             <th>Planned Start Date</th>
             <th>Planned Finish Date</th>
             <th>Total workhours</th>
-            <th>Actions</th>
+            <th class="actions">Actions</th>
         </tr>
         <tr th:each="project: ${loggedInEmployee.managedProjects}">
             <td>
@@ -60,7 +62,7 @@
             <td th:text="${project.timeslot.plannedStartDate}"></td>
             <td th:text="${project.timeslot.getPlannedFinishDate}"></td>
             <td th:text="${project.timeslot.totalWorkhours}"></td>
-            <td>
+            <td class="actions">
                 <form th:action="@{/finalizeProject/{projectID}(projectID=${project.projectID})}"
                       method="post"
                       onsubmit="return confirm('Are you sure you want to finalize this project?');">
@@ -77,8 +79,6 @@
                       onsubmit="return confirm('Are you sure you want to delete?');">
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
-
-
 
             </td>
         </tr>
@@ -111,7 +111,7 @@
 
             <tr th:each="project: ${assignedToProjects}">
                 <td>
-                    <a th:href="@{/project/{projectID}(projectID=${project.projectID})}">View project →</a>
+                    <a th:href="@{/project/{projectID}(projectID=${project.projectID})}" class="btn btn-primary">View project →</a>
                 </td>
                 <td th:text="${project.projectID}"></td>
                 <td th:text="${project.projectName}"></td>
