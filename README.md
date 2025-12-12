@@ -24,4 +24,5 @@ Simon Abiltrup - Sim-Abild
 Joshua Svensson - Joshua-kea  
 Martin Underbjerg -MU-1995  
 
-### --> Link til deployed applikation her <--
+### --> Link til deployed applikation her <--  
+### --> Link til Contributing fil her <--
