@@ -2,96 +2,112 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+
     <title>Archived task</title>
 </head>
 <body>
-<h1 th:text="${loggedInEmployee.employeeName} + 's archived task and subtasks'"></h1>
-<a th:href="@{/archivedProject/{projectID}(projectID=${archivedTask.project.projectID})}">← Go back</a>
-<h3>Project</h3>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Planned Days</th>
-        <th>Planned Start Date</th>
-        <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
-        <th>Total workhours</th>
-        <th>Is done</th>
-    </tr>
-    <tr>
-        <td th:text="${archivedTask.project.projectID}"></td>
-        <td th:text="${archivedTask.project.projectName}"></td>
-        <td th:text="${archivedTask.project.projectDescription}"></td>
-        <td th:text="${archivedTask.project.timeslot.getPlannedDays}"></td>
-        <td th:text="${archivedTask.project.timeslot.plannedStartDate}"></td>
-        <td th:text="${archivedTask.project.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${archivedTask.project.timeslot.getActualFinishDate}"></td>
-        <td th:text="${archivedTask.project.timeslot.getDifferenceInDays}"></td>
-        <td th:text="${archivedTask.project.timeslot.totalWorkhours}"></td>
-        <td th:text="${archivedTask.project.timeslot.isDone}"></td>
-    </tr>
-</table>
-<br><br><br>
-<h3>Tasks</h3>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Planned Days</th>
-        <th>Planned Start Date</th>
-        <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
-        <th>Total workhours</th>
-        <th>Is done</th>
-    </tr>
-    <tr>
-        <td th:text="${archivedTask.taskID}"></td>
-        <td th:text="${archivedTask.taskName}"></td>
-        <td th:text="${archivedTask.taskDescription}"></td>
-        <td th:text="${archivedTask.timeslot.getPlannedDays}"></td>
-        <td th:text="${archivedTask.timeslot.plannedStartDate}"></td>
-        <td th:text="${archivedTask.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${archivedTask.timeslot.getActualFinishDate}"></td>
-        <td th:text="${archivedTask.timeslot.getDifferenceInDays}"></td>
-        <td th:text="${archivedTask.timeslot.totalWorkhours}"></td>
-        <td th:text="${archivedTask.timeslot.isDone}"></td>
-    </tr>
-</table>
-<br><br><br>
-<h3>Subtasks</h3>
-<table>
-    <tr th:if="${archivedTask.subtasks.isEmpty()}">You have no
-        archived subtasks for this task
-    </tr>
-    <tr th:unless="${archivedTask.subtasks.isEmpty()}">
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Planned Days</th>
-        <th>Planned Start Date</th>
-        <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
-        <th>Total workhours</th>
-        <th>Is done</th>
-    </tr>
-    <tr th:each="archivedSubtask: ${archivedTask.subtasks}">
-        <td th:text="${archivedSubtask.subtaskID}"></td>
-        <td th:text="${archivedSubtask.subtaskName}"></td>
-        <td th:text="${archivedSubtask.subtaskDescription}"></td>
-        <td th:text="${archivedSubtask.timeslot.getPlannedDays}"></td>
-        <td th:text="${archivedSubtask.timeslot.plannedStartDate}"></td>
-        <td th:text="${archivedSubtask.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${archivedSubtask.timeslot.getActualFinishDate}"></td>
-        <td th:text="${archivedSubtask.timeslot.getDifferenceInDays}"></td>
-        <td th:text="${archivedSubtask.timeslot.totalWorkhours}"></td>
-        <td th:text="${archivedSubtask.timeslot.isDone}"></td>
-    </tr>
-</table>
+<header class="header">
+    <div class="header-left">
+        <a th:href="@{/archivedProjects}" class="btn btn-secondary">
+            View archived projects
+        </a>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secondary">Log out</button>
+        </form>
+    </div>
+</header>
+<div class="page">
+
+    <h1 th:text="${loggedInEmployee.employeeName} + 's archived task and subtasks'"></h1>
+    <a th:href="@{/archivedProject/{projectID}(projectID=${archivedTask.project.projectID})}">← Go back</a>
+    <h3>Project</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Planned Days</th>
+            <th>Planned Start Date</th>
+            <th>Planned Finish Date</th>
+            <th>Actual Finish Date</th>
+            <th>Difference in days</th>
+            <th>Total workhours</th>
+            <th>Is done</th>
+        </tr>
+        <tr>
+            <td th:text="${archivedTask.project.projectID}"></td>
+            <td th:text="${archivedTask.project.projectName}"></td>
+            <td th:text="${archivedTask.project.projectDescription}"></td>
+            <td th:text="${archivedTask.project.timeslot.getPlannedDays}"></td>
+            <td th:text="${archivedTask.project.timeslot.plannedStartDate}"></td>
+            <td th:text="${archivedTask.project.timeslot.getPlannedFinishDate}"></td>
+            <td th:text="${archivedTask.project.timeslot.getActualFinishDate}"></td>
+            <td th:text="${archivedTask.project.timeslot.getDifferenceInDays}"></td>
+            <td th:text="${archivedTask.project.timeslot.totalWorkhours}"></td>
+            <td th:text="${archivedTask.project.timeslot.isDone}"></td>
+        </tr>
+    </table>
+    <br><br><br>
+    <h3>Tasks</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Planned Days</th>
+            <th>Planned Start Date</th>
+            <th>Planned Finish Date</th>
+            <th>Actual Finish Date</th>
+            <th>Difference in days</th>
+            <th>Total workhours</th>
+            <th>Is done</th>
+        </tr>
+        <tr>
+            <td th:text="${archivedTask.taskID}"></td>
+            <td th:text="${archivedTask.taskName}"></td>
+            <td th:text="${archivedTask.taskDescription}"></td>
+            <td th:text="${archivedTask.timeslot.getPlannedDays}"></td>
+            <td th:text="${archivedTask.timeslot.plannedStartDate}"></td>
+            <td th:text="${archivedTask.timeslot.getPlannedFinishDate}"></td>
+            <td th:text="${archivedTask.timeslot.getActualFinishDate}"></td>
+            <td th:text="${archivedTask.timeslot.getDifferenceInDays}"></td>
+            <td th:text="${archivedTask.timeslot.totalWorkhours}"></td>
+            <td th:text="${archivedTask.timeslot.isDone}"></td>
+        </tr>
+    </table>
+    <br><br><br>
+    <h3>Subtasks</h3>
+    <table>
+        <tr th:if="${archivedTask.subtasks.isEmpty()}">You have no
+            archived subtasks for this task
+        </tr>
+        <tr th:unless="${archivedTask.subtasks.isEmpty()}">
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Planned Days</th>
+            <th>Planned Start Date</th>
+            <th>Planned Finish Date</th>
+            <th>Actual Finish Date</th>
+            <th>Difference in days</th>
+            <th>Total workhours</th>
+            <th>Is done</th>
+        </tr>
+        <tr th:each="archivedSubtask: ${archivedTask.subtasks}">
+            <td th:text="${archivedSubtask.subtaskID}"></td>
+            <td th:text="${archivedSubtask.subtaskName}"></td>
+            <td th:text="${archivedSubtask.subtaskDescription}"></td>
+            <td th:text="${archivedSubtask.timeslot.getPlannedDays}"></td>
+            <td th:text="${archivedSubtask.timeslot.plannedStartDate}"></td>
+            <td th:text="${archivedSubtask.timeslot.getPlannedFinishDate}"></td>
+            <td th:text="${archivedSubtask.timeslot.getActualFinishDate}"></td>
+            <td th:text="${archivedSubtask.timeslot.getDifferenceInDays}"></td>
+            <td th:text="${archivedSubtask.timeslot.totalWorkhours}"></td>
+            <td th:text="${archivedSubtask.timeslot.isDone}"></td>
+        </tr>
+    </table>
+</div>
 </body>
 </html>

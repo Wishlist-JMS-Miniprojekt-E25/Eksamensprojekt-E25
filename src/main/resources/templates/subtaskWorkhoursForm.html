@@ -2,20 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+
     <title>Work hours for subtask</title>
 </head>
 <body>
+<header class="header">
+    <div class="header-left">
+        <a th:href="@{/archivedProjects}" class="btn btn-secondary">
+            View archived projects
+        </a>
 
-<form th:action="@{/finalizeSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}" th:object="${subtask}"
-      th:method="post">
-
-    <label>Write total workhours on subtask</label>
-    <input type="number" name="totalWorkhours" required>
-
-    <div>
-        <button type="submit">Save</button>
-        <a th:href="@{/task/{taskID}(taskID=${subtask.task.taskID})}">Cancel</a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secondary">Log out</button>
+        </form>
     </div>
-</form>
+</header>
+<div class="page">
+
+    <form th:action="@{/finalizeSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}" th:object="${subtask}"
+          th:method="post">
+
+        <label>Write total workhours on subtask</label>
+        <input type="number" name="totalWorkhours" required>
+
+        <div>
+            <button type="submit">Save</button>
+            <a th:href="@{/task/{taskID}(taskID=${subtask.task.taskID})}">Cancel</a>
+        </div>
+    </form>
+</div>
 </body>
 </html>

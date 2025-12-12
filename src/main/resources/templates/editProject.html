@@ -2,46 +2,60 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+
     <title>Edit Project</title>
 </head>
 <body>
+<header class="header">
+    <div class="header-left">
+        <a th:href="@{/archivedProjects}" class="btn btn-secondary">
+            View archived projects
+        </a>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secondary">Log out</button>
+        </form>
+    </div>
+</header>
+<div class="page">
 
     <h2>Edit Project</h2>
     <!--        Viser en fejlbesked, hvis der sker en fejl-->
-<div th:if="${errorMessage}">
-    <p th:text="${errorMessage}"></p>
-</div>
-
-<form th:action="@{/updateProject}" th:object="${project}" method="post">
-    <input type="hidden" th:field="*{projectID}">
-
-    <label>Name</label>
-    <input type="text" th:field="*{projectName}">
-
-    <label>Description</label>
-    <input type="text" th:field="*{projectDescription}">
-
-    <label>Planned Start Date</label>
-    <input type="date" th:field="*{timeslot.plannedStartDate}">
-
-    <label>Planned Finish Date</label>
-    <input type="date" th:field="*{timeslot.plannedFinishDate}">
-
-    <input type="hidden" name="assignedEmployeeIDs" value="">
-
-    <p>Assign employees</p>
-    <div th:each="employees : ${allEmployees}">
-        <label>
-            <input type="checkbox" name="assignedEmployeeIDs" th:value="${employees.employeeID}"
-            th:checked="${assignedEmployeeIDs.contains(employees.employeeID)}">
-            <!--Hvis employee allerede er assigned, så sørger th:checked for, at de allerede er checked-->
-            <span th:text="${employees.employeeName}"></span>
-        </label>
+    <div th:if="${errorMessage}">
+        <p th:text="${errorMessage}"></p>
     </div>
 
-    <button type="submit">Save</button>
-    <a th:href="@{/userOptions}">Cancel</a>
-</form>
+    <form th:action="@{/updateProject}" th:object="${project}" method="post">
+        <input type="hidden" th:field="*{projectID}">
 
+        <label>Name</label>
+        <input type="text" th:field="*{projectName}">
+
+        <label>Description</label>
+        <input type="text" th:field="*{projectDescription}">
+
+        <label>Planned Start Date</label>
+        <input type="date" th:field="*{timeslot.plannedStartDate}">
+
+        <label>Planned Finish Date</label>
+        <input type="date" th:field="*{timeslot.plannedFinishDate}">
+
+        <input type="hidden" name="assignedEmployeeIDs" value="">
+
+        <p>Assign employees</p>
+        <div th:each="employees : ${allEmployees}">
+            <label>
+                <input type="checkbox" name="assignedEmployeeIDs" th:value="${employees.employeeID}"
+                       th:checked="${assignedEmployeeIDs.contains(employees.employeeID)}">
+                <!--Hvis employee allerede er assigned, så sørger th:checked for, at de allerede er checked-->
+                <span th:text="${employees.employeeName}"></span>
+            </label>
+        </div>
+
+        <button type="submit">Save</button>
+        <a th:href="@{/userOptions}">Cancel</a>
+    </form>
+</div>
 </body>
 </html>

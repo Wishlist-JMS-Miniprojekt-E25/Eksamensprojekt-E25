@@ -2,51 +2,65 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+
     <title>Add Subtask</title>
 </head>
 <body>
+<header class="header">
+    <div class="header-left">
+        <a th:href="@{/archivedProjects}" class="btn btn-secondary">
+            View archived projects
+        </a>
 
-<main>
-    <div>
-        <h2>Add Subtask</h2>
-
-        <!--        Viser en fejlbesked, hvis der sker en fejl-->
-        <div th:if="${errorMessage}">
-            <p th:text="${errorMessage}"></p>
-        </div>
-
-        <form th:action="@{/task/saveSubtask}" th:object="${subtask}" method="post">
-
-            <input type="hidden" name="taskID" th:value="${subtask.task.taskID}">
-
-            <label>Name</label>
-            <input type="text" th:field="*{subtaskName}" required>
-
-            <label>Description</label>
-            <input type="text" th:field="*{subtaskDescription}">
-
-            <label>Planned Start Date</label>
-            <input type="date" name="plannedStartDate" required>
-
-            <label>Planned Finish Date</label>
-            <input type="date" name="plannedFinishDate" required>
-
-            <p>Assign employee</p>
-            <div th:each="employee : ${subtask.task.assignedEmployees}">
-                <label>
-                    <input type="radio"
-                           name="assignedEmployeeID"
-                           th:value="${employee.employeeID}">
-                    <span th:text="${employee.employeeName}">
-                   </span>
-                </label>
-            </div>
-            <div>
-                <button type="submit">Save</button>
-                <a th:href="@{/task/{taskID}(taskID=${taskID})}">Cancel</a>
-            </div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secondary">Log out</button>
         </form>
     </div>
-</main>
+</header>
+<div class="page">
+    <main>
+        <div>
+            <h2>Add Subtask</h2>
+
+            <!--        Viser en fejlbesked, hvis der sker en fejl-->
+            <div th:if="${errorMessage}">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
+            <form th:action="@{/task/saveSubtask}" th:object="${subtask}" method="post">
+
+                <input type="hidden" name="taskID" th:value="${subtask.task.taskID}">
+
+                <label>Name</label>
+                <input type="text" th:field="*{subtaskName}" required>
+
+                <label>Description</label>
+                <input type="text" th:field="*{subtaskDescription}">
+
+                <label>Planned Start Date</label>
+                <input type="date" name="plannedStartDate" required>
+
+                <label>Planned Finish Date</label>
+                <input type="date" name="plannedFinishDate" required>
+
+                <p>Assign employee</p>
+                <div th:each="employee : ${subtask.task.assignedEmployees}">
+                    <label>
+                        <input type="radio"
+                               name="assignedEmployeeID"
+                               th:value="${employee.employeeID}">
+                        <span th:text="${employee.employeeName}">
+                   </span>
+                    </label>
+                </div>
+                <div>
+                    <button type="submit">Save</button>
+                    <a th:href="@{/task/{taskID}(taskID=${taskID})}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
 </body>
 </html>

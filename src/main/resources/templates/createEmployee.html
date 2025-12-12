@@ -2,34 +2,48 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+
     <title>Create Employee</title>
 </head>
 <body>
+<header class="header">
+    <div class="header-left">
+        <a th:href="@{/archivedProjects}" class="btn btn-secondary">
+            View archived projects
+        </a>
 
-<h2>Create New Employee</h2>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secondary">Log out</button>
+        </form>
+    </div>
+</header>
+<div class="page">
 
-<!-- Viser fejl hvis brugernavn er taget -->
-<div th:if="${errorMessage}" class="error">
-    <p th:text="${errorMessage}"></p>
-</div>
+    <h2>Create New Employee</h2>
 
-<form th:action="@{/saveEmployee}" method="post">
-
-    <label>Full name</label>
-    <input type="text" name="employeeName" th:value="${employeeName}" required>
-
-    <label>Username</label>
-    <input type="text" name="userName"th:value="${userName}" required>
-
-    <label>Password</label>
-    <input type="password" name="userPassword" th:value="${userPassword}" required>
-
-    <div>
-    <button type="submit">Save</button>
-        <a th:href="@{/userOptions}">Cancel</a>
+    <!-- Viser fejl hvis brugernavn er taget -->
+    <div th:if="${errorMessage}" class="error">
+        <p th:text="${errorMessage}"></p>
     </div>
 
-</form>
+    <form th:action="@{/saveEmployee}" method="post">
 
+        <label>Full name</label>
+        <input type="text" name="employeeName" th:value="${employeeName}" required>
+
+        <label>Username</label>
+        <input type="text" name="userName" th:value="${userName}" required>
+
+        <label>Password</label>
+        <input type="password" name="userPassword" th:value="${userPassword}" required>
+
+        <div>
+            <button type="submit">Save</button>
+            <a th:href="@{/userOptions}">Cancel</a>
+        </div>
+
+    </form>
+</div>
 </body>
 </html>

@@ -2,44 +2,62 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+
     <title>Archived projects</title>
 </head>
 <body>
-<h1 th:text="${loggedInEmployee.employeeName} + 's archived projects'"></h1>
-<a th:href="@{/userOptions}">← Go back</a>
-<h3>Your archived projects</h3>
-<table>
-    <tr th:if="${archivedProjects.isEmpty()}">You have no
-        archived projects
-    </tr>
-    <tr th:unless="${archivedProjects.isEmpty()}">
-        <th></th>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Planned Days</th>
-        <th>Planned Start Date</th>
-        <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
-        <th>Total workhours</th>
-        <th>Is done</th>
-    </tr>
-    <tr th:each="archivedProject: ${archivedProjects}">
-        <td>
-            <a th:href="@{/archivedProject/{archivedProjectID}(archivedProjectID=${archivedProject.projectID})}">View project →</a>
-        </td>
-        <td th:text="${archivedProject.projectID}"></td>
-        <td th:text="${archivedProject.projectName}"></td>
-        <td th:text="${archivedProject.projectDescription}"></td>
-        <td th:text="${archivedProject.timeslot.getPlannedDays}"></td>
-        <td th:text="${archivedProject.timeslot.plannedStartDate}"></td>
-        <td th:text="${archivedProject.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${archivedProject.timeslot.getActualFinishDate}"></td>
-        <td th:text="${archivedProject.timeslot.getDifferenceInDays}"></td>
-        <td th:text="${archivedProject.timeslot.totalWorkhours}"></td>
-        <td th:text="${archivedProject.timeslot.isDone}"></td>
-    </tr>
-</table>
+<header class="header">
+    <div class="header-left">
+        <a th:href="@{/archivedProjects}" class="btn btn-secondary">
+            View archived projects
+        </a>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secondary">Log out</button>
+        </form>
+    </div>
+</header>
+<div class="page">
+
+    <h1 th:text="${loggedInEmployee.employeeName} + 's archived projects'"></h1>
+    <a th:href="@{/userOptions}">← Go back</a>
+    <h3>Your archived projects</h3>
+    <table>
+        <tr th:if="${archivedProjects.isEmpty()}">You have no
+            archived projects
+        </tr>
+        <tr th:unless="${archivedProjects.isEmpty()}">
+            <th></th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Planned Days</th>
+            <th>Planned Start Date</th>
+            <th>Planned Finish Date</th>
+            <th>Actual Finish Date</th>
+            <th>Difference in days</th>
+            <th>Total workhours</th>
+            <th>Is done</th>
+        </tr>
+        <tr th:each="archivedProject: ${archivedProjects}">
+            <td>
+                <a th:href="@{/archivedProject/{archivedProjectID}(archivedProjectID=${archivedProject.projectID})}">View
+                    project →</a>
+            </td>
+            <td th:text="${archivedProject.projectID}"></td>
+            <td th:text="${archivedProject.projectName}"></td>
+            <td th:text="${archivedProject.projectDescription}"></td>
+            <td th:text="${archivedProject.timeslot.getPlannedDays}"></td>
+            <td th:text="${archivedProject.timeslot.plannedStartDate}"></td>
+            <td th:text="${archivedProject.timeslot.getPlannedFinishDate}"></td>
+            <td th:text="${archivedProject.timeslot.getActualFinishDate}"></td>
+            <td th:text="${archivedProject.timeslot.getDifferenceInDays}"></td>
+            <td th:text="${archivedProject.timeslot.totalWorkhours}"></td>
+            <td th:text="${archivedProject.timeslot.isDone}"></td>
+        </tr>
+    </table>
+</div>
 </body>
+
 </html>

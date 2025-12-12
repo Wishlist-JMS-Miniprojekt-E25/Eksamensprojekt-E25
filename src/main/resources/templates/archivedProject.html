@@ -2,73 +2,88 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+
     <title>Archived project</title>
 </head>
 <body>
-<h1 th:text="${loggedInEmployee.employeeName} + 's archived project and tasks'"></h1>
-<a th:href="@{/archivedProjects}">← Go back</a>
-<h3>Project</h3>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Planned Days</th>
-        <th>Planned Start Date</th>
-        <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
-        <th>Total workhours</th>
-        <th>Is done</th>
-    </tr>
-    <tr>
-        <td th:text="${archivedProject.projectID}"></td>
-        <td th:text="${archivedProject.projectName}"></td>
-        <td th:text="${archivedProject.projectDescription}"></td>
-        <td th:text="${archivedProject.timeslot.getPlannedDays}"></td>
-        <td th:text="${archivedProject.timeslot.plannedStartDate}"></td>
-        <td th:text="${archivedProject.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${archivedProject.timeslot.getActualFinishDate}"></td>
-        <td th:text="${archivedProject.timeslot.getDifferenceInDays}"></td>
-        <td th:text="${archivedProject.timeslot.totalWorkhours}"></td>
-        <td th:text="${archivedProject.timeslot.isDone}"></td>
-    </tr>
-</table>
-<br><br><br>
+<header class="header">
+    <div class="header-left">
+        <a th:href="@{/archivedProjects}" class="btn btn-secondary">
+            View archived projects
+        </a>
 
-<h3>Task</h3>
-<table>
-    <tr th:if="${archivedProject.tasks.isEmpty()}">You have no
-        archived tasks for this project
-    </tr>
-    <tr th:unless="${archivedProject.tasks.isEmpty()}">
-        <th></th>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Planned Days</th>
-        <th>Planned Start Date</th>
-        <th>Planned Finish Date</th>
-        <th>Actual Finish Date</th>
-        <th>Difference in days</th>
-        <th>Total workhours</th>
-        <th>Is done</th>
-    </tr>
-    <tr th:each="archivedTask: ${archivedProject.tasks}">
-        <td>
-            <a th:href="@{/archivedTask/{taskID}(taskID=${archivedTask.taskID})}">View task →</a>
-        </td>
-        <td th:text="${archivedTask.taskID}"></td>
-        <td th:text="${archivedTask.taskName}"></td>
-        <td th:text="${archivedTask.taskDescription}"></td>
-        <td th:text="${archivedTask.timeslot.getPlannedDays}"></td>
-        <td th:text="${archivedTask.timeslot.plannedStartDate}"></td>
-        <td th:text="${archivedTask.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${archivedTask.timeslot.getActualFinishDate}"></td>
-        <td th:text="${archivedTask.timeslot.getDifferenceInDays}"></td>
-        <td th:text="${archivedTask.timeslot.totalWorkhours}"></td>
-        <td th:text="${archivedTask.timeslot.isDone}"></td>
-    </tr>
-</table>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secondary">Log out</button>
+        </form>
+    </div>
+</header>
+<div class="page">
+    <h1 th:text="${loggedInEmployee.employeeName} + 's archived project and tasks'"></h1>
+    <a th:href="@{/archivedProjects}">← Go back</a>
+    <h3>Project</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Planned Days</th>
+            <th>Planned Start Date</th>
+            <th>Planned Finish Date</th>
+            <th>Actual Finish Date</th>
+            <th>Difference in days</th>
+            <th>Total workhours</th>
+            <th>Is done</th>
+        </tr>
+        <tr>
+            <td th:text="${archivedProject.projectID}"></td>
+            <td th:text="${archivedProject.projectName}"></td>
+            <td th:text="${archivedProject.projectDescription}"></td>
+            <td th:text="${archivedProject.timeslot.getPlannedDays}"></td>
+            <td th:text="${archivedProject.timeslot.plannedStartDate}"></td>
+            <td th:text="${archivedProject.timeslot.getPlannedFinishDate}"></td>
+            <td th:text="${archivedProject.timeslot.getActualFinishDate}"></td>
+            <td th:text="${archivedProject.timeslot.getDifferenceInDays}"></td>
+            <td th:text="${archivedProject.timeslot.totalWorkhours}"></td>
+            <td th:text="${archivedProject.timeslot.isDone}"></td>
+        </tr>
+    </table>
+    <br><br><br>
+
+    <h3>Task</h3>
+    <table>
+        <tr th:if="${archivedProject.tasks.isEmpty()}">You have no
+            archived tasks for this project
+        </tr>
+        <tr th:unless="${archivedProject.tasks.isEmpty()}">
+            <th></th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Planned Days</th>
+            <th>Planned Start Date</th>
+            <th>Planned Finish Date</th>
+            <th>Actual Finish Date</th>
+            <th>Difference in days</th>
+            <th>Total workhours</th>
+            <th>Is done</th>
+        </tr>
+        <tr th:each="archivedTask: ${archivedProject.tasks}">
+            <td>
+                <a th:href="@{/archivedTask/{taskID}(taskID=${archivedTask.taskID})}">View task →</a>
+            </td>
+            <td th:text="${archivedTask.taskID}"></td>
+            <td th:text="${archivedTask.taskName}"></td>
+            <td th:text="${archivedTask.taskDescription}"></td>
+            <td th:text="${archivedTask.timeslot.getPlannedDays}"></td>
+            <td th:text="${archivedTask.timeslot.plannedStartDate}"></td>
+            <td th:text="${archivedTask.timeslot.getPlannedFinishDate}"></td>
+            <td th:text="${archivedTask.timeslot.getActualFinishDate}"></td>
+            <td th:text="${archivedTask.timeslot.getDifferenceInDays}"></td>
+            <td th:text="${archivedTask.timeslot.totalWorkhours}"></td>
+            <td th:text="${archivedTask.timeslot.isDone}"></td>
+        </tr>
+    </table>
+</div>
 </body>
 </html>

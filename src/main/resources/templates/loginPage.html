@@ -2,21 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
     <title>Login</title>
 </head>
 <body>
-<h2>Login</h2>
-<a th:href="@{/}">← Go back</a>
-<form th:action="@{/postLogin}" method="post">
-    <label>Username:</label>
-    <input type="text" name="userName" required/>
+<div class="page">
+    <h2>Login</h2>
+    <a th:href="@{/}">← Go back</a>
+    <form th:action="@{/postLogin}" method="post">
+        <label>Username:</label>
+        <input type="text" name="userName" required/>
 
-    <label>Password:</label>
-    <input type="password" name="userPassword" required/>
+        <label>Password:</label>
+        <input type="password" name="userPassword" required/>
 
-    <button type="submit">Login</button>
+        <button type="submit">Login</button>
 
-</form>
-<p th:if="${error}">Invalid username or password</p>
+    </form>
+    <p th:if="${error}">Invalid username or password</p>
+</div>
 </body>
 </html>

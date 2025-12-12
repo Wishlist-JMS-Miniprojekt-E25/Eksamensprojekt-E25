@@ -2,41 +2,55 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+
     <title>Edit Employee</title>
 </head>
 <body>
+<header class="header">
+    <div class="header-left">
+        <a th:href="@{/archivedProjects}" class="btn btn-secondary">
+            View archived projects
+        </a>
 
-<h1>Edit employee</h1>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secondary">Log out</button>
+        </form>
+    </div>
+</header>
+<div class="page">
 
-<!-- Error message hvis username findes -->
-<div th:if="${errorMessage}" style="color:red;">
-    <p th:text="${errorMessage}"></p>
+    <h1>Edit employee</h1>
+
+    <!-- Error message hvis username findes -->
+    <div th:if="${errorMessage}" style="color:red;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="@{/updateEmployee/{id}(id=${employee.employeeID})}" method="post">
+
+        <label>Name:</label>
+        <input type="text" name="employeeName" th:value="${employee.employeeName}" required>
+
+        <br>
+
+        <label>Username:</label>
+        <input type="text" name="userName" th:value="${employee.userName}" required>
+
+        <br>
+
+        <label>Password:</label>
+        <input type="text" name="userPassword" th:value="${employee.userPassword}" required>
+
+        <br><br>
+
+        <button type="submit">Save changes</button>
+
+    </form>
+
+    <br>
+    <a th:href="@{/userOptions}">Back</a>
+
 </div>
-
-<form th:action="@{/updateEmployee/{id}(id=${employee.employeeID})}" method="post">
-
-    <label>Name:</label>
-    <input type="text" name="employeeName" th:value="${employee.employeeName}" required>
-
-    <br>
-
-    <label>Username:</label>
-    <input type="text" name="userName" th:value="${employee.userName}" required>
-
-    <br>
-
-    <label>Password:</label>
-    <input type="text" name="userPassword" th:value="${employee.userPassword}" required>
-
-    <br><br>
-
-    <button type="submit">Save changes</button>
-
-</form>
-
-<br>
-<a th:href="@{/userOptions}">Back</a>
-
-
 </body>
 </html>

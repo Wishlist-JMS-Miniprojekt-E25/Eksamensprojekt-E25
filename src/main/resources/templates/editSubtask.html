@@ -2,49 +2,64 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+
     <title>Edit Subtask</title>
 </head>
 <body>
+<header class="header">
+    <div class="header-left">
+        <a th:href="@{/archivedProjects}" class="btn btn-secondary">
+            View archived projects
+        </a>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secondary">Log out</button>
+        </form>
+    </div>
+</header>
+<div class="page">
 
     <h2>Edit Subtask</h2>
 
     <!--        Viser en fejlbesked, hvis der sker en fejl-->
-<div th:if="${errorMessage}">
-    <p th:text="${errorMessage}"></p>
-</div>
+    <div th:if="${errorMessage}">
+        <p th:text="${errorMessage}"></p>
+    </div>
 
-<form th:action="@{/updateSubtask}" th:object="${subtask}" method="post">
-    <input type="hidden" th:field="*{subtaskID}">
-    <input type="hidden" th:field="*{timeslot.timeslotID}">
-    <input type="hidden" th:field="*{task.taskID}">
+    <form th:action="@{/updateSubtask}" th:object="${subtask}" method="post">
+        <input type="hidden" th:field="*{subtaskID}">
+        <input type="hidden" th:field="*{timeslot.timeslotID}">
+        <input type="hidden" th:field="*{task.taskID}">
 
-    <label>Name</label>
-    <input type="text" th:field="*{subtaskName}">
+        <label>Name</label>
+        <input type="text" th:field="*{subtaskName}">
 
-    <label>Description</label>
-    <input type="text" th:field="*{subtaskDescription}">
+        <label>Description</label>
+        <input type="text" th:field="*{subtaskDescription}">
 
-    <label>Planned Start Date</label>
-    <input type="date" th:field="*{timeslot.plannedStartDate}">
+        <label>Planned Start Date</label>
+        <input type="date" th:field="*{timeslot.plannedStartDate}">
 
-    <label>Planned Finish Date</label>
-    <input type="date" th:field="*{timeslot.plannedFinishDate}">
+        <label>Planned Finish Date</label>
+        <input type="date" th:field="*{timeslot.plannedFinishDate}">
 
-    <p>Assign employee</p>
-    <div th:each="employee : ${subtask.task.assignedEmployees}">
-        <label>
-            <input type="radio"
-                   th:field="*{assignedEmployee.employeeID}"
-                   th:value="${employee.employeeID}"
-                   th:checked="${subtask.assignedEmployee.employeeID == employee.employeeID}">
-            <span th:text="${employee.employeeName}">
+        <p>Assign employee</p>
+        <div th:each="employee : ${subtask.task.assignedEmployees}">
+            <label>
+                <input type="radio"
+                       th:field="*{assignedEmployee.employeeID}"
+                       th:value="${employee.employeeID}"
+                       th:checked="${subtask.assignedEmployee.employeeID == employee.employeeID}">
+                <span th:text="${employee.employeeName}">
                    </span>
-        </label>
-    </div>
-    <div>
-        <button type="submit">Save</button>
-        <a th:href="@{/task/{taskID}(taskID=${subtask.task.taskID})}">Cancel</a>
-    </div>
-</form>
+            </label>
+        </div>
+        <div>
+            <button type="submit">Save</button>
+            <a th:href="@{/task/{taskID}(taskID=${subtask.task.taskID})}">Cancel</a>
+        </div>
+    </form>
+</div>
 </body>
 </html>

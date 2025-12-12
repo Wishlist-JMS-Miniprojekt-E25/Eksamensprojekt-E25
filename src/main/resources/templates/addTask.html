@@ -2,49 +2,72 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+
     <title>Add Task</title>
 </head>
 <body>
+<header class="header">
+    <div class="header-left">
+        <a th:href="@{/archivedProjects}" class="btn btn-secondary">
+            View archived projects
+        </a>
 
-<main>
-    <div>
-        <h2>Add Task</h2>
-        <!--        Viser en fejlbesked, hvis der sker en fejl-->
-        <div th:if="${errorMessage}">
-            <p th:text="${errorMessage}"></p>
-        </div>
-
-        <form th:action="@{/saveTask}" th:object="${task}" method="post">
-
-            <input type="hidden" name="projectID" th:value="${task.project.projectID}">
-
-            <label>Task Name</label>
-            <input type="text" th:field="*{taskName}" required>
-
-            <label>Description</label>
-            <input type="text" th:field="*{taskDescription}">
-
-            <label>Planned Start Date</label>
-            <input type="date" name="plannedStartDate" required>
-
-            <label>Planned Finish Date</label>
-            <input type="date" name="plannedFinishDate" required>
-
-            <p>Assign employees</p>
-            <div th:each="employee : ${task.project.assignedEmployees}">
-                <label>
-                    <input type="checkbox"
-                           name="assignedEmployeeIDs"
-                           th:value="${employee.employeeID}">
-                    <span th:text="${employee.employeeName}"></span>
-                </label>
-            </div>
-            <div>
-                <button type="submit">Save</button>
-                <a th:href="@{/project/{projectID}(projectID=${projectID})}">Cancel</a>
-            </div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secondary">Log out</button>
         </form>
     </div>
-</main>
+</header>
+<div class="page">
+    <main>
+        <div>
+            <!--        Viser en fejlbesked, hvis der sker en fejl-->
+            <div th:if="${errorMessage}">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <div class="section-header">
+                <h3>Tasks</h3>
+                <a th:href="@{/addTask/{projectID}(projectID=${project.projectID})}"
+                   class="btn btn-primary">
+                    + Add task
+                </a>
+            </div>
+
+
+            <form th:action="@{/saveTask}" th:object="${task}" method="post">
+
+                <input type="hidden" name="projectID" th:value="${task.project.projectID}">
+
+                <label>Task Name</label>
+                <input type="text" th:field="*{taskName}" required>
+
+                <label>Description</label>
+                <input type="text" th:field="*{taskDescription}">
+
+                <label>Planned Start Date</label>
+                <input type="date" name="plannedStartDate" required>
+
+                <label>Planned Finish Date</label>
+                <input type="date" name="plannedFinishDate" required>
+
+                <p>Assign employees</p>
+                <div th:each="employee : ${task.project.assignedEmployees}">
+                    <label>
+                        <input type="checkbox"
+                               name="assignedEmployeeIDs"
+                               th:value="${employee.employeeID}">
+                        <span th:text="${employee.employeeName}"></span>
+                    </label>
+                </div>
+                <div>
+                    <button type="submit">Save</button>
+                    <a th:href="@{/project/{projectID}(projectID=${projectID})}">Cancel</a>
+                </div>
+
+
+            </form>
+        </div>
+    </main>
+</div>
 </body>
 </html>

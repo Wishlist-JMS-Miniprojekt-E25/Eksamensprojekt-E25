@@ -2,117 +2,133 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+
     <title>Task/Subtasks</title>
 </head>
 <body>
-<h1 th:text="${loggedInEmployee.employeeName} + 's task and subtasks'"></h1>
-<a th:href="@{/project/{projectID}(projectID=${task.project.projectID})}">← Go back</a>
-<br> <br>
-<!-- tabellen, der viser det enkelte projekt -->
-<h3>Project</h3>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Assignees</th>
-        <th>Project Manager</th>
-        <th>Planned Days</th>
-        <th>Planned Start Date</th>
-        <th>Planned Finish Date</th>
-        <th>Total workhours</th>
-        <th></th>
-        <th></th>
-    </tr>
-    <tr>
-        <td th:text="${task.project.projectID}"></td>
-        <td th:text="${task.project.projectName}"></td>
-        <td th:text="${task.project.projectDescription}"></td>
-        <td>
-            <div th:each="assignedEmployee: ${task.project.assignedEmployees}"
-                 th:text="${assignedEmployee.employeeName}"></div>
-            <br> <br>
-        </td>
-        <td th:text="${task.project.projectManager.employeeName}"></td>
-        <td th:text="${task.project.timeslot.getPlannedDays}"></td>
-        <td th:text="${task.project.timeslot.plannedStartDate}"></td>
-        <td th:text="${task.project.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${task.project.timeslot.totalWorkhours}"></td>
-    </tr>
-</table>
-<br>
-<!-- tabellen, der viser den enkelte task -->
-<h3>Tasks</h3>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Assignees</th>
-        <th>Planned Days</th>
-        <th>Planned Start Date</th>
-        <th>Planned Finish Date</th>
-        <th>Total workhours</th>
-    </tr>
-    <tr>
-        <td th:text="${task.taskID}"></td>
-        <td th:text="${task.taskName}"></td>
-        <td th:text="${task.taskDescription}"></td>
-        <td>
-            <div th:each="assignedEmployee: ${task.assignedEmployees}"
-                 th:text="${assignedEmployee.employeeName}"></div>
-            <br> <br>
-        </td>
-        <td th:text="${task.timeslot.getPlannedDays}"></td>
-        <td th:text="${task.timeslot.plannedStartDate}"></td>
-        <td th:text="${task.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${task.timeslot.totalWorkhours}"></td>
-    </tr>
-</table>
-<br> <br> <br>
-<div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
-    <a th:href="@{/task/{taskID}/addSubtask(taskID=${task.taskID})}">+ Add subtask</a>
+<header class="header">
+    <div class="header-left">
+        <a th:href="@{/archivedProjects}" class="btn btn-secondary">
+            View archived projects
+        </a>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secondary">Log out</button>
+        </form>
+    </div>
+</header>
+
+<div class="page">
+    <h1 th:text="${loggedInEmployee.employeeName} + 's task and subtasks'"></h1>
+    <a th:href="@{/project/{projectID}(projectID=${task.project.projectID})}" class="btn btn-secondary">← Go back</a>
+    <br> <br>
+    <!-- tabellen, der viser det enkelte projekt -->
+    <h3>Project</h3>
+    <table class="project">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Assignees</th>
+            <th>Project Manager</th>
+            <th>Planned Days</th>
+            <th>Planned Start Date</th>
+            <th>Planned Finish Date</th>
+            <th>Total workhours</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr>
+            <td th:text="${task.project.projectID}"></td>
+            <td th:text="${task.project.projectName}"></td>
+            <td th:text="${task.project.projectDescription}"></td>
+            <td>
+                <div th:each="assignedEmployee: ${task.project.assignedEmployees}"
+                     th:text="${assignedEmployee.employeeName}"></div>
+                <br> <br>
+            </td>
+            <td th:text="${task.project.projectManager.employeeName}"></td>
+            <td th:text="${task.project.timeslot.getPlannedDays}"></td>
+            <td th:text="${task.project.timeslot.plannedStartDate}"></td>
+            <td th:text="${task.project.timeslot.getPlannedFinishDate}"></td>
+            <td th:text="${task.project.timeslot.totalWorkhours}"></td>
+        </tr>
+    </table>
+    <br>
+    <!-- tabellen, der viser den enkelte task -->
+    <h3>Tasks</h3>
+    <table class="task">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Assignees</th>
+            <th>Planned Days</th>
+            <th>Planned Start Date</th>
+            <th>Planned Finish Date</th>
+            <th>Total workhours</th>
+        </tr>
+        <tr>
+            <td th:text="${task.taskID}"></td>
+            <td th:text="${task.taskName}"></td>
+            <td th:text="${task.taskDescription}"></td>
+            <td>
+                <div th:each="assignedEmployee: ${task.assignedEmployees}"
+                     th:text="${assignedEmployee.employeeName}"></div>
+                <br> <br>
+            </td>
+            <td th:text="${task.timeslot.getPlannedDays}"></td>
+            <td th:text="${task.timeslot.plannedStartDate}"></td>
+            <td th:text="${task.timeslot.getPlannedFinishDate}"></td>
+            <td th:text="${task.timeslot.totalWorkhours}"></td>
+        </tr>
+    </table>
+    <br> <br> <br>
+    <div class="section-header" th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
+        <a th:href="@{/task/{taskID}/addSubtask(taskID=${task.taskID})}">+ Add subtask</a>
+    </div>
+    <h3>Subtasks</h3>
+    <table class="subtask">
+        <tr th:if="${task.subtasks == null or task.subtasks.isEmpty()}">There are no subtasks for this task</tr>
+        <tr th:if="${task.subtasks != null and !task.subtasks.isEmpty()}">
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Assignees</th>
+            <th>Planned Days</th>
+            <th>Planned Start Date</th>
+            <th>Planned Finish Date</th>
+            <th>Total workhours</th>
+        </tr>
+        <tr th:each="subtask: ${task.subtasks}">
+            <td th:text="${subtask.subtaskID}"></td>
+            <td th:text="${subtask.subtaskName}"></td>
+            <td th:text="${subtask.subtaskDescription}"></td>
+            <td th:text="${subtask.assignedEmployee.employeeName}"></td>
+            <td th:text="${subtask.timeslot.getPlannedDays}"></td>
+            <td th:text="${subtask.timeslot.plannedStartDate}"></td>
+            <td th:text="${subtask.timeslot.getPlannedFinishDate}"></td>
+            <td th:text="${subtask.timeslot.totalWorkhours}"></td>
+            <td>
+                <div>
+                    <a th:href="@{/subtaskWorkhours/{subtaskID}(subtaskID=${subtask.subtaskID})}">Finalize</a>
+                </div>
+            </td>
+            <td>
+                <a th:href="@{/editSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}">Edit</a>
+            </td>
+            <td>
+                <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
+                    <form th:action="@{/deleteSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}"
+                          method="post"
+                          onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>
-<h3>Subtasks</h3>
-<table>
-    <tr th:if="${task.subtasks == null or task.subtasks.isEmpty()}">There are no subtasks for this task</tr>
-    <tr th:if="${task.subtasks != null and !task.subtasks.isEmpty()}">
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Assignees</th>
-        <th>Planned Days</th>
-        <th>Planned Start Date</th>
-        <th>Planned Finish Date</th>
-        <th>Total workhours</th>
-    </tr>
-    <tr th:each="subtask: ${task.subtasks}">
-        <td th:text="${subtask.subtaskID}"></td>
-        <td th:text="${subtask.subtaskName}"></td>
-        <td th:text="${subtask.subtaskDescription}"></td>
-        <td th:text="${subtask.assignedEmployee.employeeName}"></td>
-        <td th:text="${subtask.timeslot.getPlannedDays}"></td>
-        <td th:text="${subtask.timeslot.plannedStartDate}"></td>
-        <td th:text="${subtask.timeslot.getPlannedFinishDate}"></td>
-        <td th:text="${subtask.timeslot.totalWorkhours}"></td>
-        <td>
-            <div>
-                <a th:href="@{/subtaskWorkhours/{subtaskID}(subtaskID=${subtask.subtaskID})}">Finalize</a>
-            </div>
-        </td>
-        <td>
-            <a th:href="@{/editSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}">Edit</a>
-        </td>
-        <td>
-            <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
-                <form th:action="@{/deleteSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}"
-                      method="post"
-                      onsubmit="return confirm('Are you sure you want to delete? This action can not be undone.');">
-                    <button type="submit">Delete</button>
-                </form>
-            </div>
-        </td>
-    </tr>
-</table>
 </body>
 </html>
