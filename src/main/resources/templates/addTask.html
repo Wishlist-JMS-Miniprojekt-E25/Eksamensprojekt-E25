@@ -43,7 +43,7 @@
                 <label>Planned Finish Date</label>
                 <input type="date" name="plannedFinishDate" required>
 
-                <p>Assign employees</p>
+                <p>Assign employees to task</p>
                 <div th:each="employee : ${task.project.assignedEmployees}">
                     <label>
                         <input type="checkbox"

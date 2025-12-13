@@ -23,14 +23,10 @@ body {
     left: 0;
     right: 0;
     height: 64px;
-    background: linear-gradient(
-            133deg,
-            rgba(31, 58, 77, 1) 0%,
-            rgba(33, 130, 119, 1) 100%
-    );
+    background: linear-gradient(133deg, rgba(31, 58, 77, 1) 0%, rgba(33, 130, 119, 1) 100%);
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* 👈 flytter alt til højre */
+    justify-content: flex-end;
     padding: 0 24px;
     z-index: 1000;
 }
@@ -40,9 +36,8 @@ body {
     gap: 12px;
 }
 
-
 /* =========================
-   PAGE CONTAINER
+   PAGE
    ========================= */
 
 .page {
@@ -50,8 +45,6 @@ body {
     margin: 100px 0 0;
     padding: 32px 48px;
     background: transparent;
-    border-radius: 0;
-    box-shadow: none;
 }
 
 /* =========================
@@ -69,7 +62,8 @@ body {
     font-weight: 500;
     cursor: pointer;
     text-decoration: none;
-    transition: background 0.2s ease, transform 0.1s ease;
+    transition: transform 0.1s ease, opacity 0.2s ease, background 0.2s ease;
+    line-height: 1;
 }
 
 .btn:hover {
@@ -77,11 +71,7 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(
-            133deg,
-            rgba(31, 58, 77, 1) 0%,
-            rgba(33, 130, 119, 1) 100%
-    );
+    background: linear-gradient(133deg, rgba(31, 58, 77, 1) 0%, rgba(33, 130, 119, 1) 100%);
     color: white;
 }
 
@@ -89,14 +79,13 @@ body {
     opacity: 0.9;
 }
 
-
 .btn-secondary {
-    background: rgba(255,255,255,0.18);
+    background: rgba(255, 255, 255, 0.18);
     color: white;
 }
 
 .btn-secondary:hover {
-    background: rgba(255,255,255,0.28);
+    background: rgba(255, 255, 255, 0.28);
 }
 
 .btn-danger {
@@ -104,23 +93,80 @@ body {
     color: white;
 }
 
-.actions {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    white-space: nowrap;
+.btn-danger:hover {
+    opacity: 0.9;
 }
 
+/* =========================
+   BREADCRUMB (Styled)
+   ========================= */
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    flex-wrap: wrap;
+    color: #1f3a4d;
+}
+
+.breadcrumb a,
+.breadcrumb span {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(31, 58, 77, 0.08);
+    color: #1f3a4d;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+    background: rgba(31, 58, 77, 0.16);
+    color: #1f3a4d;
+    text-decoration: none;
+}
+
+/* Separator */
+.breadcrumb .separator {
+    padding: 0;
+    background: none;
+    color: #6b7280;
+}
 
 /* =========================
    SECTION HEADERS
    ========================= */
 
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 32px 0 16px;
+.project-box{
+    margin-top: 10px;
+    padding: 1px 10px 1px 10px;
+    border-radius: 6px;
+    background-color: #81a6a4;
+
+}
+
+.task-box {
+    margin-top: 10px;
+    padding: 1px 10px 1px 10px;
+    border-radius: 6px;
+    background-color: #b2ccca;
+
+}
+
+.subtask-box {
+    margin-top: 10px;
+    padding: 1px 10px 1px 10px;
+    border-radius: 6px;
+    background-color: #d1eae7;
+
 }
 
 /* =========================
@@ -134,11 +180,7 @@ table {
 }
 
 th {
-    background: linear-gradient(
-            133deg,
-            rgba(31, 58, 77, 1) 0%,
-            rgba(33, 130, 119, 1) 100%
-    );
+    background: rgba(33, 130, 119, 1);
     color: white;
     padding: 14px;
     text-align: left;
@@ -151,28 +193,26 @@ td {
     vertical-align: top;
 }
 
-tr:hover td {
-    background: #f8faff;
-}
+
 
 /* =========================
-   HERO (FRONTPAGE)
+   ACTIONS COLUMN
    ========================= */
 
-.hero {
-    text-align: center;
-    padding: 80px 20px;
+th.actions-col,
+td.actions-col {
+    width: 240px;
 }
 
-.hero h1 {
-    font-size: 42px;
-    margin-bottom: 16px;
+.actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.hero p {
-    font-size: 18px;
-    opacity: 0.8;
-    margin-bottom: 24px;
+.actions form {
+    margin: 0;
 }
 
 /* =========================
@@ -180,84 +220,10 @@ tr:hover td {
    ========================= */
 
 a {
-    color: #4f46e5;
+    color: #2c6bed;
     text-decoration: none;
 }
 
 a:hover {
     text-decoration: underline;
-}
-
-/* =========================
-   TABLE HEADER (Task + Add)
-   ========================= */
-
-.table-header {
-    display: grid;
-    grid-template-columns: 1fr 200px; /* matcher Actions-kolonnen */
-    margin: 32px 0 12px;
-}
-
-.table-header h3 {
-    margin: 0;
-}
-
-.table-header .btn {
-    justify-self: stretch;
-    text-align: center;
-    width: 100%;
-}
-
-
-/* Actions column width */
-td.actions {
-    width: 200px;
-}
-
-/* =========================
-   TASK TABLE HEADER ALIGNMENT
-   ========================= */
-
-.task-header {
-    display: grid;
-    grid-template-columns:
-        120px  /* View task */
-        60px   /* ID */
-        160px  /* Name */
-        200px  /* Description */
-        160px  /* Assignees */
-        220px  /* Amount of subtasks */
-        140px  /* Planned Days */
-        180px  /* Start */
-        180px  /* Finish */
-        160px  /* Total */
-        200px; /* Actions */
-
-    align-items: center;
-    margin: 32px 0 12px;
-}
-
-.task-header h3 {
-    grid-column: 1 / span 10; /* Task-tekst over alle kolonner før Actions */
-    margin: 0;
-}
-
-.task-header .btn {
-    grid-column: 11; /* præcis over Actions */
-    width: 100%;
-}
-.subtask-header {
-    display: grid;
-    grid-template-columns: 1fr 200px; /* 200px matcher Actions */
-    align-items: center;
-    margin: 32px 0 12px;
-}
-
-.subtask-header h3 {
-    margin: 0;
-}
-
-.subtask-header .btn {
-    justify-self: stretch;
-    text-align: center;
 }

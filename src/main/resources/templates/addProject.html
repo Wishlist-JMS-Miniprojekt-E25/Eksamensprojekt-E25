@@ -40,7 +40,7 @@
 
             <form th:action="@{/saveProject}" th:object="${project}" method="post">
 
-                <label>Name</label>
+                <label>Project Name</label>
                 <input type="text" th:field="*{projectName}" required>
 
                 <label>Description</label>
@@ -52,7 +52,7 @@
                 <label>Planned Finish Date</label>
                 <input type="date" name="plannedFinishDate" required>
 
-                <p>Assign employees</p>
+                <p>Assign employees to project</p>
                 <div th:each="employee : ${allEmployees}">
                     <label>
                         <input type="checkbox"
