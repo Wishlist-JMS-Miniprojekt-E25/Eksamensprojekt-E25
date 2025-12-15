@@ -5,19 +5,13 @@ INSERT INTO timeSlot
 (plannedDays, plannedStartDate, plannedFinishDate, actualFinishDate, differenceInDays, totalWorkhours, isDone)
 
 VALUES 
-(30, "2024-11-25", "2024-12-25", "2024-12-20" , 5, 200, TRUE),
-(30, "2024-12-25", "2025-01-25", "2025-01-25" , 0, 240, TRUE),
 (30, "2025-11-20", "2025-11-25", NULL, NULL, NULL, false),
 (30, "2025-11-20", "2025-12-20", NULL, NULL, NULL, false),
 (30, "2025-12-20", "2026-01-20", NULL, NULL, NULL, false),
-(30, "2026-01-20", "2026-02-20", "2026-02-25", 5, 280, TRUE),
 (30, "2026-02-20", "2026-03-20", NULL, NULL, NULL, false),
 (30, "2026-03-20", "2026-04-20", NULL, NULL, NULL, false),
 (30, "2026-04-20", "2026-05-20", NULL, NULL, NULL, false),
 (30, "2026-05-20", "2026-06-20", NULL, NULL, NULL, false),
-(30, "2026-06-20", "2026-07-20", "2026-07-20", 0, 240, TRUE),
-(30, "2026-07-20", "2026-08-20", "2026-08-30", 10, 320, TRUE),
-(30, "2026-08-20", "2026-09-20", "2026-09-20", 0, 240, TRUE),
 (30, "2026-10-20", "2026-11-20", NULL, NULL, NULL, false),
 (30, "2026-11-10", "2026-12-10", NULL, NULL, NULL, false),
 (30, "2026-12-10", "2027-01-10", NULL, NULL, NULL, false),
@@ -74,7 +68,8 @@ VALUES
 (30, "2027-07-10", "2027-08-10", NULL, NULL, NULL, false),
 (30, "2027-08-10", "2027-09-10", NULL, NULL, NULL, false),
 (30, "2027-10-10", "2027-11-10", NULL, NULL, NULL, false),
-(30, "2028-01-15", "2028-02-15", NULL, NULL, NULL, false),
+(30, "2027-10-10", "2027-11-10", NULL, NULL, NULL, false),
+(30, "2028-01-15", "2028-02-15", "2028-02-15", 0, 240, TRUE),
 (30, "2026-06-20", "2026-07-20", "2026-07-20", 0, 240, TRUE),
 (30, "2026-07-20", "2026-08-20", "2026-08-30", 10, 320, TRUE),
 (30, "2026-08-20", "2026-09-20", "2026-09-20", 0, 240, TRUE),
@@ -88,7 +83,6 @@ VALUES
 (30, "2026-07-20", "2026-08-20", "2026-08-30", 10, 320, TRUE),
 (30, "2026-08-20", "2026-09-20", "2026-09-20", 0, 240, TRUE),
 (30, "2026-06-20", "2026-07-20", "2026-07-20", 0, 240, TRUE),
-(30, "2026-07-20", "2026-08-20", "2026-08-30", 10, 320, TRUE),
 (30, "2026-07-20", "2026-08-20", "2026-08-30", 10, 320, TRUE),
 (30, "2026-07-20", "2026-08-20", "2026-08-30", 10, 320, TRUE),
 (30, "2026-07-20", "2026-08-20", "2026-08-30", 10, 320, TRUE),
@@ -136,9 +130,9 @@ INSERT INTO project
 (projectName, projectDescription, projectManagerID ,timeSlotID)
 
 VALUES 
-('Wishlist app', 	'Byg en ønskeliste hjemmeside', 1, 3),
-('Turistguide app', 'Lav en turistguide', 2, 5),
-('Byg hus', 	'Byg et stort hus', 1, 4);
+('Wishlist app', 	'Byg en ønskeliste hjemmeside', 1, 1),
+('Turistguide app', 'Lav en turistguide', 2, 2),
+('Byg hus', 	'Byg et stort hus', 1, 3);
 	
     
 -- ---------------------------------------------------------
@@ -173,18 +167,18 @@ INSERT INTO task
 (taskName, taskDescription, timeslotID, projectID)
 
 VALUES 
-('Userstory 1', 'add wish', 7, 1),
-('Userstory 2', 'delete wish', 8, 1),
-('Userstory 3', 'delete wish', 9, 1),
-('Userstory 4', 'delete wish', 10, 1),
-('Userstory 1', 'add attraction', 9, 2),
-('Userstory 2', 'delete attraction', 14, 2),
-('Userstory 3', 'delete attraction', 15, 2),
-('Userstory 4', 'delete attraction', 16, 2),
-('Task 1', 'build foundation', 17, 3),
-('Task 2', 'place rooftiles', 18, 3),
-('Task 3', 'build foundation', 19, 3),
-('Task 4', 'place rooftiles', 20, 3);
+('Userstory 1', 'add wish', 4, 1),
+('Userstory 2', 'delete wish', 5, 1),
+('Userstory 3', 'delete wish', 6, 1),
+('Userstory 4', 'delete wish', 7, 1),
+('Userstory 1', 'add attraction', 8, 2),
+('Userstory 2', 'delete attraction', 9, 2),
+('Userstory 3', 'delete attraction', 10, 2),
+('Userstory 4', 'delete attraction', 11, 2),
+('Task 1', 'build foundation', 12, 3),
+('Task 2', 'place rooftiles', 13, 3),
+('Task 3', 'build foundation', 14, 3),
+('Task 4', 'place rooftiles', 15, 3);
 
 -- ---------------------------------------------------------
 -- ---------------------------------------------------------
@@ -226,55 +220,55 @@ INSERT INTO subtask
 (subtaskName, subtaskDescription, timeslotID, taskID, employeeID)
 
 VALUES 
-('GetMapping metode', 'controller metode', 21, 1, 3),
-('PostMapping metode', 'controller metode', 22, 1, 4),
-('PostMapping metode', 'controller metode', 23, 1, 3),
-('add wish metode', 'Repo/service metode', 24, 1, 4),
-('delete wish metode', 'Repo/service metode', 25, 2, 5),
-('GetMapping metode', 'controller metode', 26, 2, 6),
-('PostMapping metode', 'controller metode', 27, 2, 5),
-('PostMapping metode', 'controller metode', 28, 2, 6),
-('delete attraction metode', 'Repo metode', 29, 4, 5),
-('delete attraction metode', 'Service metode', 30, 4, 6),
-('get needed wood', 'x amount needed', 31, 4, 7),
-('assembly of wood', 'x with x and y with y', 32, 4, 7),
-('prep roof', 'use x to do so', 33, 5, 8),
-('prep rooftiles', 'collect all rooftiles', 34, 5, 9),
-('move rooftiles', 'to x spot on the roof', 35, 5, 8),
-('GetMapping metode', 'controller metode', 36, 5, 9),
-('PostMapping metode', 'controller metode', 37, 6, 1),
-('PostMapping metode', 'controller metode', 38, 6, 11),
-('add wish metode', 'Repo/service metode', 39, 6, 12),
-('delete wish metode', 'Repo/service metode', 40, 6, 1),
-('GetMapping metode', 'controller metode', 41, 7, 8),
-('PostMapping metode', 'controller metode', 42, 7, 9),
-('PostMapping metode', 'controller metode', 43, 7, 8),
-('delete attraction metode', 'Repo metode', 44, 7, 9),
-('delete attraction metode', 'Service metode', 45, 8, 12),
-('get needed wood', 'x amount needed', 46, 8, 1),
-('assembly of wood', 'x with x and y with y', 47, 8, 12),
-('prep roof', 'use x to do so', 48, 8, 1),
-('prep rooftiles', 'collect all rooftiles', 49, 9, 2),
-('move rooftiles', 'to x spot on the roof', 50, 9, 13),
-('GetMapping metode', 'controller metode', 51, 9, 2),
-('PostMapping metode', 'controller metode', 52, 9, 13),
-('PostMapping metode', 'controller metode', 53, 10, 2),
-('add wish metode', 'Repo/service metode', 54, 10, 17),
-('delete wish metode', 'Repo/service metode', 55, 10, 2),
-('GetMapping metode', 'controller metode', 56, 10, 17),
-('PostMapping metode', 'controller metode', 57, 11, 15),
-('PostMapping metode', 'controller metode', 58, 11, 16),
-('delete attraction metode', 'Repo metode', 59, 11, 15),
-('delete attraction metode', 'Service metode', 60, 11, 16),
-('get needed wood', 'x amount needed', 61, 12, 2),
-('assembly of wood', 'x with x and y with y', 62, 12, 14),
-('prep roof', 'use x to do so', 63, 12, 2),
-('prep rooftiles', 'collect all rooftiles', 64, 12, 14),
-('move rooftiles', 'to x spot on the roof', 65, 12, 2),
-('GetMapping metode', 'controller metode', 66, 3, 1),
-('PostMapping metode', 'controller metode', 67, 3, 5),
-('PostMapping metode', 'controller metode', 68, 3, 1),
-('delete attraction metode', 'Repo metode', 69, 3, 5);
+('GetMapping metode', 'controller metode', 16, 1, 3),
+('PostMapping metode', 'controller metode', 17, 1, 4),
+('PostMapping metode', 'controller metode', 18, 1, 3),
+('add wish metode', 'Repo/service metode', 19, 1, 4),
+('delete wish metode', 'Repo/service metode', 20, 2, 5),
+('GetMapping metode', 'controller metode', 21, 2, 6),
+('PostMapping metode', 'controller metode', 22, 2, 5),
+('PostMapping metode', 'controller metode', 23, 2, 6),
+('delete attraction metode', 'Repo metode', 24, 4, 5),
+('delete attraction metode', 'Service metode', 25, 4, 6),
+('get needed wood', 'x amount needed', 26, 4, 7),
+('assembly of wood', 'x with x and y with y', 27, 4, 7),
+('prep roof', 'use x to do so', 28, 5, 8),
+('prep rooftiles', 'collect all rooftiles', 29, 5, 9),
+('move rooftiles', 'to x spot on the roof', 30, 5, 8),
+('GetMapping metode', 'controller metode', 31, 5, 9),
+('PostMapping metode', 'controller metode', 32, 6, 1),
+('PostMapping metode', 'controller metode', 33, 6, 11),
+('add wish metode', 'Repo/service metode', 34, 6, 12),
+('delete wish metode', 'Repo/service metode', 35, 6, 1),
+('GetMapping metode', 'controller metode', 36, 7, 8),
+('PostMapping metode', 'controller metode', 37, 7, 9),
+('PostMapping metode', 'controller metode', 38, 7, 8),
+('delete attraction metode', 'Repo metode', 39, 7, 9),
+('delete attraction metode', 'Service metode', 40, 8, 12),
+('get needed wood', 'x amount needed', 41, 8, 1),
+('assembly of wood', 'x with x and y with y', 42, 8, 12),
+('prep roof', 'use x to do so', 43, 8, 1),
+('prep rooftiles', 'collect all rooftiles', 44, 9, 2),
+('move rooftiles', 'to x spot on the roof', 45, 9, 13),
+('GetMapping metode', 'controller metode', 46, 9, 2),
+('PostMapping metode', 'controller metode', 47, 9, 13),
+('PostMapping metode', 'controller metode', 48, 10, 2),
+('add wish metode', 'Repo/service metode', 49, 10, 17),
+('delete wish metode', 'Repo/service metode', 50, 10, 2),
+('GetMapping metode', 'controller metode', 51, 10, 17),
+('PostMapping metode', 'controller metode', 52, 11, 15),
+('PostMapping metode', 'controller metode', 53, 11, 16),
+('delete attraction metode', 'Repo metode', 54, 11, 15),
+('delete attraction metode', 'Service metode', 55, 11, 16),
+('get needed wood', 'x amount needed', 56, 12, 2),
+('assembly of wood', 'x with x and y with y', 57, 12, 14),
+('prep roof', 'use x to do so', 58, 12, 2),
+('prep rooftiles', 'collect all rooftiles', 59, 12, 14),
+('move rooftiles', 'to x spot on the roof', 60, 12, 2),
+('GetMapping metode', 'controller metode', 61, 3, 1),
+('PostMapping metode', 'controller metode', 62, 3, 5),
+('PostMapping metode', 'controller metode', 63, 3, 1),
+('delete attraction metode', 'Repo metode', 64, 3, 5);
 
 -- ----------------------------------------------------------
 -- ----------------------------------------------------------
@@ -283,8 +277,8 @@ INSERT INTO archivedproject
 (projectID, projectManagerID, projectName, projectDescription, timeslotID)
 
 VALUES
-(4, 1, 'test', 'test', 70),
-(5, 1, 'test2', 'test2', 71);
+(4, 1, 'test', 'test', 65),
+(5, 1, 'test2', 'test2', 66);
 
 -- ---------------------------------------------------------------
 -- ----------------------------------------------------------------
@@ -293,12 +287,12 @@ INSERT INTO archivedtask
 (taskID, taskName, taskDescription, timeslotID, projectID)
 
 VALUES
-(13, 'test', 'test', 72, 4),
-(14, 'test2', 'test2', 73, 4),
-(15, 'test3', 'test3', 74, 4),
-(16, 'test', 'test', 75, 5),
-(17, 'test2', 'test2', 76, 5),
-(18, 'test3', 'test3', 77, 5);
+(13, 'test', 'test', 67, 4),
+(14, 'test2', 'test2', 68, 4),
+(15, 'test3', 'test3', 69, 4),
+(16, 'test', 'test', 70, 5),
+(17, 'test2', 'test2', 71, 5),
+(18, 'test3', 'test3', 72, 5);
 
 -- --------------------------------------------------------------
 -- ---------------------------------------------------------------
@@ -307,21 +301,21 @@ INSERT INTO archivedsubtask
 (subtaskID, subtaskName, subtaskDescription, timeslotID, taskID, employeeID)
 
 VALUES
-(50, 'test', 'test', 78, 13, 2),
-(51, 'test2', 'test2', 79, 13, 2),
-(52, 'test3', 'test3', 80, 13, 2),
-(53, 'test', 'test', 81, 13, 2),
-(54, 'test2', 'test2', 82, 13, 2),
-(55, 'test3', 'test3', 83, 13, 2),
-(56, 'test', 'test', 84, 13, 2),
-(57, 'test2', 'test2', 85, 13, 2),
-(58, 'test3', 'test3', 86, 13, 2),
-(59, 'test', 'test', 87, 13, 2),
-(60, 'test2', 'test2', 88, 13, 2),
-(61, 'test3', 'test3', 89, 13, 2),
-(62, 'test', 'test', 78, 90, 2),
-(63, 'test2', 'test2', 91, 13, 2),
-(64, 'test3', 'test3', 92, 13, 2),
-(65, 'test', 'test', 78, 93, 2),
-(66, 'test2', 'test2', 78, 94, 2),
-(67, 'test3', 'test3', 78, 95, 2);
+(50, 'test', 'test', 73, 13, 2),
+(51, 'test2', 'test2', 74, 13, 2),
+(52, 'test3', 'test3', 75, 13, 2),
+(53, 'test', 'test', 76, 14, 2),
+(54, 'test2', 'test2', 77, 14, 2),
+(55, 'test3', 'test3', 78, 14, 2),
+(56, 'test', 'test', 79, 15, 2),
+(57, 'test2', 'test2', 80, 15, 2),
+(58, 'test3', 'test3', 81, 15, 2),
+(59, 'test', 'test', 82, 16, 2),
+(60, 'test2', 'test2', 83, 16, 2),
+(61, 'test3', 'test3', 84, 16, 2),
+(62, 'test', 'test', 85, 17, 2),
+(63, 'test2', 'test2', 86, 17, 2),
+(64, 'test3', 'test3', 87, 17, 2),
+(65, 'test', 'test', 88, 18, 2),
+(66, 'test2', 'test2', 89, 18, 2),
+(67, 'test3', 'test3', 90, 18, 2);
