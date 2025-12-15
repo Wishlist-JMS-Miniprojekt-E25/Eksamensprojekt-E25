@@ -81,7 +81,9 @@
             </div>
         </td>
         <td>
-            <a th:href="@{/editTask/{taskID}(taskID=${task.taskID})}">Edit</a>
+            <div th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}">
+                <a th:href="@{/editTask/{taskID}(taskID=${task.taskID})}">Edit</a>
+            </div>
         </td>
         <td>
             <div th:if="${project.projectManager.employeeID == loggedInEmployee.employeeID}">
