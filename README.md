@@ -14,13 +14,13 @@ Husk at konfigurere dine "Environment variables", så du er forbundet til din lo
 CanWeMakeIT er et meget intuitivt planlægningsværktøj med en GUI, så det er nemt at navigere i. De forskellige funktionaliteter er mere eller mindre beskrevet 1 til 1 på de knapper man interagerer med.  
 
 ### Key feature:  
-Når man afslutter projekter, bliver de arkiveret, og man kan gå ind og se dem på samme måde, som man kan se de aktive projekter. Det giver mulighed for analyse af hvorvidt deadlines blev overholdt eller om projekted blev færdig før tid.  
+Når man afslutter projekter, bliver de arkiveret, og man kan gå ind og se dem på samme måde, som man kan se de aktive projekter. Det giver mulighed for analyse af hvorvidt deadlines blev overholdt eller om projektet blev færdig før tid.  
   
 ### Fremtidige tilføjelser til programmet:
 til fremtidige tilføjelser, vil vi gerne gøre programmet mere medarbejder baseret. Dvs. mere potentiel information på medarbejder profilerne. Det er sådan noget som fx. en medarbejders tekniske færdigheder indenfor et givent område. Det åbner op for, at projekt lederen kan vælge sine medarbejdere nøje baseret på færdigheder, og dermed optimere tidshorisonten for et projekt.  
   
 ### Forfattere af projektet:
-Simon Abiltrup - Sim-Abild  
+Simon Abildtrup - Sim-Abild  
 Joshua Svensson - Joshua-kea  
 Martin Underbjerg -MU-1995  
 
