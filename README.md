@@ -22,7 +22,8 @@ til fremtidige tilføjelser, vil vi gerne gøre programmet mere medarbejder base
 ### Forfattere af projektet:
 Simon Abildtrup - Sim-Abild  
 Joshua Svensson - Joshua-kea  
-Martin Underbjerg -MU-1995  
+Martin Underbjerg -MU-1995
+
 
 ### [Link til vores deployed app](canwemakeit-bafkevcpgadyc2d2.norwayeast-01.azurewebsites.net)
 ### [Link til contributing](https://github.com/Wishlist-JMS-Miniprojekt-E25/Eksamensprojekt-E25/blob/main/CONTRIBUTING.md)
