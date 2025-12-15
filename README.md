@@ -25,6 +25,6 @@ Joshua Svensson - Joshua-kea
 Martin Underbjerg -MU-1995
 
 
-### [Link til vores deployed app][deployed app]
+### [Link til vores deployed app](https://canwemakeit-bafkevcpgadyc2d2.norwayeast-01.azurewebsites.net)
 ### [Link til contributing](https://github.com/Wishlist-JMS-Miniprojekt-E25/Eksamensprojekt-E25/blob/main/CONTRIBUTING.md)
-[deployed app]: canwemakeit-bafkevcpgadyc2d2.norwayeast-01.azurewebsites.net
+
