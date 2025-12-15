@@ -93,11 +93,11 @@
         </table>
     </div>
 
-    <div class="subtask-box"
-         th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
+    <div class="subtask-box">
         <h3>Subtasks</h3>
 
-        <a th:href="@{/task/{taskID}/addSubtask(taskID=${task.taskID})}"
+        <a th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}"
+           th:href="@{/task/{taskID}/addSubtask(taskID=${task.taskID})}"
            class="btn btn-primary">
             + Add subtask
         </a>
@@ -132,19 +132,15 @@
 
                 <td class="actions-col">
                     <div class="actions">
-
-                        <!-- GET link (matcher @GetMapping("/subtaskWorkhours/{subtaskID}") ) -->
                         <a th:href="@{/subtaskWorkhours/{subtaskID}(subtaskID=${subtask.subtaskID})}"
                            class="btn btn-primary"
                            onclick="return confirm('Are you sure you want to finalize this subtask?');">
                             Finalize
                         </a>
-
-                        <a th:href="@{/editSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}"
-                           class="btn btn-primary">
-                            Edit
-                        </a>
-
+                        <div th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}">
+                            <a th:href="@{/editSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}"
+                               class="btn btn-primary">Edit</a>
+                        </div>
                         <form th:if="${task.project.projectManager.employeeID == loggedInEmployee.employeeID}"
                               th:action="@{/deleteSubtask/{subtaskID}(subtaskID=${subtask.subtaskID})}"
                               method="post"
@@ -157,7 +153,6 @@
             </tr>
         </table>
     </div>
-
 </div>
 </body>
 </html>
