@@ -111,7 +111,7 @@
                 <td class="actions-col">
                     <div class="actions">
 
-                        <!-- GET link (matcher din @GetMapping("/taskWorkhours/{taskID}") ) -->
+
                         <a th:href="@{/taskWorkhours/{taskID}(taskID=${task.taskID})}"
                            class="btn btn-primary"
                            onclick="return confirm('Are you sure you want to finalize this task?');">
