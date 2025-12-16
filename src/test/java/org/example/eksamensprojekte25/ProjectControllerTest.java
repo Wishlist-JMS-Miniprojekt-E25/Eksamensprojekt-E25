@@ -241,8 +241,6 @@ public class ProjectControllerTest {
         Project project = new Project();
         Integer projectID = 5;
 
-        Employee employee = new Employee();
-
         when(projectService.getProjectByID(projectID))
                 .thenReturn(project);
 
